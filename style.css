@@ -6,6 +6,13 @@
   --primary-green: #94BF54;
   --bg-dark: #232626;
   --text-white: #ffffff;
+  --max-width: 904px;
+  --header-h: 120px; /* header total height on desktop */
+  /* Pastel variants for link accents */
+  --pastel-pink: color-mix(in srgb, var(--primary-pink) 45%, white 55%);
+  --pastel-purple: color-mix(in srgb, var(--primary-purple) 45%, white 55%);
+  --pastel-teal: color-mix(in srgb, var(--primary-teal) 45%, white 55%);
+  --pastel-green: color-mix(in srgb, var(--primary-green) 45%, white 55%);
 }
 
 body {
@@ -16,9 +23,11 @@ body {
 }
 
 .content-container {
-  max-width: 1200px;
+  max-width: var(--max-width);
   margin: 0 auto;
   padding: 2rem;
+  position: relative; /* keep content above bg shapes */
+  z-index: 1;
 }
 
 /* Headings */
@@ -66,15 +75,44 @@ strong {
 
 /* Links */
 a {
-  color: var(--primary-teal);
+  color: var(--primary-pink);
   text-decoration: none;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
+  transition: color 150ms ease;
 }
 
-a:hover {
-  color: var(--primary-purple);
+/* Per-character spans should glow too */
+a span { text-shadow: none; }
+
+a:hover, a:focus-visible {
+  color: var(--primary-pink);
   text-decoration: underline;
+  text-shadow: none;
 }
+
+/* Support/Themed buttons unified theme */
+a.btn, a.btn:hover, a.btn:focus, a.btn:focus-visible { text-decoration: none; }
+.btn.themed-btn, .support-link.btn {
+  --btn-color: var(--primary-purple); /* neutral default, JS randomizes */
+  background-color: var(--btn-color);
+  border-color: var(--btn-color);
+  color: var(--text-white);
+}
+.btn.themed-btn:hover,
+.btn.themed-btn:focus-visible,
+.support-link.btn:hover,
+.support-link.btn:focus-visible {
+  background-color: color-mix(in srgb, var(--btn-color) 85%, black 15%);
+  border-color: color-mix(in srgb, var(--btn-color) 85%, black 15%);
+  color: var(--text-white);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--btn-color) 35%, transparent);
+}
+
+/* Theme classes for buttons (used by JS to randomize) */
+.btn-theme-pink   { --btn-color: var(--primary-pink); }
+.btn-theme-purple { --btn-color: var(--primary-purple); }
+.btn-theme-teal   { --btn-color: var(--primary-teal); }
+.btn-theme-green  { --btn-color: var(--primary-green); }
 
 /* Carousel styling */
 .carousel {
@@ -158,6 +196,12 @@ a:hover {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
+/* Cap iframe width globally */
+iframe {
+  width: 100%;
+  max-width: var(--max-width);
+}
+
 /* Rainbow text for special elements */
 .rainbow-text {
   background: linear-gradient(45deg, var(--primary-pink), var(--primary-purple), var(--primary-teal), var(--primary-green));
@@ -178,10 +222,14 @@ a:hover {
 .site-header {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, var(--max-width));
   padding: 0.75rem 1rem;
+  padding-top: calc(0.75rem + env(safe-area-inset-top));
   z-index: 1000;
-  background: transparent;
+  background: var(--bg-dark);
+  transition: opacity 200ms ease;
 }
 
 .site-logo {
@@ -190,34 +238,291 @@ a:hover {
   display: block;
 }
 
+/* Background convex shapes */
+.bg-shapes {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0; /* below header/content */
+  overflow: hidden;
+}
+
+.bg-shapes .shape {
+  position: absolute;
+  display: block;
+  opacity: 0.05;
+  filter: blur(0.15px);
+  box-shadow: 0 6px 40px rgba(0,0,0,0.18);
+  /* Convex shading using the shape color variable */
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--shape-color) 65%, white 35%),
+    color-mix(in srgb, var(--shape-color) 80%, black 20%)
+  );
+}
+
+/* Color variants from theme (set shared variable) */
+.bg-shapes .pink   { --shape-color: var(--primary-pink); }
+.bg-shapes .purple { --shape-color: var(--primary-purple); }
+.bg-shapes .teal   { --shape-color: var(--primary-teal); }
+.bg-shapes .green  { --shape-color: var(--primary-green); }
+
+/* Convex shapes using clip-path */
+.bg-shapes .hex {
+  /* regular hexagon */
+  clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%);
+  border-radius: 6px;
+}
+
+.bg-shapes .pent {
+  /* pentagon */
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  border-radius: 6px;
+}
+
+.bg-shapes .tri {
+  /* triangle */
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  border-radius: 6px;
+}
+
+.bg-shapes .circle {
+  border-radius: 9999px;
+}
+
+/* Additional convex polygons */
+.bg-shapes .quad {
+  /* irregular convex quadrilateral */
+  clip-path: polygon(10% 15%, 90% 8%, 85% 90%, 12% 80%);
+  border-radius: 6px;
+}
+
+.bg-shapes .hept {
+  /* heptagon */
+  clip-path: polygon(50% 0%, 84% 18%, 100% 54%, 82% 88%, 50% 100%, 18% 88%, 0% 54%);
+  border-radius: 6px;
+}
+
+.bg-shapes .oct {
+  /* octagon */
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  border-radius: 6px;
+}
+
 /* Prevent content from sitting under the fixed header */
 .content-container {
-  padding-top: 8rem;
+  padding-top: calc(var(--header-h) + env(safe-area-inset-top));
+  padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
 /* Placeholder area */
 .placeholder {
-  min-height: calc(100vh - 10rem);
-  display: grid;
-  place-items: center;
+  padding: 2rem;
   border: 2px dashed rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* Introduction container: match other section widths */
+.introduction { padding: 0; background: transparent; }
+
+@supports (height: 100svh) {
+  .placeholder {
+    min-height: auto;
+  }
+}
+
 .placeholder h1 {
-  margin: 0 0 0.5rem 0;
-  text-align: center;
+  margin: 0 0 0.75rem 0;
+  text-align: left;
+}
+
+/* Ensure intro text is top-left with comfortable spacing */
+.intro h1 { text-align: left; }
+.intro p { margin: 0 0 0.75rem 0; }
+
+/* Introduction section */
+.intro {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Align Introduction container with other section boxes */
+.introduction .intro { max-width: 100%; margin: 0; }
+.introduction .intro.comparison-card { margin: 0; }
+
+.intro-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.ph-img {
+  aspect-ratio: 16 / 9;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Section titles */
+.section-title {
+  margin: 1.5rem 0 1rem;
+  text-align: left;
+}
+
+/* Comparisons section */
+.comparisons {
+  margin-top: 1.5rem;
+}
+
+.comparisons-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.comparison-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.comparison-box {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.comparison-caption {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+/* Before/After slider */
+.ba-slider {
+  --pos: 50%; /* updated by JS */
+  --ba-color: var(--primary-purple); /* default handle color */
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: 2px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Choose a palette color per slider */
+.ba-slider[data-color="pink"]  { --ba-color: var(--primary-pink); }
+.ba-slider[data-color="purple"]{ --ba-color: var(--primary-purple); }
+.ba-slider[data-color="teal"]  { --ba-color: var(--primary-teal); }
+.ba-slider[data-color="green"] { --ba-color: var(--primary-green); }
+
+.ba-pane {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.ba-pane img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Top layer reveals from the left up to --pos */
+.ba-pane.before {
+  background: rgba(0, 0, 0, 0.15);
+  clip-path: polygon(0 0, var(--pos) 0, var(--pos) 100%, 0 100%);
+  z-index: 1;
+}
+
+.ba-pane.after {
+  background: rgba(255, 255, 255, 0.06);
+  clip-path: polygon(var(--pos) 0, 100% 0, 100% 100%, var(--pos) 100%);
+  z-index: 0;
+}
+
+.ba-handle {
+  position: absolute;
+  top: 50%;
+  left: var(--pos);
+  transform: translate(-50%, -50%);
+  width: 46px;
+  height: 46px;
+  background: var(--ba-color);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+  cursor: ew-resize;
+  /* Pentagon shape pointing up */
+  clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
+  z-index: 3; /* above line and panes */
+}
+
+.ba-handle:focus-visible {
+  outline: 3px solid rgba(255,255,255,0.85);
+  outline-offset: 2px;
+}
+
+.ba-slider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.85);
+  z-index: 2; /* below handle, above panes */
+  pointer-events: none;
+}
+
+.ba-slider.dragging .ba-handle {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Showcase video */
+.showcase {
+  margin-top: 2rem;
+}
+
+.video-placeholder {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
+  :root { --header-h: 88px; }
   .content-container {
-    padding: 1rem;
+    padding: 1.5rem;
   }
   
   h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    text-align: left;
   }
   
   h2 {
@@ -228,11 +533,58 @@ a:hover {
     padding: 1rem;
     min-height: auto;
   }
-  /* Smaller logo and adjusted spacing on mobile */
+  
   .site-logo {
     height: 64px;
   }
+  
   .content-container {
-    padding-top: 6.5rem;
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top));
+  }
+  
+  .intro-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparisons-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparison-card {
+    padding: 0.5rem;
+  }
+  
+  .comparison-box {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparison-caption {
+    font-size: 0.85rem;
+  }
+  
+  .section-title {
+    margin: 1rem 0 0.5rem;
+  }
+  
+  .showcase {
+    margin-top: 1rem;
+  }
+  
+  .video-placeholder {
+    font-size: 1.2rem;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 480px) {
+  :root { --header-h: 80px; }
+  .site-logo {
+    height: 56px;
+  }
+  .content-container {
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top));
+  }
+  h1 {
+    font-size: 1.75rem;
   }
 }
