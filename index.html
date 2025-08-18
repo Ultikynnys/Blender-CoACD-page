@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ultikynnys.github.io/UltiBake">
+  <meta property="og:title" content="UltiBake">
+  <meta property="og:description" content="A brief description of UltiBake.">
+  <meta property="og:image" content="https://ultikynnys.github.io/UltiBake/path-to-preview-image.jpg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultibake Showcase</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Raleway:ital,wght@0,500;1,500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // ===================== FEATURES CAROUSEL ======================
+      var featuresCarouselElement = document.getElementById('featuresCarousel');
+
+      // On page load, play the video in the first (active) slide
+      var activeVideo = featuresCarouselElement.querySelector('.carousel-item.active video');
+      if (activeVideo) {
+        activeVideo.currentTime = 0;
+        activeVideo.play();
+      }
+
+      // Before the slide transition starts, pause the video on the current slide
+      featuresCarouselElement.addEventListener('slide.bs.carousel', function() {
+        var currentVideo = featuresCarouselElement.querySelector('.carousel-item.active video');
+        if (currentVideo) {
+          currentVideo.pause();
+        }
+      });
+
+      // After the slide transition ends, reset and play the video on the new active slide
+      featuresCarouselElement.addEventListener('slid.bs.carousel', function() {
+        var newActiveVideo = featuresCarouselElement.querySelector('.carousel-item.active video');
+        if (newActiveVideo) {
+          newActiveVideo.currentTime = 0;
+          newActiveVideo.play();
+        }
+      });
+
+      // ====================== STEPS CAROUSEL ========================
+      var stepsCarouselElement = document.getElementById('stepsCarousel');
+
+      // On page load, play the video in the first (active) slide
+      var activeStepsVideo = stepsCarouselElement.querySelector('.carousel-item.active video');
+      if (activeStepsVideo) {
+        activeStepsVideo.currentTime = 0;
+        activeStepsVideo.play();
+      }
+
+      // Before the slide transition starts, pause the video on the current slide
+      stepsCarouselElement.addEventListener('slide.bs.carousel', function() {
+        var currentStepsVideo = stepsCarouselElement.querySelector('.carousel-item.active video');
+        if (currentStepsVideo) {
+          currentStepsVideo.pause();
+        }
+      });
+
+      // After the slide transition ends, reset and play the video on the new active slide
+      stepsCarouselElement.addEventListener('slid.bs.carousel', function() {
+        var newActiveStepsVideo = stepsCarouselElement.querySelector('.carousel-item.active video');
+        if (newActiveStepsVideo) {
+          newActiveStepsVideo.currentTime = 0;
+          newActiveStepsVideo.play();
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="content-container">
+    <h1>
+      <span style="color: rgba(255, 0, 0, 0.582);">ULTI</span><span style="color: #333;">BAKE</span>
+    </h1>
+    <p>
+      <strong>Ultibake</strong> is an all-in-one baking solution for Blender, which aims to streamline the baking process, while providing a wide range of features.
+      <video class="rounded-video" controls muted loop playsinline style="width: 100%; height: auto; display: block; margin: 1rem 0;">
+        <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/FastShowcase2.mov" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <strong>Baking</strong> is the act of turning surface details into textures.
+      The modular design philosophy allows for easy baking of textures, <strong>decals</strong>,
+      high to low poly, UDIMs and more, with the added benefit of
+      <strong>saving your setups for later use</strong> using <strong>Profiles</strong>, like in Substance Painter.
+    </p>
+
+    <h2>Features</h2>
+    <div id="featuresCarousel" class="carousel slide rounded-carousel features-carousel" data-bs-pause="hover">
+      <div class="carousel-indicators">
+        <button
+          type="button"
+          data-bs-target="#featuresCarousel"
+          data-bs-slide-to="0"
+          class="active"
+          aria-current="true"
+          aria-label="Slide 1"
+        ></button>
+        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="6" aria-label="Slide 7"></button>
+        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="7" aria-label="Slide 8"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>Bake Visualizer</h3>
+              <p><strong>See your baked textures before you bake them!</strong> It dynamically adapts to your baking setup to show only the relevant textures.</p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/Visual.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>Decal Baking</h3>
+              <p>
+                <strong>Unique feature on this addon!</strong>
+                Apply decals to your desired object's surface. Support for decal addons like decalMACHINE, DecalMaster, TrimFlow, Sanctus Library and
+                <a href="https://blendermarket.com/products/ultistamp" target="_blank">UltiStamp</a>
+              </p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/Decal.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>Multi High to Low Baking</h3>
+              <p>Transfer surface details from high-poly to low-poly meshes  <strong>You can bake as many high-to-low combinations </strong> as you wish <strong>with one click!!</strong></p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/Multiobject.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>Profiles</h3>
+              <p>Create your own bake setup profile. You can also <strong>save/load</strong> to external files for other projects.</p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/Profile.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>Bake Post Processing</h3>
+              <p>Apply antialiasing, denoising, sharpening and <strong>more</strong></p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/PP.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>UDIM Baking</h3>
+              <p>Visualize your UDIM resolution before baking. UDIMs are <strong>automatically detected</strong> from UVs</p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/UDIM.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>Special Bake type : Bent Normals</h3>
+              <p>Control directional Specularity with Bent Normals</p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/BentNormal.mov" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex feature-item flex-column">
+            <div class="feature-text">
+              <h3>Multi Texture channel packed baking</h3>
+              <p>Bake multiple textures with a single click while having <strong>Full Control</strong> over texture channels with <strong>23</strong> unique bake types.</p>
+            </div>
+            <div class="feature-image">
+              <video controls muted loop playsinline>
+                <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/TextureSets.mov" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    <h2>Simple to use</h2>
+    <div id="stepsCarousel" class="carousel slide rounded-carousel" data-bs-pause="hover">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#stepsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Step 1"></button>
+        <button type="button" data-bs-target="#stepsCarousel" data-bs-slide-to="1" aria-label="Step 2"></button>
+        <button type="button" data-bs-target="#stepsCarousel" data-bs-slide-to="2" aria-label="Step 3"></button>
+        <button type="button" data-bs-target="#stepsCarousel" data-bs-slide-to="3" aria-label="Step 4"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="step-item">
+            <p>Step 1: Install the addon .zip from Blender Properties</p>
+            <video controls muted loop playsinline>
+              <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/install.mov" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="step-item">
+            <p>Step 2: Select your objects to bake by creating a bake set</p>
+            <video controls muted loop playsinline>
+              <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/assignment.mov" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="step-item">
+            <p>Step 3: Set up your bake profile and Save it</p>
+            <video controls muted loop playsinline>
+              <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/profile.mov" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="step-item">
+            <p>Step 4: Assign the Profile. Bake the Textures and Finalize for Export</p>
+            <video controls muted loop playsinline>
+              <source src="https://raw.githubusercontent.com/Ultikynnys/UltiBake/refs/heads/main/Clips/finalize.mov" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    <h2>Videos</h2>
+    <div id="documentationCarousel" class="carousel slide rounded-carousel" data-bs-pause="hover">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#documentationCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#documentationCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#documentationCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="py-4 px-0 d-flex flex-column align-items-center">
+            <p>Quick start</p>
+            <div class="ratio ratio-16x9 mx-auto">
+              <iframe
+                src="https://www.youtube.com/embed/_gE_KFakj5Q"
+                title="Quick start"
+                frameborder="0"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex flex-column align-items-center">
+            <p>High to Low + Decals</p>
+            <div class="ratio ratio-16x9 mx-auto">
+              <iframe
+                src="https://www.youtube.com/embed/5VbmDDsLJUQ"
+                title="High to Low + Decals"
+                frameborder="0"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="py-4 px-0 d-flex flex-column align-items-center">
+            <p>Combining Materials and Textures. Also shows how to setup a UV</p>
+            <div class="ratio ratio-16x9 mx-auto">
+              <iframe
+                src="https://www.youtube.com/embed/CSWeFICRiWk"
+                title="Combining Materials and Textures"
+                frameborder="0"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    <h2>API Documentation</h2>
+    <div class="api-doc-container" style="margin-bottom: 1rem;"> <p>For users looking integrate or automate Ultibake, the full API documentation is available:</p>
+      <p>
+        <a href="https://ultikynnys.github.io/UltiBake/documentation" target="_blank">View API Documentation</a>
+        </p>
+    </div>
+    <h2>Support</h2>
+    <div class="support-container">
+      <p>If you have any questions, issues, or suggestions, join our Discord group:</p>
+      <p>
+        <a href="https://discord.gg/Pm7TDf2rV5" target="_blank">https://discord.gg/Pm7TDf2rV5</a>
+      </p>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
