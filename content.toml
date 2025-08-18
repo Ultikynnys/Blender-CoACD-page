@@ -61,22 +61,22 @@
 [[comparisons]]
   initial = 0.5
   color = "pink"     # one of: pink, purple, teal, green
-  before = ""         # e.g. "images/comp1-before.jpg"
-  after  = ""         # e.g. "images/comp1-after.jpg"
+  before = "Logo.png"         # e.g. "images/comp1-before.jpg"
+  after  = "Logo2.png"         # e.g. "images/comp1-after.jpg"
   caption = "Complex mesh vs. generated convex collision hulls"
 
 [[comparisons]]
   initial = 0.5
   color = "purple"
-  before = ""
-  after  = ""
+  before = "Logo.png"
+  after  = "Logo2.png"
   caption = "Before/After with CoACD decomposition"
 
 [[comparisons]]
   initial = 0.5
   color = "green"
-  before = ""
-  after  = ""
+  before = "Logo.png"
+  after  = "Logo2.png"
   caption = "Collision pieces optimized for rigid body physics"
 
 # Showcase video
