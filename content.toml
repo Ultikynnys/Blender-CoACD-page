@@ -1,0 +1,98 @@
+# Site settings
+[site]
+  title = "CoACD Collision Generator"
+  banner = "Banner.png"
+  research_link_text = "Research Paper"
+  research_link_url = "https://colin97.github.io/CoACD/"
+
+# Open Graph / SEO (optional; overrides existing meta tags if provided)
+[meta]
+  og_type = "website"
+  og_url = "https://colin97.github.io/CoACD/"
+  og_title = "CoACD Collision Generator"
+  og_description = "Blender add-on to generate convex collision hulls using the CoACD (Collision-Aware Convex Decomposition) algorithm."
+  og_image = "Banner.png"
+
+# Section titles (optional overrides)
+[titles]
+  comparisons = "Comparisons"
+  showcase = "Showcase"
+  support = "Support"
+
+# Introduction section
+[introduction]
+  title = "CoACD Collision Generator"
+  paragraphs = [
+    "A Blender add-on for generating convex collision hulls using the CoACD (Collision-Aware Convex Decomposition) algorithm.",
+  ]
+
+  # Parameters and Usage sections
+  parameters_title = "Parameters"
+  parameters = [
+    "Concavity Threshold — Lower values create tighter hulls (typical 0.03–0.20).",
+    "Max Convex Hulls — Upper limit on number of hull pieces.",
+    "Resolution — Voxel/grid resolution (64–400). Higher = more detail, slower.",
+    "Max Hull Vertices — Per-hull vertex cap (16–32). Lower = simpler, faster.",
+    "Merge Sub-Hulls — Merge adjacent sub-hulls when possible.",
+    "Inflate Thickness — Add thickness before voxelization (0 = off).",
+    "Display Mode — Wireframe/Solid/Textured (preview only)."
+  ]
+
+  usage_title = "Usage"
+  usage_steps = [
+    "Select one or more mesh objects.",
+    "Choose a Quality preset (Low/Medium/High/Maximum) or adjust parameters.",
+    "Click Generate Convex Colliders.",
+    "Post-Processing — Convex Hull Axis Mirroring: mirror hulls across X/Y/Z axes as needed.",
+    "Post-Processing — Quick Convex Hull Merge: merge selected hulls into a single collider with one click.",
+  ]
+
+  # Optional image shown to the right of the Usage list
+  usage_image = "Logo2.png"                    # Replace with a Blender UI screenshot, e.g. "images/blender-ui-usage.png"
+  usage_image_alt = "Where to find CoACD in the Blender UI"
+  usage_image_caption = "Add-on location: 3D Viewport > N panel > CoACD"
+  # Optional second image stacked under the first
+  usage_image_2 = "Logo.png"
+  usage_image_2_alt = "Secondary view of CoACD in Blender UI"
+  usage_image_2_caption = "Example panel with Parameters and Post-Processing tools"
+
+# Comparisons (Before/After sliders). Provide image paths relative to the site root.
+# Leave before/after empty strings if not available yet.
+[[comparisons]]
+  initial = 0.5
+  color = "pink"     # one of: pink, purple, teal, green
+  before = ""         # e.g. "images/comp1-before.jpg"
+  after  = ""         # e.g. "images/comp1-after.jpg"
+  caption = "Complex mesh vs. generated convex collision hulls"
+
+[[comparisons]]
+  initial = 0.5
+  color = "purple"
+  before = ""
+  after  = ""
+  caption = "Before/After with CoACD decomposition"
+
+[[comparisons]]
+  initial = 0.5
+  color = "green"
+  before = ""
+  after  = ""
+  caption = "Collision pieces optimized for rigid body physics"
+
+# Showcase video
+[showcase]
+  # Provide an embeddable video URL (YouTube embed, etc.), or omit to show placeholder text.
+  # video_url = "https://www.youtube.com/embed/VIDEO_ID"
+  placeholder = "Demo video coming soon"
+
+# Support / Community
+[support]
+  title = "Support"
+  text = "Need help or want to share feedback? Join our Discord community."
+  link_text = "Join Discord"
+  link_url = "https://discord.gg/J7kWSfM4jw"
+
+# Citations
+[[citations]]
+  id = "wei2022approximate"
+  bibtex = "@article{wei2022approximate,\n  title={Approximate convex decomposition for 3d meshes with collision-aware concavity and tree search},\n  author={Wei, Xinyue and Liu, Minghua and Ling, Zhan and Su, Hao},\n  journal={ACM Transactions on Graphics (TOG)},\n  volume={41},\n  number={4},\n  pages={1--18},\n  year={2022},\n  publisher={ACM New York, NY, USA}\n}"

@@ -239,6 +239,48 @@ a:hover, a:focus-visible {
 
 .intro p { margin: 0 0 0.75rem 0; }
 
+/* Introduction Parameters subsection */
+.intro__params-title { margin: 0 0 0.5rem 0; font-size: 1.25rem; }
+.intro__params-list { margin: 0 0 1rem 0; padding-left: 1.2rem; font-size: 0.95rem; }
+
+/* Introduction Usage two-column layout */
+.intro__usage-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 44%);
+  gap: 1rem;
+  align-items: start;
+  margin-top: 0;
+}
+.intro__usage-main { min-width: 0; }
+.intro__usage-title { margin: 0 0 0.5rem 0; font-size: 1.25rem; }
+.intro__usage-list { margin: 0 0 0.75rem 0; padding-left: 1.2rem; font-size: 0.95rem; }
+.intro__params-list li,
+.intro__usage-list li { margin: 0 0 0.4rem 0; }
+.intro__params-list li:last-child,
+.intro__usage-list li:last-child { margin-bottom: 0; }
+.intro__usage-media {
+  display: grid;
+  gap: 0.75rem;
+}
+.intro__usage-media figure { margin: 0; }
+.intro__usage-media img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16; /* enforce vertical format */
+  object-fit: cover;    /* crop to fill the vertical frame */
+  display: block;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+.intro__usage-caption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  text-align: center;
+}
+
 .comparison-caption {
   margin-top: 0.6rem;
   font-size: 0.95rem;
@@ -345,7 +387,6 @@ a:hover, a:focus-visible {
     padding-bottom: 1rem;
   }
   
-  
   h2 {
     font-size: 1.8rem;
   }
@@ -364,6 +405,9 @@ a:hover, a:focus-visible {
   
   .section__title {
     margin: 1rem 0 0.5rem;
+  }
+  .intro__usage-grid {
+    grid-template-columns: 1fr;
   }
 }
 
