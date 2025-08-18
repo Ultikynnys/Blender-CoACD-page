@@ -185,14 +185,14 @@ a:hover {
 }
 
 .site-logo {
-  height: 48px;
+  height: 96px;
   width: auto;
   display: block;
 }
 
 /* Prevent content from sitting under the fixed header */
 .content-container {
-  padding-top: 6rem;
+  padding-top: 8rem;
 }
 
 /* Placeholder area */
@@ -230,9 +230,9 @@ a:hover {
   }
   /* Smaller logo and adjusted spacing on mobile */
   .site-logo {
-    height: 40px;
+    height: 64px;
   }
   .content-container {
-    padding-top: 5rem;
+    padding-top: 6.5rem;
   }
 }
