@@ -258,6 +258,10 @@ a:hover, a:focus-visible {
 .intro__usage-list li { margin: 0 0 0.4rem 0; }
 .intro__params-list li:last-child,
 .intro__usage-list li:last-child { margin-bottom: 0; }
+  
+/* Colored strong (assigned via JS) */
+.themed-strong { color: var(--strong-color) !important; }
+
 .intro__usage-media {
   display: grid;
   gap: 0.75rem;

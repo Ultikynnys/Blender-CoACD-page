@@ -29,22 +29,22 @@
   # Parameters and Usage sections
   parameters_title = "Parameters"
   parameters = [
-    "Concavity Threshold — Lower values create tighter hulls (typical 0.03–0.20).",
-    "Max Convex Hulls — Upper limit on number of hull pieces.",
-    "Resolution — Voxel/grid resolution (64–400). Higher = more detail, slower.",
-    "Max Hull Vertices — Per-hull vertex cap (16–32). Lower = simpler, faster.",
-    "Merge Sub-Hulls — Merge adjacent sub-hulls when possible.",
-    "Inflate Thickness — Add thickness before voxelization (0 = off).",
-    "Display Mode — Wireframe/Solid/Textured (preview only)."
+    "**Concavity Threshold** — Lower values create tighter hulls (typical 0.03–0.20).",
+    "**Max Convex Hulls** — Upper limit on number of hull pieces.",
+    "**Resolution** — Voxel/grid resolution (64–400). Higher = more detail, slower.",
+    "**Max Hull Vertices** — Per-hull vertex cap (16–32). Lower = simpler, faster.",
+    "**Merge Sub-Hulls** — Merge adjacent sub-hulls when possible.",
+    "**Inflate Thickness** — Add thickness before voxelization (0 = off).",
+    "**Display Mode** — Wireframe/Solid/Textured (preview only)."
   ]
 
   usage_title = "Usage"
   usage_steps = [
-    "Select one or more mesh objects.",
-    "Choose a Quality preset (Low/Medium/High/Maximum) or adjust parameters.",
-    "Click Generate Convex Colliders.",
-    "Post-Processing — Convex Hull Axis Mirroring: mirror hulls across X/Y/Z axes as needed.",
-    "Post-Processing — Quick Convex Hull Merge: merge selected hulls into a single collider with one click.",
+    "**Select** one or more mesh objects.",
+    "Choose a **Quality** preset (**Low/Medium/High/Maximum**) or adjust parameters.",
+    "**Click Generate Convex Colliders**.",
+    "Post-Processing — **Convex Hull Axis Mirroring**: mirror hulls across X/Y/Z axes as needed.",
+    "Post-Processing — **Quick Convex Hull Merge**: merge selected hulls into a single collider with one click.",
   ]
 
   # Optional image shown to the right of the Usage list

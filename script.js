@@ -27,6 +27,35 @@ const utils = {
   getViewportWidth: () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 };
 
+// Minimal inline markdown to HTML (bold only) with escaping
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function mdInlineToHtmlBoldOnly(s) {
+  const escaped = escapeHtml(s);
+  // Convert **text** to <strong>text</strong>
+  return escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+// Assign a random theme color to any <strong> elements inside a root node
+function pickRandomThemeColor() {
+  return utils.randomChoice(THEME_CONFIG.colors.palette);
+}
+
+function colorizeStrongIn(root) {
+  if (!root) return;
+  root.querySelectorAll('strong').forEach((el) => {
+    if (!el.classList.contains('themed-strong')) {
+      el.classList.add('themed-strong');
+      el.style.setProperty('--strong-color', pickRandomThemeColor());
+    }
+  });
+}
 
 // Before/After slider functionality
 function initBeforeAfterSliders() {
@@ -455,7 +484,8 @@ function renderContent(cfg) {
     const paras = cfg?.introduction?.paragraphs || [];
     paras.forEach(t => {
       const p = document.createElement('p');
-      p.textContent = t;
+      p.innerHTML = mdInlineToHtmlBoldOnly(String(t));
+      colorizeStrongIn(p);
       introContent.appendChild(p);
     });
 
@@ -482,7 +512,7 @@ function renderContent(cfg) {
       ulp.className = 'intro__params-list';
       parameters.forEach(item => {
         const li = document.createElement('li');
-        li.textContent = String(item);
+        li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
         ulp.appendChild(li);
       });
       paramNodes.push(ulp);
@@ -512,7 +542,8 @@ function renderContent(cfg) {
       ul.className = 'intro__usage-list';
       usageItems.forEach(item => {
         const li = document.createElement('li');
-        li.textContent = String(item);
+        li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+        colorizeStrongIn(li);
         ul.appendChild(li);
       });
       usageNodes.push(ul);
@@ -547,7 +578,8 @@ function renderContent(cfg) {
       if (usageImageCaption) {
         const figcap = document.createElement('figcaption');
         figcap.className = 'intro__usage-caption';
-        figcap.textContent = usageImageCaption;
+        figcap.innerHTML = mdInlineToHtmlBoldOnly(String(usageImageCaption));
+        colorizeStrongIn(figcap);
         figure.appendChild(figcap);
       }
       mediaCol.appendChild(figure);
@@ -589,6 +621,7 @@ function renderContent(cfg) {
       const caption = item.caption || '';
       const before = item.before || '';
       const after = item.after || '';
+      const captionHtml = caption ? mdInlineToHtmlBoldOnly(String(caption)) : '';
 
       const card = document.createElement('div');
       card.className = 'card card--compact';
@@ -598,8 +631,9 @@ function renderContent(cfg) {
           <div class="ba-pane before">${before ? `<img src="${before}" alt="Before image">` : '<span>Before</span>'}</div>
           <button class="ba-handle" role="slider" aria-label="Drag to compare" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></button>
         </div>
-        ${caption ? `<p class="comparison-caption">${caption}</p>` : ''}
+        ${captionHtml ? `<p class="comparison-caption">${captionHtml}</p>` : ''}
       `;
+      colorizeStrongIn(card);
       grid.appendChild(card);
     });
   }
@@ -626,7 +660,10 @@ function renderContent(cfg) {
   const supportText = document.getElementById('support-text');
   const supportLink = document.getElementById('support-link');
   if (cfg?.support?.title && supportTitle) supportTitle.textContent = cfg.support.title;
-  if (supportText && cfg?.support?.text) supportText.textContent = cfg.support.text;
+  if (supportText && cfg?.support?.text) {
+    supportText.innerHTML = mdInlineToHtmlBoldOnly(String(cfg.support.text));
+    colorizeStrongIn(supportText);
+  }
   if (supportLink && cfg?.support) {
     if (cfg.support.link_text) supportLink.textContent = cfg.support.link_text;
     if (cfg.support.link_url) supportLink.href = cfg.support.link_url;
@@ -634,6 +671,8 @@ function renderContent(cfg) {
   
   // Citations (appended at the bottom)
   renderCitationsSection(cfg);
+  // Final pass: colorize any remaining bold across the page
+  colorizeStrongIn(document.body);
 }
 
 // Initialize all functionality when DOM is loaded
