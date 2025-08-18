@@ -1,0 +1,238 @@
+/* Main Color Theme */
+:root {
+  --primary-pink: #D94E81;
+  --primary-purple: #8A66D9;
+  --primary-teal: #7EBFA1;
+  --primary-green: #94BF54;
+  --bg-dark: #232626;
+  --text-white: #ffffff;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-family: 'Outfit', sans-serif;
+}
+
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Headings */
+h1 {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+h2 {
+  color: var(--primary-pink);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 3rem 0 2rem 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+h3 {
+  color: var(--primary-purple);
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+h5 {
+  color: var(--primary-teal);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Paragraphs and text */
+p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+strong {
+  color: var(--primary-green);
+  font-weight: 700;
+}
+
+/* Links */
+a {
+  color: var(--primary-teal);
+  text-decoration: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+a:hover {
+  color: var(--primary-purple);
+  text-decoration: underline;
+}
+
+/* Carousel styling */
+.carousel {
+  margin: 2rem 0;
+}
+
+.rounded-carousel {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.carousel-indicators button {
+  background-color: var(--primary-pink);
+  border: 2px solid var(--bg-dark);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.carousel-indicators button.active {
+  background-color: var(--primary-purple);
+  box-shadow: 0 0 10px var(--primary-purple);
+}
+
+/* Feature items */
+.feature-item {
+  padding: 2rem;
+  min-height: 500px;
+}
+
+.feature-text {
+  margin-bottom: 2rem;
+}
+
+.feature-image video {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Step items */
+.step-item {
+  padding: 2rem;
+  text-align: center;
+}
+
+.step-item video {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 10px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Main showcase video */
+.rounded-video {
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* API Documentation and Support sections */
+.api-doc-container, .support-container {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 15px;
+  margin: 2rem 0;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* YouTube iframe styling */
+.ratio iframe {
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Rainbow text for special elements */
+.rainbow-text {
+  background: linear-gradient(45deg, var(--primary-pink), var(--primary-purple), var(--primary-teal), var(--primary-green));
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rainbow 3s ease-in-out infinite;
+  text-shadow: none;
+}
+
+@keyframes rainbow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Top-left logo header */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 0.75rem 1rem;
+  z-index: 1000;
+  background: transparent;
+}
+
+.site-logo {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+
+/* Prevent content from sitting under the fixed header */
+.content-container {
+  padding-top: 6rem;
+}
+
+/* Placeholder area */
+.placeholder {
+  min-height: calc(100vh - 10rem);
+  display: grid;
+  place-items: center;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.placeholder h1 {
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  .feature-item {
+    padding: 1rem;
+    min-height: auto;
+  }
+  /* Smaller logo and adjusted spacing on mobile */
+  .site-logo {
+    height: 40px;
+  }
+  .content-container {
+    padding-top: 5rem;
+  }
+}
