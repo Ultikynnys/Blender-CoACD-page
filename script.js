@@ -31,20 +31,10 @@ const utils = {
 function initHeaderFade() {
   const header = document.querySelector('.site-header');
   if (!header) return;
-  
-  const fadeDistance = 140;
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
-  const updateOpacity = () => {
-    const scrollY = window.scrollY || window.pageYOffset || 0;
-    const opacity = Math.max(0, Math.min(1, 1 - scrollY / fadeDistance));
-    
-    header.style.opacity = prefersReduced ? 1 : opacity.toFixed(3);
-    header.style.pointerEvents = opacity < 0.05 ? 'none' : 'auto';
-  };
-  
-  updateOpacity();
-  window.addEventListener('scroll', updateOpacity, { passive: true });
+
+  // Ensure the header is always fully visible and interactive.
+  header.style.opacity = '1';
+  header.style.pointerEvents = 'auto';
 }
 
 // Before/After slider functionality

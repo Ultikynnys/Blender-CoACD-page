@@ -1,4 +1,5 @@
-/* Main Color Theme */
+/* ===== DESIGN SYSTEM ===== */
+/* Color Theme */
 :root {
   --primary-pink: #D94E81;
   --primary-purple: #8A66D9;
@@ -8,18 +9,18 @@
   --text-white: #ffffff;
   --max-width: 904px;
   --header-h: 120px; /* header total height on desktop */
-  /* Pastel variants for link accents */
-  --pastel-pink: color-mix(in srgb, var(--primary-pink) 45%, white 55%);
-  --pastel-purple: color-mix(in srgb, var(--primary-purple) 45%, white 55%);
-  --pastel-teal: color-mix(in srgb, var(--primary-teal) 45%, white 55%);
-  --pastel-green: color-mix(in srgb, var(--primary-green) 45%, white 55%);
-}
+  }
 
 body {
   background-color: var(--bg-dark);
-  color: var(--text-white);
+  color: var(--text-white) !important;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   font-family: 'Outfit', sans-serif;
+}
+
+/* Unified text color override */
+*, .card, .card *, p, span, div, .content-container, .content-container * {
+  color: var(--text-white) !important;
 }
 
 .content-container {
@@ -32,34 +33,14 @@ body {
   z-index: 1;
 }
 
+/* ===== TYPOGRAPHY ===== */
 /* Headings */
-h1 {
-  text-align: center;
-  font-size: 3rem;
-  font-weight: 900;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-}
-
 h2 {
   color: var(--primary-pink);
   font-size: 2.5rem;
   font-weight: 700;
   margin: 3rem 0 2rem 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-}
-
-h3 {
-  color: var(--primary-purple);
-  font-size: 1.8rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-}
-
-h5 {
-  color: var(--primary-teal);
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 /* Paragraphs and text */
@@ -70,11 +51,6 @@ p {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-strong {
-  color: var(--primary-green);
-  font-weight: 700;
-}
-
 /* Links */
 a {
   color: var(--primary-pink);
@@ -83,8 +59,6 @@ a {
   transition: color 150ms ease;
 }
 
-/* Per-character spans should glow too */
-a span { text-shadow: none; }
 
 a:hover, a:focus-visible {
   color: var(--primary-pink);
@@ -92,7 +66,8 @@ a:hover, a:focus-visible {
   text-shadow: none;
 }
 
-/* Unified button styling */
+/* ===== COMPONENTS ===== */
+/* Button styling */
 .btn {
   text-decoration: none;
   transition: all 150ms ease;
@@ -115,80 +90,14 @@ a:hover, a:focus-visible {
   text-decoration: none;
 }
 
-/* Theme classes for buttons (used by JS to randomize) */
+/* Legacy button theme classes (for backward compatibility) */
 .btn-theme-pink   { --btn-color: var(--primary-pink); }
 .btn-theme-purple { --btn-color: var(--primary-purple); }
 .btn-theme-teal   { --btn-color: var(--primary-teal); }
 .btn-theme-green  { --btn-color: var(--primary-green); }
 
-/* Carousel styling */
-.carousel {
-  margin: 2rem 0;
-}
-
-.rounded-carousel {
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.carousel-item {
-  background-color: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-}
-
-.carousel-indicators button {
-  background-color: var(--primary-pink);
-  border: 2px solid var(--bg-dark);
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.carousel-indicators button.active {
-  background-color: var(--primary-purple);
-  box-shadow: 0 0 10px var(--primary-purple);
-}
-
-/* Feature items */
-.feature-item {
-  padding: 2rem;
-  min-height: 500px;
-}
-
-.feature-text {
-  margin-bottom: 2rem;
-}
-
-.feature-image video {
-  width: 100%;
-  max-width: 600px;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-}
-
-/* Step items */
-.step-item {
-  padding: 2rem;
-  text-align: center;
-}
-
-.step-item video {
-  width: 100%;
-  max-width: 700px;
-  border-radius: 10px;
-  margin-top: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-}
-
-/* Main showcase video */
-.rounded-video {
-  border-radius: 15px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-/* Card components - unified styling */
-.card-component {
+/* Card styling */
+.card {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
@@ -196,46 +105,31 @@ a:hover, a:focus-visible {
   backdrop-filter: blur(10px);
 }
 
-/* YouTube iframe styling */
-.ratio iframe {
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-}
-
-/* Cap iframe width globally */
-iframe {
-  width: 100%;
-  max-width: var(--max-width);
-}
-
-/* Rainbow text for special elements */
-.rainbow-text {
-  background: linear-gradient(45deg, var(--primary-pink), var(--primary-purple), var(--primary-teal), var(--primary-green));
-  background-size: 400% 400%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: rainbow 3s ease-in-out infinite;
-  text-shadow: none;
-}
-
-@keyframes rainbow {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+.card--compact {
+  padding: 1rem;
 }
 
 /* Top-left logo header */
 .site-header {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(100%, var(--max-width));
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw !important;
+  z-index: 1000 !important;
+  background: var(--bg-dark) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.site-header-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
   padding: 0.75rem 1rem;
   padding-top: calc(0.75rem + env(safe-area-inset-top));
-  z-index: 1000;
-  background: var(--bg-dark);
-  transition: opacity 200ms ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .site-logo {
@@ -244,7 +138,14 @@ iframe {
   display: block;
 }
 
-/* Background convex shapes */
+.research-paper-btn {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+}
+
+/* ===== BACKGROUND ELEMENTS ===== */
+/* Convex shapes */
 .bg-shapes {
   position: fixed;
   inset: 0;
@@ -259,7 +160,7 @@ iframe {
   opacity: 0.05;
   filter: blur(0.15px);
   box-shadow: 0 6px 40px rgba(0,0,0,0.18);
-  /* Convex shading using the shape color variable */
+  border-radius: 6px;
   background: linear-gradient(
     145deg,
     color-mix(in srgb, var(--shape-color) 65%, white 35%),
@@ -267,147 +168,76 @@ iframe {
   );
 }
 
-/* Color variants from theme (set shared variable) */
+/* Use unified theme classes for shapes */
 .bg-shapes .pink   { --shape-color: var(--primary-pink); }
 .bg-shapes .purple { --shape-color: var(--primary-purple); }
 .bg-shapes .teal   { --shape-color: var(--primary-teal); }
 .bg-shapes .green  { --shape-color: var(--primary-green); }
 
-/* Convex shapes using clip-path */
-.bg-shapes .hex {
-  /* regular hexagon */
-  clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%);
-  border-radius: 6px;
-}
+/* Shape-specific clip paths */
+.bg-shapes .hex { clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%); }
+.bg-shapes .pent { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+.bg-shapes .tri { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
+.bg-shapes .quad { clip-path: polygon(10% 15%, 90% 8%, 85% 90%, 12% 80%); }
+.bg-shapes .hept { clip-path: polygon(50% 0%, 84% 18%, 100% 54%, 82% 88%, 50% 100%, 18% 88%, 0% 54%); }
+.bg-shapes .oct { clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
+.bg-shapes .circle { border-radius: 9999px; }
 
-.bg-shapes .pent {
-  /* pentagon */
-  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-  border-radius: 6px;
-}
-
-.bg-shapes .tri {
-  /* triangle */
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-  border-radius: 6px;
-}
-
-.bg-shapes .circle {
-  border-radius: 9999px;
-}
-
-/* Additional convex polygons */
-.bg-shapes .quad {
-  /* irregular convex quadrilateral */
-  clip-path: polygon(10% 15%, 90% 8%, 85% 90%, 12% 80%);
-  border-radius: 6px;
-}
-
-.bg-shapes .hept {
-  /* heptagon */
-  clip-path: polygon(50% 0%, 84% 18%, 100% 54%, 82% 88%, 50% 100%, 18% 88%, 0% 54%);
-  border-radius: 6px;
-}
-
-.bg-shapes .oct {
-  /* octagon */
-  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-  border-radius: 6px;
-}
-
-
-/* Placeholder area */
+/* Placeholder styling */
 .placeholder {
+  aspect-ratio: 16 / 9;
   padding: 2rem;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(255, 255, 255, 0.18);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* Section containers - unified styling */
-.section-container {
+/* ===== LAYOUT ===== */
+/* Section styling */
+.section {
   margin-top: 2rem;
 }
 
-.introduction {
-  padding: 0;
-  background: transparent;
-}
-
-/* Unified spacing for sections */
-.section-title {
+.section__title {
   margin: 1.5rem 0 1rem;
   text-align: left;
 }
 
-
-@supports (height: 100svh) {
-  .placeholder {
-    min-height: auto;
-  }
+.section--intro {
+  padding: 0;
+  background: transparent;
+  margin-top: 0;
 }
 
-.placeholder h1 {
-  margin: 0 0 0.75rem 0;
-  text-align: left;
+/* Grid layouts */
+.grid {
+  display: grid;
+  gap: 1rem;
 }
 
-/* Ensure intro text is top-left with comfortable spacing */
-.intro h1 { text-align: left; }
-.intro p { margin: 0 0 0.75rem 0; }
 
-/* Introduction section */
+.grid--one-col {
+  grid-template-columns: 1fr;
+}
+
+/* Introduction section overrides */
 .intro {
   max-width: var(--max-width);
   margin: 0 auto;
   text-align: left;
 }
 
-/* Align Introduction container with other section boxes */
-.introduction .intro { max-width: 100%; margin: 0; }
-.introduction .intro.comparison-card { margin: 0; }
-
-.intro-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 1rem;
+.introduction .intro { 
+  max-width: 100%; 
+  margin: 0; 
 }
 
-.ph-img {
-  aspect-ratio: 16 / 9;
-  background: rgba(255, 255, 255, 0.06);
-  border: 2px dashed rgba(255, 255, 255, 0.18);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.75);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-
-
-.comparisons-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr;
-}
-
-.comparison-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 1rem;
-  backdrop-filter: blur(10px);
-}
-
-.comparison-box {
-  display: grid;
-  gap: 0.75rem;
-  grid-template-columns: 1fr;
-}
+.intro p { margin: 0 0 0.75rem 0; }
 
 .comparison-caption {
   margin-top: 0.6rem;
@@ -439,7 +269,7 @@ iframe {
   inset: 0;
   display: grid;
   place-items: center;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-white);
   font-weight: 700;
   letter-spacing: 0.5px;
   user-select: none;
@@ -503,70 +333,37 @@ iframe {
   background: rgba(0, 0, 0, 0.5);
 }
 
-.showcase {
-  margin-top: 2rem;
-}
-
 .video-placeholder {
-  aspect-ratio: 16 / 9;
   width: 100%;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  display: grid;
-  place-items: center;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 600;
 }
 
-/* Responsive design */
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
-  :root { --header-h: 88px; }
+  :root { --header-h: 80px; }
   .content-container {
-    padding-inline: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-inline: 1rem;
+    padding-bottom: 1rem;
   }
   
-  h1 {
-    font-size: 2rem;
-    text-align: left;
-  }
   
   h2 {
-    font-size: 2rem;
-  }
-  
-  .feature-item {
-    padding: 1rem;
-    min-height: auto;
+    font-size: 1.8rem;
   }
   
   .site-logo {
     height: 64px;
   }
   
-  .intro-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .comparison-card {
+  .card--compact {
     padding: 0.5rem;
-  }
-  
-  .comparison-box {
-    grid-template-columns: 1fr;
   }
   
   .comparison-caption {
     font-size: 0.85rem;
   }
   
-  .section-title {
+  .section__title {
     margin: 1rem 0 0.5rem;
-  }
-  
-  .video-placeholder {
-    font-size: 1.2rem;
   }
 }
 
@@ -575,8 +372,5 @@ iframe {
   :root { --header-h: 80px; }
   .site-logo {
     height: 56px;
-  }
-  h1 {
-    font-size: 1.75rem;
   }
 }
