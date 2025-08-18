@@ -25,8 +25,10 @@ body {
 .content-container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 2rem;
-  position: relative; /* keep content above bg shapes */
+  padding-top: calc(var(--header-h) + env(safe-area-inset-top));
+  padding-inline: clamp(1rem, 4vw, 2rem);
+  padding-bottom: 2rem;
+  position: relative;
   z-index: 1;
 }
 
@@ -90,22 +92,27 @@ a:hover, a:focus-visible {
   text-shadow: none;
 }
 
-/* Support/Themed buttons unified theme */
-a.btn, a.btn:hover, a.btn:focus, a.btn:focus-visible { text-decoration: none; }
-.btn.themed-btn, .support-link.btn {
-  --btn-color: var(--primary-purple); /* neutral default, JS randomizes */
+/* Unified button styling */
+.btn {
+  text-decoration: none;
+  transition: all 150ms ease;
+}
+
+.btn.themed-btn {
+  --btn-color: var(--primary-purple);
   background-color: var(--btn-color);
   border-color: var(--btn-color);
   color: var(--text-white);
+  font-weight: 600;
 }
+
 .btn.themed-btn:hover,
-.btn.themed-btn:focus-visible,
-.support-link.btn:hover,
-.support-link.btn:focus-visible {
+.btn.themed-btn:focus-visible {
   background-color: color-mix(in srgb, var(--btn-color) 85%, black 15%);
   border-color: color-mix(in srgb, var(--btn-color) 85%, black 15%);
   color: var(--text-white);
   box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--btn-color) 35%, transparent);
+  text-decoration: none;
 }
 
 /* Theme classes for buttons (used by JS to randomize) */
@@ -180,14 +187,13 @@ a.btn, a.btn:hover, a.btn:focus, a.btn:focus-visible { text-decoration: none; }
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-/* API Documentation and Support sections */
-.api-doc-container, .support-container {
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 2rem;
-  border-radius: 15px;
-  margin: 2rem 0;
+/* Card components - unified styling */
+.card-component {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* YouTube iframe styling */
@@ -309,11 +315,6 @@ iframe {
   border-radius: 6px;
 }
 
-/* Prevent content from sitting under the fixed header */
-.content-container {
-  padding-top: calc(var(--header-h) + env(safe-area-inset-top));
-  padding-inline: clamp(1rem, 4vw, 2rem);
-}
 
 /* Placeholder area */
 .placeholder {
@@ -323,8 +324,22 @@ iframe {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* Introduction container: match other section widths */
-.introduction { padding: 0; background: transparent; }
+/* Section containers - unified styling */
+.section-container {
+  margin-top: 2rem;
+}
+
+.introduction {
+  padding: 0;
+  background: transparent;
+}
+
+/* Unified spacing for sections */
+.section-title {
+  margin: 1.5rem 0 1rem;
+  text-align: left;
+}
+
 
 @supports (height: 100svh) {
   .placeholder {
@@ -354,8 +369,8 @@ iframe {
 
 .intro-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 1rem;
 }
 
@@ -372,21 +387,12 @@ iframe {
   letter-spacing: 0.5px;
 }
 
-/* Section titles */
-.section-title {
-  margin: 1.5rem 0 1rem;
-  text-align: left;
-}
 
-/* Comparisons section */
-.comparisons {
-  margin-top: 1.5rem;
-}
 
 .comparisons-grid {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 1rem;
+  grid-template-columns: 1fr;
 }
 
 .comparison-card {
@@ -394,12 +400,13 @@ iframe {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 1rem;
+  backdrop-filter: blur(10px);
 }
 
 .comparison-box {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 0.75rem;
+  grid-template-columns: 1fr;
 }
 
 .comparison-caption {
@@ -496,7 +503,6 @@ iframe {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* Showcase video */
 .showcase {
   margin-top: 2rem;
 }
@@ -517,7 +523,8 @@ iframe {
 @media (max-width: 768px) {
   :root { --header-h: 88px; }
   .content-container {
-    padding: 1.5rem;
+    padding-inline: 1.5rem;
+    padding-bottom: 1.5rem;
   }
   
   h1 {
@@ -538,15 +545,7 @@ iframe {
     height: 64px;
   }
   
-  .content-container {
-    padding-top: calc(var(--header-h) + env(safe-area-inset-top));
-  }
-  
   .intro-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .comparisons-grid {
     grid-template-columns: 1fr;
   }
   
@@ -566,10 +565,6 @@ iframe {
     margin: 1rem 0 0.5rem;
   }
   
-  .showcase {
-    margin-top: 1rem;
-  }
-  
   .video-placeholder {
     font-size: 1.2rem;
   }
@@ -580,9 +575,6 @@ iframe {
   :root { --header-h: 80px; }
   .site-logo {
     height: 56px;
-  }
-  .content-container {
-    padding-top: calc(var(--header-h) + env(safe-area-inset-top));
   }
   h1 {
     font-size: 1.75rem;
