@@ -42,17 +42,28 @@ function mdInlineToHtmlBoldOnly(s) {
   return escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
-// Assign a random theme color to any <strong> elements inside a root node
-function pickRandomThemeColor() {
+// Assign a theme color to any <strong> elements inside a root node
+function pickRandomThemeColor(cfg) {
+  // Use TOML theme colors if available, otherwise fall back to defaults
+  if (cfg?.theme_colors) {
+    const colors = cfg.theme_colors;
+    const palette = [
+      colors.primary_pink,
+      colors.primary_purple,
+      colors.primary_teal,
+      colors.primary_green
+    ].filter(Boolean);
+    return palette.length > 0 ? utils.randomChoice(palette) : utils.randomChoice(THEME_CONFIG.colors.palette);
+  }
   return utils.randomChoice(THEME_CONFIG.colors.palette);
 }
 
-function colorizeStrongIn(root) {
+function colorizeStrongIn(root, cfg) {
   if (!root) return;
   root.querySelectorAll('strong').forEach((el) => {
     if (!el.classList.contains('themed-strong')) {
       el.classList.add('themed-strong');
-      el.style.setProperty('--strong-color', pickRandomThemeColor());
+      el.style.setProperty('--strong-color', pickRandomThemeColor(cfg));
     }
   });
 }
@@ -313,10 +324,14 @@ async function loadTomlContent(url) {
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
   const text = await res.text();
+  console.log('Raw TOML text:', text);
   // Prefer local lightweight parser
   try {
-    return parseTomlLight(text);
+    const parsed = parseTomlLight(text);
+    console.log('Parsed TOML:', parsed);
+    return parsed;
   } catch (e) {
+    console.error('Local parser failed:', e);
     // Fallback to any global TOML parser if available
     const parser = (window.TOML && window.TOML.parse) || (window.toml && window.toml.parse);
     if (!parser) throw new Error('TOML parser not found.');
@@ -445,11 +460,41 @@ function renderCitationsSection(cfg) {
   main.appendChild(section);
 }
 
+function applyThemeColors(cfg) {
+  // Apply theme colors from TOML to CSS custom properties
+  console.log('applyThemeColors called with cfg:', cfg);
+  if (cfg?.theme_colors) {
+    const root = document.documentElement;
+    const colors = cfg.theme_colors;
+    console.log('Applying theme colors:', colors);
+    
+    // Apply each color with !important to override CSS defaults
+    Object.entries(colors).forEach(([key, value]) => {
+      if (value) {
+        const cssVar = `--${key.replace(/_/g, '-')}`;
+        root.style.setProperty(cssVar, value, 'important');
+        console.log(`Set ${cssVar} to ${value}`);
+      }
+    });
+  } else {
+    console.log('No theme colors found in cfg');
+  }
+}
+
 function renderContent(cfg) {
+  // Apply theme colors first
+  applyThemeColors(cfg);
+  
   // Header: banner + research paper link
   const siteLogo = document.querySelector('.site-logo');
-  if (cfg?.site?.banner && siteLogo) {
-    siteLogo.src = cfg.site.banner;
+  if (siteLogo) {
+    if (cfg?.site?.banner) {
+      siteLogo.src = cfg.site.banner;
+      siteLogo.style.display = '';
+    } else {
+      // Hide banner if not defined in TOML
+      siteLogo.style.display = 'none';
+    }
   }
   const researchBtn = document.querySelector('.research-paper-btn');
   if (researchBtn) {
@@ -458,7 +503,11 @@ function renderContent(cfg) {
     const title = (cfg?.site?.research_link_title ?? text) || '';
     const target = cfg?.site?.research_link_target ?? '_blank';
     const rel = cfg?.site?.research_link_rel ?? 'noopener noreferrer';
-    if (text && url) {
+    const enabled = cfg?.site?.research_link_enabled;
+    if (enabled === false) {
+      // Explicitly disabled via TOML
+      researchBtn.style.display = 'none';
+    } else if (text && url) {
       researchBtn.textContent = text;
       researchBtn.href = url;
       researchBtn.setAttribute('title', title);
@@ -485,7 +534,7 @@ function renderContent(cfg) {
     paras.forEach(t => {
       const p = document.createElement('p');
       p.innerHTML = mdInlineToHtmlBoldOnly(String(t));
-      colorizeStrongIn(p);
+      colorizeStrongIn(p, cfg);
       introContent.appendChild(p);
     });
 
@@ -543,7 +592,7 @@ function renderContent(cfg) {
       usageItems.forEach(item => {
         const li = document.createElement('li');
         li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-        colorizeStrongIn(li);
+        colorizeStrongIn(li, cfg);
         ul.appendChild(li);
       });
       usageNodes.push(ul);
@@ -579,7 +628,7 @@ function renderContent(cfg) {
         const figcap = document.createElement('figcaption');
         figcap.className = 'intro__usage-caption';
         figcap.innerHTML = mdInlineToHtmlBoldOnly(String(usageImageCaption));
-        colorizeStrongIn(figcap);
+        colorizeStrongIn(figcap, cfg);
         figure.appendChild(figcap);
       }
       mediaCol.appendChild(figure);
@@ -625,15 +674,17 @@ function renderContent(cfg) {
 
       const card = document.createElement('div');
       card.className = 'card card--compact';
+      const handleShape = item.handle_shape || 'pentagon';
+      const handleClass = handleShape ? `shape-${handleShape}` : '';
       card.innerHTML = `
         <div class="ba-slider" data-initial="${initial}" data-color="${color}">
           <div class="ba-pane after">${after ? `<img src="${after}" alt="After image">` : '<span>After</span>'}</div>
           <div class="ba-pane before">${before ? `<img src="${before}" alt="Before image">` : '<span>Before</span>'}</div>
-          <button class="ba-handle" role="slider" aria-label="Drag to compare" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></button>
+          <button class="ba-handle ${handleClass}" role="slider" aria-label="Drag to compare" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></button>
         </div>
         ${captionHtml ? `<p class="comparison-caption">${captionHtml}</p>` : ''}
       `;
-      colorizeStrongIn(card);
+      colorizeStrongIn(card, cfg);
       grid.appendChild(card);
     });
   }
@@ -662,7 +713,7 @@ function renderContent(cfg) {
   if (cfg?.support?.title && supportTitle) supportTitle.textContent = cfg.support.title;
   if (supportText && cfg?.support?.text) {
     supportText.innerHTML = mdInlineToHtmlBoldOnly(String(cfg.support.text));
-    colorizeStrongIn(supportText);
+    colorizeStrongIn(supportText, cfg);
   }
   if (supportLink && cfg?.support) {
     if (cfg.support.link_text) supportLink.textContent = cfg.support.link_text;
@@ -672,7 +723,7 @@ function renderContent(cfg) {
   // Citations (appended at the bottom)
   renderCitationsSection(cfg);
   // Final pass: colorize any remaining bold across the page
-  colorizeStrongIn(document.body);
+  colorizeStrongIn(document.body, cfg);
 }
 
 // Initialize all functionality when DOM is loaded
@@ -681,11 +732,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   const preBtn = document.querySelector('.research-paper-btn');
   if (preBtn) preBtn.style.display = 'none';
   let cfg = null;
+  // Determine TOML source (priority: global var -> body data attribute -> URL param -> path-based -> default)
+  let tomlUrl = (window.CONTENT_TOML_URL)
+    || (document.body && document.body.dataset && document.body.dataset.toml)
+    || (new URLSearchParams(window.location.search).get('toml'));
+  
+  // If no explicit TOML specified, determine from URL path or query params
+  if (!tomlUrl) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = urlParams.get('page') || urlParams.get('config');
+    
+    if (page === 'coacd') {
+      tomlUrl = 'content.toml';
+    } else if (page === 'unity') {
+      tomlUrl = 'content2.toml';
+    } else if (page === 'unreal') {
+      tomlUrl = 'content3.toml';
+    } else {
+      tomlUrl = 'content.toml'; // default
+    }
+  }
   try {
-    cfg = await loadTomlContent('content.toml');
+    console.log('Loading TOML from:', tomlUrl);
+    cfg = await loadTomlContent(tomlUrl);
+    console.log('Loaded TOML config:', cfg);
     renderContent(cfg);
   } catch (err) {
-    console.warn('Content load failed, using defaults:', err);
+    console.error('Content load failed:', err);
+    console.warn('Using defaults due to error');
   }
   // Initialize interactive/visual features after content is in the DOM
   initBeforeAfterSliders();

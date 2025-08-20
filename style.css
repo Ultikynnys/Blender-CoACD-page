@@ -1,14 +1,15 @@
 /* ===== DESIGN SYSTEM ===== */
-/* Color Theme */
+/* Color Theme - Colors are set dynamically from TOML */
 :root {
+  --max-width: 904px;
+  --header-h: 120px; /* header total height on desktop */
+  /* Fallback colors until TOML loads */
+  --bg-dark: #232626;
+  --text-white: #ffffff;
   --primary-pink: #D94E81;
   --primary-purple: #8A66D9;
   --primary-teal: #7EBFA1;
   --primary-green: #94BF54;
-  --bg-dark: #232626;
-  --text-white: #ffffff;
-  --max-width: 904px;
-  --header-h: 120px; /* header total height on desktop */
   }
 
 body {
@@ -352,9 +353,27 @@ a:hover, a:focus-visible {
   background: var(--ba-color);
   box-shadow: 0 4px 14px rgba(0,0,0,0.45);
   cursor: ew-resize;
-  /* Pentagon shape pointing up */
+  /* Default pentagon shape pointing up */
   clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
   z-index: 3; /* above line and panes */
+}
+
+/* Handle shape variants */
+.ba-handle.shape-circle {
+  clip-path: circle(50%);
+  border-radius: 50%;
+}
+
+.ba-handle.shape-diamond {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.ba-handle.shape-hexagon {
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.ba-handle.shape-pentagon {
+  clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
 }
 
 .ba-handle:focus-visible {
