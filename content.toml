@@ -57,7 +57,7 @@
   ]
 
   # Optional image shown to the right of the Usage list
-  usage_image = "Coacd_params.png"                    # Replace with a Blender UI screenshot, e.g. "images/blender-ui-usage.png"
+  usage_image = "Coacd_params.gif"                    # Replace with a Blender UI screenshot, e.g. "images/blender-ui-usage.png"
   usage_image_alt = "Where to find CoACD in the Blender UI"
   usage_image_caption = "Add-on location: 3D Viewport > N panel > CoACD"
   # Optional second image stacked under the first
@@ -86,9 +86,9 @@
 [[comparisons]]
   initial = 0.5
   color = "green"
-  before = "Logo.png"
-  after  = "Logo2.png"
-  caption = "Collision pieces optimized for rigid body physics"
+  before = "CompareBase2.png"
+  after  = "CompareColl2.png"
+  caption = "Collision pieces with Convex Mirror Post-Processing"
   handle_shape = "diamond"
 
 # Showcase video
