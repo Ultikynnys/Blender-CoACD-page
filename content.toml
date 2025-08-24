@@ -38,42 +38,35 @@
   # Parameters and Usage sections
   parameters_title = "Parameters"
   parameters = [
-    "**Concavity Threshold** — Lower values create tighter hulls (typical 0.03–0.20).",
-    "**Max Convex Hulls** — Upper limit on number of hull pieces.",
-    "**Resolution** — Voxel/grid resolution (64–400). Higher = more detail, slower.",
-    "**Max Hull Vertices** — Per-hull vertex cap (16–32). Lower = simpler, faster.",
-    "**Merge Sub-Hulls** — Merge adjacent sub-hulls when possible.",
-    "**Inflate Thickness** — Add thickness before voxelization (0 = off).",
-    "**Display Mode** — Wireframe/Solid/Textured (preview only)."
+    "**Threshold** — Concavity tolerance. Lower = more cuts/tighter hulls; higher = fewer, coarser hulls. Typical 0.03–0.20.",
+    "**Max Convex Hulls** — Upper limit on number of hull pieces to output.",
+    "**Resolution** — Voxel grid detail for preprocessing and CoACD; higher = more detail, slower.",
+    "**Max Hull Vertices** — Per-hull vertex cap after simplification.",
+    "**Merge Sub-Hulls** — Merge adjacent sub-hull components when possible.",
+    "**Inflate Thickness** — Inflate mesh faces before voxelization. Set to 0 to disable.",
+    "**Min Volume Threshold** — Minimum volume for creating a hull; smaller pieces are discarded.",
+    "**MCTS Nodes/Iterations** — Search breadth and effort; higher can improve fit at the cost of time.",
   ]
 
   usage_title = "Usage"
   usage_steps = [
     "**Select** one or more mesh objects.",
-    "Choose a **Quality** preset (**Low/Medium/High/Maximum**) or adjust parameters.",
-    "**Click Generate Convex Colliders**.",
-    "Post-Processing — **Convex Hull Axis Mirroring**: mirror hulls across X/Y/Z axes as needed.",
-    "Post-Processing — **Quick Convex Hull Merge**: merge selected hulls into a single collider with one click.",
+    "**Pick a Quality Preset** (Minimal/Low/Medium/High/Maximum) or adjust parameters.",
+    "**Click Generate Collision**.",
+    "Post-Processing — **Mirror Collision Objects**: mirror across X/Y/Z with center threshold.",
+    "Post-Processing — **Combine Colliders**: merge selected collision hulls into one.",
+    "Post-Processing — **Generate LODs**: create multiple LOD levels via decimation; configure levels and ratios in the panel.",
   ]
 
   # Optional image shown to the right of the Usage list
   usage_image = "Coacd_params.gif"                    # Replace with a Blender UI screenshot, e.g. "images/blender-ui-usage.png"
   usage_image_alt = "Where to find CoACD in the Blender UI"
-  usage_image_caption = "Add-on location: 3D Viewport > N panel > CoACD"
+  usage_image_caption = "Panel location: 3D Viewport > N > CoACD Collision"
   # Optional second image stacked under the first
-  usage_image_2 = "Logo.png"
-  usage_image_2_alt = "Secondary view of CoACD in Blender UI"
-  usage_image_2_caption = "Example panel with Parameters and Post-Processing tools"
 
 # Comparisons (Before/After sliders). Provide image paths relative to the site root.
 # Leave before/after empty strings if not available yet.
-[[comparisons]]
-  initial = 0.5
-  color = "pink"     # one of: pink, purple, teal, green
-  before = "Logo.png"         # e.g. "images/comp1-before.jpg"
-  after  = "Logo2.png"         # e.g. "images/comp1-after.jpg"
-  caption = "Complex mesh vs. generated convex collision hulls"
-  handle_shape = "pentagon"   # pentagon, circle, diamond, hexagon
+
 
 [[comparisons]]
   initial = 0.5
@@ -81,7 +74,7 @@
   before = "CompareBase1.png"
   after  = "CompareColl1.png"
   caption = "Before/After with CoACD decomposition"
-  handle_shape = "circle"
+  handle_shape = "pentagon"
 
 [[comparisons]]
   initial = 0.5
@@ -94,7 +87,7 @@
 # Showcase video
 [showcase]
   # Provide an embeddable video URL (YouTube embed, etc.), or omit to show placeholder text.
-  # video_url = "https://www.youtube.com/embed/VIDEO_ID"
+  video_url = "https://www.youtube.com/embed/ZpX_PMRmCxQ"
   placeholder = "Demo video coming soon"
 
 # Support / Community

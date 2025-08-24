@@ -694,6 +694,9 @@ function renderContent(cfg) {
   if (showcase) {
     showcase.innerHTML = '';
     if (cfg?.showcase?.video_url) {
+      // Switch to non-transparent video container
+      showcase.classList.remove('placeholder', 'video-placeholder');
+      showcase.classList.add('video-embed');
       const iframe = document.createElement('iframe');
       iframe.src = cfg.showcase.video_url;
       iframe.width = '100%';
@@ -702,6 +705,9 @@ function renderContent(cfg) {
       iframe.setAttribute('allowfullscreen', '');
       showcase.appendChild(iframe);
     } else {
+      // Keep placeholder styling when there is no video
+      showcase.classList.remove('video-embed');
+      showcase.classList.add('placeholder', 'video-placeholder');
       showcase.textContent = cfg?.showcase?.placeholder || 'Showcase Video Placeholder';
     }
   }

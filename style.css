@@ -266,6 +266,8 @@ a:hover, a:focus-visible {
 .intro__usage-media {
   display: grid;
   gap: 0.75rem;
+  align-self: start;      /* stick to top of the grid area */
+  justify-self: end;      /* align the media column to the right */
 }
 .intro__usage-media figure { margin: 0; }
 .intro__usage-media img {
@@ -273,6 +275,7 @@ a:hover, a:focus-visible {
   height: auto;
   aspect-ratio: 9 / 16; /* enforce vertical format */
   object-fit: cover;    /* crop to fill the vertical frame */
+  object-position: right top; /* favor top-right when cropping */
   display: block;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -400,6 +403,25 @@ a:hover, a:focus-visible {
 
 .video-placeholder {
   width: 100%;
+}
+
+/* Non-transparent embed container for actual video */
+.video-embed {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  display: block;
+}
+
+.video-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
