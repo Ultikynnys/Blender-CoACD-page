@@ -32,7 +32,7 @@
 [introduction]
   title = "CoACD Collision Generator"
   paragraphs = [
-    "A Blender add-on for generating convex collision hulls using the CoACD (Collision-Aware Convex Decomposition) algorithm.",
+    "A Blender add-on for generating convex collision hulls using the CoACD (Collision-Aware Convex Decomposition) algorithm. Perfect for creating high-quality custom collisions for **Unity** and **Unreal Engine**.",
   ]
 
   # Parameters and Usage sections
