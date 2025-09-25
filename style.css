@@ -12,6 +12,23 @@
   --primary-green: #94BF54;
   }
 
+/* ===== DRY BORDER STYLES ===== */
+/* Standard media border for images, videos, and interactive content */
+.media-border {
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+
+/* Placeholder/interactive border for sliders and placeholders */
+.interactive-border {
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  box-sizing: border-box; /* keep border inside width to avoid clipping in overflow-hidden containers */
+}
+
 body {
   background-color: var(--bg-dark);
   color: var(--text-white) !important;
@@ -22,6 +39,16 @@ body {
 /* Unified text color override */
 *, .card, .card *, p, span, div, .content-container, .content-container * {
   color: var(--text-white) !important;
+}
+
+.outline-text,
+.outline-text * {
+  color: var(--outline-fill, #ffffff) !important;
+  font-weight: 700 !important;
+  -webkit-text-stroke: 0.5px var(--outline-stroke, #ffffff);
+  text-shadow:
+    0 0 var(--outline-glow-inner, 4px) rgba(255, 255, 255, var(--outline-glow-inner-alpha, 0.5)),
+    0 0 var(--outline-glow-outer, 8px) rgba(255, 255, 255, var(--outline-glow-outer-alpha, 0.35));
 }
 
 .content-container {
@@ -80,6 +107,16 @@ a:hover, a:focus-visible {
   border-color: var(--btn-color);
   color: var(--text-white);
   font-weight: 600;
+}
+
+.btn-theme-outline {
+  --btn-color: var(--outline-fill, #ffffff);
+  color: var(--outline-fill, #ffffff) !important;
+  border-color: var(--outline-stroke, #ffffff) !important;
+  background: transparent;
+  text-shadow:
+    0 0 var(--outline-glow-inner, 4px) rgba(255, 255, 255, var(--outline-glow-inner-alpha, 0.5)),
+    0 0 var(--outline-glow-outer, 8px) rgba(255, 255, 255, var(--outline-glow-outer-alpha, 0.35));
 }
 
 .btn.themed-btn:hover,
@@ -174,6 +211,9 @@ a:hover, a:focus-visible {
 .bg-shapes .purple { --shape-color: var(--primary-purple); }
 .bg-shapes .teal   { --shape-color: var(--primary-teal); }
 .bg-shapes .green  { --shape-color: var(--primary-green); }
+.bg-shapes .outline {
+  --shape-color: color-mix(in srgb, var(--outline-stroke, #ffffff) 70%, black 30%);
+}
 
 /* Shape-specific clip paths */
 .bg-shapes .hex { clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%); }
@@ -188,9 +228,6 @@ a:hover, a:focus-visible {
 .placeholder {
   aspect-ratio: 16 / 9;
   padding: 2rem;
-  border: 2px dashed rgba(255, 255, 255, 0.18);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
   display: grid;
   place-items: center;
   color: rgba(255, 255, 255, 0.8);
@@ -231,6 +268,10 @@ a:hover, a:focus-visible {
   max-width: var(--max-width);
   margin: 0 auto;
   text-align: left;
+  /* Split into two rows: lead (paragraphs) then the usage/media grid */
+  display: grid;
+  grid-template-rows: auto auto;
+  row-gap: 1.25rem;
 }
 
 .introduction .intro { 
@@ -252,7 +293,11 @@ a:hover, a:focus-visible {
   align-items: start;
   margin-top: 0;
 }
-.intro__usage-main { min-width: 0; }
+.intro__usage-main { 
+  min-width: 0; 
+  align-self: start;      /* top aligned */
+  justify-self: start;    /* left aligned */
+}
 .intro__usage-title { margin: 0 0 0.5rem 0; font-size: 1.25rem; }
 .intro__usage-list { margin: 0 0 0.75rem 0; padding-left: 1.2rem; font-size: 0.95rem; }
 .intro__params-list li,
@@ -266,21 +311,19 @@ a:hover, a:focus-visible {
 .intro__usage-media {
   display: grid;
   gap: 0.75rem;
-  align-self: start;      /* stick to top of the grid area */
-  justify-self: end;      /* align the media column to the right */
+  align-self: start;          /* stick to top of the grid area */
+  justify-self: center;       /* center the media block within its column */
+  justify-items: center;      /* center children horizontally */
 }
+.intro__usage-media > * { width: min(100%, 420px); }
 .intro__usage-media figure { margin: 0; }
 .intro__usage-media img {
   width: 100%;
   height: auto;
   aspect-ratio: 9 / 16; /* enforce vertical format */
   object-fit: cover;    /* crop to fill the vertical frame */
-  object-position: right top; /* favor top-right when cropping */
+  object-position: center center; /* center the crop */
   display: block;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
 }
 .intro__usage-caption {
   margin-top: 0.5rem;
@@ -302,10 +345,7 @@ a:hover, a:focus-visible {
   position: relative;
   aspect-ratio: 16 / 9;
   width: 100%;
-  border: 2px dashed rgba(255, 255, 255, 0.18);
-  border-radius: 12px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
 }
 
 /* Choose a palette color per slider */
@@ -351,14 +391,20 @@ a:hover, a:focus-visible {
   top: 50%;
   left: var(--pos);
   transform: translate(-50%, -50%);
-  width: 46px;
-  height: 46px;
-  background: var(--ba-color);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border: 2px solid #333333;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.8),
+    0 3px 15px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
   cursor: ew-resize;
   /* Default pentagon shape pointing up */
   clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
   z-index: 3; /* above line and panes */
+  /* Remove transition to prevent lag - only transition non-position properties */
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 /* Handle shape variants */
@@ -379,6 +425,25 @@ a:hover, a:focus-visible {
   clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
 }
 
+.ba-handle:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 100%);
+  border-color: #555555;
+  box-shadow: 
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 4px 18px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.ba-handle:active,
+.ba-slider.dragging .ba-handle {
+  background: linear-gradient(135deg, #f0f0f0 0%, #d8d8d8 100%);
+  border-color: #666666;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 1px 8px rgba(0, 0, 0, 0.8),
+    inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 .ba-handle:focus-visible {
   outline: 3px solid rgba(255,255,255,0.85);
   outline-offset: 2px;
@@ -390,16 +455,19 @@ a:hover, a:focus-visible {
   top: 0;
   bottom: 0;
   left: var(--pos);
-  width: 2px;
+  width: 3px;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.85);
+  background: linear-gradient(to bottom, 
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.9) 100%);
+  box-shadow: 
+    0 0 4px rgba(255, 255, 255, 0.5),
+    0 0 8px rgba(0, 0, 0, 0.3);
   z-index: 2; /* below handle, above panes */
   pointer-events: none;
 }
 
-.ba-slider.dragging .ba-handle {
-  background: rgba(0, 0, 0, 0.5);
-}
 
 .video-placeholder {
   width: 100%;
@@ -456,10 +524,335 @@ a:hover, a:focus-visible {
   }
 }
 
+/* ===== MEDIA CAROUSELS (usage + comparisons + videos) ===== */
+.usage-image-carousel, .image-carousel, .video-carousel {
+  position: relative;
+}
+
+.usage-image-carousel .carousel, .image-carousel .carousel, .video-carousel .carousel {
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.usage-image-carousel .carousel-item img, .image-carousel .carousel-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.usage-image-carousel .carousel-indicators, .image-carousel .carousel-indicators, .video-carousel .carousel-indicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  right: auto; /* override Bootstrap's right: 0 to allow intrinsic width */
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 2px 6px; /* minimal horizontal padding; container hugs dots */
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  display: inline-flex; /* shrink-to-fit */
+  justify-content: center;
+  align-items: center;
+  width: fit-content; /* shrink to exact content width */
+  max-width: none;
+  min-width: auto;
+  gap: 6px; /* comfortable spacing between dots */
+  line-height: 0; /* remove extra inline height */
+}
+
+.usage-image-carousel .carousel-indicators button, .image-carousel .carousel-indicators button, .video-carousel .carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0; /* spacing handled by container gap */
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Explicitly override Bootstrap's attribute selector for indicators */
+.usage-image-carousel .carousel-indicators [data-bs-target], .image-carousel .carousel-indicators [data-bs-target], .video-carousel .carousel-indicators [data-bs-target] {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin: 0; /* spacing via gap */
+}
+
+.usage-image-carousel .carousel-indicators button.active, .image-carousel .carousel-indicators button.active, .video-carousel .carousel-indicators button.active {
+  background-color: #ffffff;
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.usage-image-carousel .carousel-indicators button:hover, .image-carousel .carousel-indicators button:hover, .video-carousel .carousel-indicators button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.usage-image-carousel figure, .image-carousel figure, .video-carousel figure {
+  margin: 0;
+  position: relative;
+}
+
+.usage-image-carousel .intro__usage-caption, .image-carousel .intro__usage-caption, .video-carousel .intro__usage-caption {
+  /* Use same styling as single image mode - caption below image */
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+  position: static;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+/* Responsive video embed */
+.video-frame {
+  position: relative;
+  width: min(100%, 960px);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Single image card within comparisons */
+.image-card { margin: 0; }
+.image-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===== CHANGELOG SECTION ===== */
+.changelog-content {
+  padding: 0;
+}
+
+.changelog-scroll-container {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.changelog-version {
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.changelog-version:last-child {
+  border-bottom: none;
+}
+
+.changelog-version-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.changelog-version-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.changelog-version-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.changelog-version-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.changelog-version-date {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+}
+
+.changelog-version-title {
+  font-size: 1.1rem;
+  margin: 0;
+  color: var(--text-white) !important;
+  font-weight: 600;
+}
+
+.changelog-version-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.changelog-toggle-icon {
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+  color: var(--primary-purple); /* fallback - will be overridden by inline styles */
+}
+
+.changelog-version-content {
+  padding: 0 1rem 1rem 1rem;
+}
+
+.changelog-changes {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style-type: none;
+}
+
+.changelog-change-item {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.changelog-change-item:before {
+  content: "•";
+  color: var(--bullet-color, var(--primary-purple));
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.changelog-change-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Version type styling - Base styles (colors are set dynamically via inline styles) */
+.changelog-version-header {
+  border-left: 4px solid var(--primary-purple); /* fallback */
+}
+
+.changelog-version-fix .changelog-version-header {
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.changelog-version-feature .changelog-version-header {
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.changelog-version-release .changelog-version-header {
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.changelog-version-rework .changelog-version-header {
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.changelog-version-default .changelog-version-header {
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+/* Scrollbar styling for changelog */
+.changelog-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.changelog-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.changelog-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--primary-purple);
+  border-radius: 4px;
+}
+
+.changelog-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-pink);
+}
+
 /* Very small devices */
 @media (max-width: 480px) {
   :root { --header-h: 80px; }
   .site-logo {
     height: 56px;
+  }
+  
+  .changelog-scroll-container {
+    max-height: 350px;
+  }
+  
+  .changelog-version-header {
+    padding: 0.75rem;
+  }
+  
+  .changelog-version-title-container {
+    gap: 0.5rem;
+  }
+  
+  .changelog-version-meta {
+    gap: 0.5rem;
+  }
+  
+  .changelog-version-title {
+    font-size: 1rem;
+  }
+  
+  .changelog-version-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .changelog-version-date {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .changelog-version-content {
+    padding: 0 0.75rem 0.75rem 0.75rem;
+  }
+  
+  .changelog-changes {
+    padding-left: 1rem;
+  }
+  
+  .changelog-change-item {
+    font-size: 0.85rem;
+  }
+  
+  .usage-image-carousel .carousel-indicators {
+    bottom: 10px;
+    padding: 4px 6px;
+    gap: 6px;
+  }
+  
+  .usage-image-carousel .carousel-indicators button {
+    width: 10px;
+    height: 10px;
+    margin: 0; /* spacing via gap */
+  }
+  
+  .usage-image-carousel .intro__usage-caption {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
   }
 }

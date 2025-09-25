@@ -1,0 +1,155 @@
+# Site settings (UltiTools)
+[site]
+  title = "UltiTools"
+  banner = "images/Banner.png"
+  research_link_text = "Discord Support"
+  research_link_url = "https://discord.gg/Xh7eB5Rn5b"
+  research_link_enabled = true
+
+# Theme colors (Monochrome theme like Unreal)
+[theme_colors]
+  primary_pink = "#000000"
+  primary_purple = "#000000"
+  primary_teal = "#000000"
+  primary_green = "#000000"
+  bg_dark = "#0F0F0F"
+  text_white = "#FFFFFF"
+  outline_variant = "black-outline"
+  outline_fill_color = "#FFFFFF"
+  outline_stroke_color = "#FFFFFF"
+  outline_glow_inner = "1px"
+  outline_glow_outer = "1px"
+  outline_glow_inner_alpha = 0.0
+  outline_glow_outer_alpha = 0.0
+
+# Open Graph / SEO
+[meta]
+  og_type = "website"
+  og_url = "https://ultikynnys.github.io/UltiBake/Ultitools"
+  og_title = "UltiTools"
+  og_description = "An add-on that includes various tools for Blender, including Palette Manager, Mesh Analysis, Portfolio Renderer, and more."
+  og_image = "images/Banner.png"
+
+# Section titles
+[titles]
+  comparisons = "Tool Categories"
+  showcase = "Tool Showcase"
+  support = "Support"
+
+# Introduction section
+[introduction]
+  title = "UltiTools"
+  paragraphs = [
+    "This is an add-on that includes **various tools** for Blender, showcased below. Each tool is designed to streamline specific workflows and improve productivity.",
+    "From **Palette Management** to **Mesh Analysis**, **Portfolio Rendering** to **Game-Ready FBX Export**, UltiTools provides essential utilities for Blender artists."
+  ]
+
+  # Tools overview
+  parameters_title = "Tool Categories"
+  parameters = [
+    "**Palette Manager** — Streamlined palette system with save/load functionality. Switching between colors made easy (Ctrl+Q for pie menu by default).",
+    "**Mesh Analysis** — See the state of your mesh with all its problems. Detects overlapping faces, non-manifold geometry, and more.",
+    "**Portfolio Renderer** — Automates wireframe render setup including text, font, size, and material settings for AO and wireframe renders.",
+    "**3D LUT Generator** — Create 3D LUTs for various engines and platforms. Includes 3D LUT visualizer for color space transformations.",
+    "**Sprite Sheet Creation** — Takes all camera frames and stitches them into a single texture. Perfect for sprite animations.",
+    "**Text Animation** — Toggle and keyframe different texts on your text object. Supports dynamic expressions and mathematical operations.",
+    "**UV++** — Better UV layer controls. Rearrange UV layers, create copies, and transfer UV layouts between objects.",
+    "**Game Ready FBX Exporter** — Reliable FBX export with game engine-friendly defaults, Unreal animation scale fix, and more."
+  ]
+
+  usage_title = "Tool Highlights"
+  usage_steps = [
+    "**Palette Manager:** Ctrl+Q for quick color switching with save/load presets",
+    "**Mesh Analysis:** Instantly identify mesh problems including overlapping faces",
+    "**Portfolio Renderer:** One-click wireframe and AO render setup",
+    "**FBX Exporter:** Game engine optimized with Unity/Unreal specific fixes"
+  ]
+
+  usage_image = "images/Logo.png"
+  usage_image_alt = "UltiTools interface"
+  usage_image_caption = "UltiTools - Essential Blender utilities"
+
+# Tool category comparisons
+[[comparisons]]
+  initial = 0.5
+  color = "purple"
+  before = "images/Logo.png"
+  after  = "images/Logo2.png"
+  caption = "**Standard Blender tools** vs **UltiTools enhanced workflow**"
+  handle_shape = "circle"
+
+[[comparisons]]
+  initial = 0.6
+  color = "teal"
+  before = "images/Logo.png"
+  after  = "images/Logo2.png"
+  caption = "**Manual mesh checking** vs **Automated mesh analysis**"
+  handle_shape = "circle"
+
+[[comparisons]]
+  initial = 0.4
+  color = "green"
+  before = "images/Logo.png"
+  after  = "images/Logo2.png"
+  caption = "**Complex FBX setup** vs **Game-ready export presets**"
+  handle_shape = "circle"
+
+# Showcase
+[showcase]
+  placeholder = "UltiTools demonstration coming soon"
+
+# Support / Community
+[support]
+  title = "Support"
+  text = "For any problems or suggestions with UltiTools, join our Discord community."
+  link_text = "Join Discord"
+  link_url = "https://discord.gg/Xh7eB5Rn5b"
+
+# Changelog
+[changelog]
+  enabled = true
+  url = "changelogs/ultitools-changelog.md"
+  title = "Changelog"
+
+# Tool-specific sections (detailed descriptions)
+[tools]
+  [tools.palette_manager]
+    title = "Palette Manager"
+    description = "Switching between colors is truly painful with Blender's current implementation, so I decided to streamline the palette system. I also added the ability to save/load palettes, so you can bring them with you in future projects. (Ctrl+Q for pie menu by default, you can rebind it)"
+  
+  [tools.mesh_analysis]
+    title = "Mesh Analysis"
+    description = "I can't believe this isn't a thing already in Blender, but seeing the state of your mesh with all its glorious problems is a feature I couldn't go without. Yes, it does detect overlapping faces as well."
+  
+  [tools.portfolio_renderer]
+    title = "Portfolio Renderer"
+    description = "I spent countless hours setting up the wireframe render for my projects, so this tool automates the entire process, including configuring the text, font, size, and material settings for AO and wireframe renders."
+  
+  [tools.lut_generator]
+    title = "3D LUT Generator"
+    description = "A surprisingly useful tool if you use 3D LUTs in your projects. Since various engines and platforms have different formats and requirements, this generator can be invaluable for any color correction tasks. There is also a 3D LUT visualizer, allowing you to see how it affects your target color space."
+  
+  [tools.sprite_sheet]
+    title = "Sprite Sheet Creation"
+    description = "As the name implies, this tool takes all the frames of the camera and stitches them into a single texture. It is a very useful tool for anyone looking to create sprite animations."
+  
+  [tools.text_animation]
+    title = "Text Animation"
+    description = "One of the most underrated tools in the add-on. Simply toggle and keyframe different texts on your text object (stored per text object). It even supports dynamic expressions and mathematical operations, requiring brackets {} for math expressions. Copy the settings to your selected text objects for reusability."
+  
+  [tools.uv_plus]
+    title = "UV++"
+    description = "Better UV layer controls—you can finally rearrange the UV layers, create a copy from a specific UV layer, and even copy the UV layout to selected objects (sadly, Blender's internal UV layer data transfer is broken)."
+  
+  [tools.fbx_exporter]
+    title = "Game Ready FBX Exporter"
+    description = "If I could count how many times I've had to struggle with the built-in exporter, I would be a millionaire. Since I use Unity and Unreal in my game development projects, I need a reliable tool for my models."
+    features = [
+      "Game Engine-Friendly Default Settings",
+      "Unreal Animation Scale Fix",
+      "Move Objects to Origin",
+      "Action Selector",
+      "Remove Materials Toggle",
+      "Combine to Active"
+    ]
+

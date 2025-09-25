@@ -1,0 +1,163 @@
+# Site settings (UltiStamp)
+[site]
+  title = "UltiStamp"
+  banner = "images/Banner.png"
+  research_link_text = "Discord Support"
+  research_link_url = "https://discord.gg/Pm7TDf2rV5"
+  research_link_enabled = true
+
+# Theme colors (UltiStamp theme)
+[theme_colors]
+  primary_pink = "#D94E81"
+  primary_purple = "#8A66D9"
+  primary_teal = "#7EBFA1"
+  primary_green = "#94BF54"
+  bg_dark = "#232626"
+  text_white = "#ffffff"
+
+# Open Graph / SEO
+[meta]
+  og_type = "website"
+  og_url = "https://blendermarket.com/products/ultistamp"
+  og_title = "UltiStamp"
+  og_description = "This addon lets you easily apply decals to your Blender meshes, similar to Substance Painter. With built-in UltiBake support for seamless export to game engines."
+  og_image = "images/Banner.png"
+
+# Section titles
+[titles]
+  comparisons = "Features"
+  showcase = "How to Use"
+  support = "Support"
+
+# Introduction section
+[introduction]
+  title = "UltiStamp"
+  paragraphs = [
+    "This addon lets you easily apply **decals** to your **Blender** meshes, similar to **Substance Painter**. With built-in **UltiBake** support, these decals can be baked directly into your textures for seamless export to **game engines**.",
+    "The addon offers over **100 PBR decals**, customizable preset packs, and the ability to create new decals from any image. Perfect for adding detail and realism to your 3D models."
+  ]
+
+  # Features section
+  parameters_title = "Key Features"
+  parameters = [
+    "**Clickable Empty Handles** — Easily clickable empty handles and radial menu buttons for intuitive decal placement.",
+    "**Advanced PBR Decals** — Full PBR decals with alpha masking and realistic material properties.",
+    "**Detail Enhancement** — A great way to add more detail to existing props without complex modeling.",
+    "**Emissive Support** — Supports emissive decals for glowing effects and lighting details.",
+    "**Transparent Materials** — Add decals to transparent materials with proper blending.",
+    "**Seamless UVs** — Scale Decal UVs for seamless decal application across surfaces.",
+    "**UltiBake Integration** — Bake your decals into textures with UltiBake for game engine export.",
+    "**HSV Control** — Change the HSV (Hue, Saturation, Value) of stamps for color variation."
+  ]
+
+  usage_title = "Workflow"
+  usage_steps = [
+    "**Select** your target mesh object in Blender",
+    "**Choose** a decal from the extensive PBR library (100+ decals included)",
+    "**Position** the decal using intuitive empty handles and radial controls",
+    "**Adjust** scale, rotation, and HSV properties as needed",
+    "**Bake** decals into textures using integrated UltiBake support",
+    "**Export** your textured models to Unity, Unreal, or other game engines"
+  ]
+
+  usage_image = "images/Logo.png"
+  usage_image_alt = "UltiStamp decal application interface"
+  usage_image_caption = "UltiStamp - Substance Painter-style decals for Blender"
+
+# Feature showcase comparisons
+[[comparisons]]
+  initial = 0.5
+  color = "purple"
+  before = "images/Logo.png"
+  after  = "images/Logo2.png"
+  caption = "**Plain surface** vs **UltiStamp decal enhancement**"
+  handle_shape = "circle"
+
+[[comparisons]]
+  initial = 0.6
+  color = "teal"
+  before = "images/Logo.png"
+  after  = "images/Logo2.png"
+  caption = "**Manual texture painting** vs **Instant decal application**"
+  handle_shape = "circle"
+
+[[comparisons]]
+  initial = 0.4
+  color = "green"
+  before = "images/Logo.png"
+  after  = "images/Logo2.png"
+  caption = "**Basic materials** vs **PBR decal details**"
+  handle_shape = "circle"
+
+[[comparisons]]
+  initial = 0.3
+  color = "pink"
+  before = "images/Logo.png"
+  after  = "images/Logo2.png"
+  caption = "**Static textures** vs **Dynamic decal placement**"
+  handle_shape = "circle"
+
+# Showcase videos
+[showcase]
+  video_url = "https://www.youtube.com/embed/hWIO-FiaHsQ"
+  placeholder = "UltiStamp tutorial videos"
+
+# Support / Community
+[support]
+  title = "Support"
+  text = "For support or suggestions with UltiStamp, join our Discord community."
+  link_text = "Join Discord"
+  link_url = "https://discord.gg/Pm7TDf2rV5"
+
+# Changelog
+[changelog]
+  enabled = true
+  url = "changelogs/ultistamp-changelog.md"
+  title = "Changelog"
+
+# Feature details
+[features]
+  [features.handles]
+    title = "Intuitive Controls"
+    description = "Easily clickable empty handles and radial menu buttons make decal placement intuitive and precise."
+  
+  [features.pbr_decals]
+    title = "Advanced PBR Decals"
+    description = "Full PBR workflow with alpha masking, normal maps, roughness, and metallic properties for realistic results."
+  
+  [features.detail_enhancement]
+    title = "Surface Detail"
+    description = "Perfect for adding scratches, dirt, logos, and other surface details to existing 3D models."
+  
+  [features.emissive]
+    title = "Emissive Decals"
+    description = "Create glowing decals for sci-fi elements, warning signs, and lighting effects."
+  
+  [features.transparent]
+    title = "Transparent Support"
+    description = "Apply decals to transparent and translucent materials with proper alpha blending."
+  
+  [features.uv_scaling]
+    title = "UV Control"
+    description = "Scale and adjust decal UVs for seamless application across different surface types."
+  
+  [features.baking]
+    title = "UltiBake Integration"
+    description = "Seamlessly bake decals into textures using the integrated UltiBake system for game engine export."
+  
+  [features.color_control]
+    title = "Color Variation"
+    description = "Adjust HSV properties to create color variations and match your project's aesthetic."
+
+# Video tutorials
+[tutorials]
+  [tutorials.start_guide]
+    title = "Start Guide"
+    video_url = "https://www.youtube.com/embed/hWIO-FiaHsQ"
+    description = "Learn the basics of UltiStamp decal application"
+  
+  [tutorials.baking_guide]
+    title = "Baking Guide"
+    video_url = "https://www.youtube.com/embed/xXyf7oBT0rg"
+    description = "How to bake decals into textures with UltiBake"
+
