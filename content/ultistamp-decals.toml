@@ -31,7 +31,7 @@
 
 # Introduction section
 [introduction]
-  title = "UltiStamp"
+  title = ""
   paragraphs = [
     "This addon lets you easily apply **decals** to your **Blender** meshes, similar to **Substance Painter**. With built-in **UltiBake** support, these decals can be baked directly into your textures for seamless export to **game engines**.",
     "The addon offers over **100 PBR decals**, customizable preset packs, and the ability to create new decals from any image. Perfect for adding detail and realism to your 3D models."

@@ -38,7 +38,7 @@
 
 # Introduction section
 [introduction]
-  title = "UltiTools"
+  title = ""
   paragraphs = [
     "This is an add-on that includes **various tools** for Blender, showcased below. Each tool is designed to streamline specific workflows and improve productivity.",
     "From **Palette Management** to **Mesh Analysis**, **Portfolio Rendering** to **Game-Ready FBX Export**, UltiTools provides essential utilities for Blender artists."

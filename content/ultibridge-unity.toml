@@ -38,7 +38,7 @@
 
 # Introduction section
 [introduction]
-  title = "UltiBridge for Unity"
+  title = ""
   paragraphs = [
     "Streamline your **Blender to Unity** workflow with UltiBridge's powerful asset pipeline.",
     "Export models, animations, and materials with **one-click precision** directly to Unity projects.",

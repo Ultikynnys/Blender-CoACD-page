@@ -1,7 +1,7 @@
 # Site settings (UltiBake)
 [site]
-  title = "UltiBake"
-  banner = "images/Banner.png"
+  title = "Ultibake"
+  banner = "images/UltibakeBanner.png"
   research_link_text = "API Documentation"
   research_link_url = "https://ultikynnys.github.io/UltiBake/documentation"
   research_link_enabled = true
@@ -27,10 +27,24 @@
   outline_variant = "crimson-outline"
   outline_fill_color = "#FFFFFF"
   outline_stroke_color = "#FFFFFF"
-  outline_glow_inner = "1px"
-  outline_glow_outer = "1px"
-  outline_glow_inner_alpha = 0.0
-  outline_glow_outer_alpha = 0.0
+
+# Font configuration (optional - overrides default fonts)
+[fonts]
+  font_family_primary = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_secondary = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_heading = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_mono = "'JetBrains Mono', 'Fira Code', 'Consolas', monospace"
+  font_size_base = "1.1rem"
+  font_size_heading = "2.5rem"
+  font_size_small = "0.9rem"
+  font_weight_normal = "400"
+  font_weight_medium = "500"
+  font_weight_bold = "700"
+  line_height_base = "1.6"
+  line_height_heading = "1.2"
+  letter_spacing_normal = "0"
+  letter_spacing_wide = "0.025em"
+
 
 # Open Graph / SEO
 [meta]
@@ -48,7 +62,7 @@
 
 # Introduction section
 [introduction]
-  title = "UltiBake"
+  title = ""
   paragraphs = [
     "**UltiBake** is an all-in-one baking solution for Blender, which aims to streamline the baking process, while providing a wide range of features.",
     "**Baking** is the act of turning surface details into textures. The modular design philosophy allows for easy baking of textures, **decals**, high to low poly, UDIMs and more, with the added benefit of **saving your setups for later use** using **Profiles**, like in Substance Painter."

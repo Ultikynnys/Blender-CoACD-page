@@ -38,7 +38,7 @@
 
 # Introduction section
 [introduction]
-  title = "UltiBridge for Unreal Engine"
+  title = ""
   paragraphs = [
     "Accelerate your **Blender to Unreal Engine** pipeline with UltiBridge.",
     "Export meshes, materials, and animations with **one-click** directly into Unreal's Content Browser.",

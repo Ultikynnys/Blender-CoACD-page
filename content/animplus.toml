@@ -1,0 +1,112 @@
+# Site settings (AnimPlus)
+[site]
+  title = "AnimPlus"
+  banner = "images/Banner.png"
+  research_link_text = "Documentation"
+  research_link_url = "https://ultikynnys.github.io/AnimPlus"
+  research_link_enabled = true
+
+# Theme colors (Default theme)
+[theme_colors]
+  primary_pink = "#D94E81"
+  primary_purple = "#8A66D9"
+  primary_teal = "#7EBFA1"
+  primary_green = "#94BF54"
+  bg_dark = "#232626"
+  text_white = "#ffffff"
+
+# Open Graph / SEO
+[meta]
+  og_type = "website"
+  og_url = "https://ultikynnys.github.io/AnimPlus"
+  og_title = "AnimPlus"
+  og_description = "Blender add-on to streamline animation workflows with layers, retargeting, and powerful utilities."
+  og_image = "images/Banner.png"
+
+# Section titles
+[titles]
+  comparisons = "Features"
+  showcase = "Videos"
+  support = "Support"
+
+# Introduction section
+[introduction]
+  title = ""
+  paragraphs = [
+    "**AnimPlus** supercharges your Blender animation workflow with non-destructive layers, quick blocking tools, and better control.",
+    "Retarget motion, bake selectively, and manage takes with a clean, intuitive UI integrated into your daily workflow."
+  ]
+
+  parameters_title = "Key Features"
+  parameters = [
+    "**Animation Layers** — Non-destructive additive and override layers.",
+    "**Retargeting** — Bring motions across rigs with minimal setup.",
+    "**Baking Tools** — Bake procedural motion to keys quickly and safely.",
+    "**Graph Editor Utilities** — Cleanup, easing, and timing tools.",
+    "**Takes Management** — Iterate on ideas without losing work."
+  ]
+
+  usage_title = "Simple to Use"
+  usage_steps = [
+    "**Step 1:** Install the addon .zip from Blender Preferences",
+    "**Step 2:** Create or import your animation",
+    "**Step 3:** Add layers or retarget as needed",
+    "**Step 4:** Bake and finalize"
+  ]
+
+  # Optional usage images (carousel)
+  usage_images = [
+    "images/Logo.png",
+    "images/Logo2.png"
+  ]
+  usage_images_alt = [
+    "AnimPlus interface mockup",
+    "AnimPlus workflow overview"
+  ]
+  usage_images_captions = [
+    "Clean UI integrated into Blender",
+    "Layered animation and quick exports"
+  ]
+
+# Feature comparisons (placeholder images)
+[[comparisons]]
+  initial = 0.5
+  color = "purple"
+  before = "images/CompareBase1.png"
+  after  = "images/CompareColl1.png"
+  caption = "Base animation vs. enhanced with AnimPlus tools"
+  handle_shape = "circle"
+
+[[comparisons]]
+  initial = 0.5
+  color = "teal"
+  before = "images/CompareBase2.png"
+  after  = "images/CompareColl2.png"
+  caption = "Faster iteration and cleanup"
+  handle_shape = "circle"
+
+# Showcase videos
+[showcase]
+  placeholder = "AnimPlus demonstration videos"
+
+# Support / Community
+[support]
+  title = "Support"
+  text = "If you have any questions, issues, or suggestions, join our Discord community."
+  link_text = "Join Discord"
+  link_url = "https://discord.gg/Pm7TDf2rV5"
+
+# Changelog
+[changelog]
+  enabled = true
+  url = "changelogs/animplus-changelog.md"
+  title = "Changelog"
+
+# Citations configuration - disabled for AnimPlus
+[citations_config]
+  enabled = false
+
+# Citations (optional)
+# [[citations]]
+#   id = "animplus2025"
+#   bibtex = "@software{animplus2025,\n  title={AnimPlus: Animation Workflow Enhancer for Blender},\n  author={Ultikynnys},\n  year={2025},\n  url={https://ultikynnys.github.io/AnimPlus}\n}"
