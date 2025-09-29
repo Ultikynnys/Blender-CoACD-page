@@ -20,7 +20,12 @@
   <header class="site-header">
     <div class="site-header-content">
       <img src="" alt="Site banner" class="site-logo" />
-      <a class="btn btn-sm themed-btn research-paper-btn" href="#" target="_blank" rel="noopener noreferrer" title="Research link">Research Paper</a>
+      <div class="header-buttons">
+        <button class="btn btn-sm themed-btn view-toggle-btn" id="view-toggle-btn" style="display: none;" title="Toggle between product showcase and documentation">
+          View Documentation
+        </button>
+        <a class="btn btn-sm themed-btn research-paper-btn" href="#" target="_blank" rel="noopener noreferrer" title="Research link">Research Paper</a>
+      </div>
     </div>
   </header>
 
@@ -28,35 +33,89 @@
   <div class="bg-shapes" aria-hidden="true"></div>
 
   <main class="content-container">
-    <div class="introduction section section--intro">
-      <h2 class="section__title" id="intro-title">Introduction</h2>
-      <div id="intro-content" class="intro card"></div>
+    <!-- Product Showcase View (default) -->
+    <div id="showcase-view" class="view-container">
+      <div class="introduction section section--intro">
+        <h2 class="section__title" id="intro-title">Introduction</h2>
+        <div id="intro-content" class="intro card"></div>
+      </div>
+      
+      <section class="comparisons section">
+        <h2 class="section__title" id="comparisons-title">Comparisons</h2>
+        <div id="comparisons-grid" class="grid grid--one-col"></div>
+      </section>
+
+      <section class="showcase section">
+        <h2 class="section__title" id="showcase-title">Showcase Video</h2>
+        <div id="showcase-container"></div>
+      </section>
+
+      <section class="changelog section" id="changelog" style="display: none;">
+        <h2 class="section__title" id="changelog-title">Changelog</h2>
+        <div class="card">
+          <div id="changelog-content" class="changelog-content"></div>
+        </div>
+      </section>
+
+      <section class="support section" id="support">
+        <h2 class="section__title" id="support-title">Support</h2>
+        <div class="card">
+          <p id="support-text"></p>
+          <a id="support-link" class="btn btn-lg themed-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
+        </div>
+      </section>
     </div>
-    
-    <section class="comparisons section">
-      <h2 class="section__title" id="comparisons-title">Comparisons</h2>
-      <div id="comparisons-grid" class="grid grid--one-col"></div>
-    </section>
 
-    <section class="showcase section">
-      <h2 class="section__title" id="showcase-title">Showcase Video</h2>
-      <div id="showcase-container"></div>
-    </section>
-
-    <section class="changelog section" id="changelog" style="display: none;">
-      <h2 class="section__title" id="changelog-title">Changelog</h2>
-      <div class="card">
-        <div id="changelog-content" class="changelog-content"></div>
+    <!-- Documentation View -->
+    <div id="documentation-view" class="view-container" style="display: none;">
+      <!-- Table of Contents -->
+      <div class="documentation-toc section">
+        <h2 class="section__title" id="documentation-title">Documentation</h2>
+        <div class="card">
+          <p id="documentation-subtitle" class="documentation-subtitle"></p>
+          <div id="documentation-toc-grid" class="documentation-toc-grid"></div>
+        </div>
       </div>
-    </section>
 
-    <section class="support section" id="support">
-      <h2 class="section__title" id="support-title">Support</h2>
-      <div class="card">
-        <p id="support-text"></p>
-        <a id="support-link" class="btn btn-lg themed-btn" href="#" target="_blank" rel="noopener noreferrer"></a>
+      <!-- Documentation Page Content -->
+      <div id="documentation-page" class="documentation-page" style="display: none;">
+        <!-- Back to TOC button -->
+        <div class="documentation-nav">
+          <button class="btn btn-sm themed-btn" id="back-to-toc-btn">
+            ← Back to Documentation
+          </button>
+        </div>
+
+        <!-- Page content (reuses existing structures) -->
+        <div class="introduction section section--intro">
+          <h2 class="section__title" id="doc-page-title">Page Title</h2>
+          <div id="doc-page-intro" class="intro card"></div>
+        </div>
+        
+        <section class="comparisons section" id="doc-page-comparisons" style="display: none;">
+          <h2 class="section__title" id="doc-page-comparisons-title">Features</h2>
+          <div id="doc-page-comparisons-grid" class="grid grid--one-col"></div>
+        </section>
+
+        <section class="showcase section" id="doc-page-showcase" style="display: none;">
+          <h2 class="section__title" id="doc-page-showcase-title">Videos</h2>
+          <div id="doc-page-showcase-container"></div>
+        </section>
+
+        <!-- Embedded docs (e.g., external API docs) -->
+        <section class="embed section" id="doc-page-embed" style="display: none;">
+          <h2 class="section__title" id="doc-page-embed-title">Embedded Documentation</h2>
+          <div class="card">
+            <div class="doc-embed-container">
+              <iframe id="doc-embed-iframe" class="doc-embed-frame" src="" loading="lazy" referrerpolicy="no-referrer"></iframe>
+            </div>
+            <div class="doc-embed-actions">
+              <a id="doc-embed-open" class="btn btn-sm themed-btn" href="#" target="_blank" rel="noopener noreferrer">Open in new tab</a>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   </main>
   
   <script src="https://cdn.jsdelivr.net/npm/toml@3.0.0/dist/toml.min.js"></script>

@@ -4,7 +4,7 @@
   banner = "images/UltibakeBanner.png"
   research_link_text = "API Documentation"
   research_link_url = "https://ultikynnys.github.io/UltiBake/documentation"
-  research_link_enabled = true
+  research_link_enabled = false
   # Background pattern (black/white mask with color mapping)
   background_image = "images/Pattern.svg"
   background_size = "auto"
@@ -91,23 +91,32 @@
 
   # Multiple usage images with carousel (simple array format for now)
   usage_images = [
-    "images/BakeFinal.webp",
-    "images/BAKEVIS.webp", 
-    "images/DECAL.webp"
-  ]
-  
-  # Alt texts for the images (in order)
-  usage_images_alt = [
-    "UltiBake interface showing baking workflow",
-    "UltiBake visualizer showing baked textures", 
-    "UltiBake decal baking interface"
+    "images/Ultibake/Ultibake_Bake1.png",
+    "images/Ultibake/Ultibake_Bake2.png",
+    "images/Ultibake/Ultibake_Settings1.png",
+    "images/Ultibake/Ultibake_Settings2.png",
+    "images/Ultibake/Ultibake_Settings3.png",
+    "images/Ultibake/Ultibake_Settings_4.gif"
   ]
   
   # Captions for the images (in order)
   usage_images_captions = [
-    "UltiBake streamlined baking workflow",
-    "Bake Visualizer - See your textures before baking",
-    "Decal Baking - Apply decals to your surfaces"
+   "Panel location: 3D Viewport > N > Ultibake",
+    "Ability to Bake Collections, High to Low, Decals and more!",
+    "Settings for advanced configuration",
+    "Texture suffixes are generated based on your settings",
+    "Configure your baking setup to match your exact specifications with reusable profiles",
+    "Comes with over 10 presets, for fast usage"
+  ]
+  
+  # Alignment for the images (in order) - options: "top-left", "top-right", "center"
+  usage_images_alignment = [
+    "top-right",
+    "top-right", 
+    "top-right",
+    "top-left",
+    "top-right",
+    "top-right"
   ]
 
 # Feature comparisons (using carousel-style content)
@@ -193,6 +202,16 @@
 # Citations configuration - disabled for UltiBake
 [citations_config]
   enabled = false
+
+# Documentation configuration
+[documentation]
+  enabled = true
+  default_view = "showcase"  # "showcase" or "documentation"
+  toggle_text_showcase = "View Documentation"
+  toggle_text_documentation = "View Product Showcase"
+  toml_url = "content/ultibake-docs.toml"
+  
+  # Documentation content moved to external file via toml_url
 
 # Citations (optional - disabled)
 # [[citations]]

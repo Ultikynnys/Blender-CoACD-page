@@ -20,6 +20,13 @@ const THEME_CONFIG = {
   }
 };
 
+// --- Debug utilities ---
+// Enable by appending ?debug=1 to the URL or setting window.DEBUG = true
+const DEBUG = (typeof window !== 'undefined' && (new URLSearchParams(window.location.search).has('debug') || window.DEBUG === true));
+function dbg(...args) { if (DEBUG) console.log('[DEBUG]', ...args); }
+function dbgw(...args) { if (DEBUG) console.warn('[DEBUG]', ...args); }
+function dbge(...args) { if (DEBUG) console.error('[DEBUG]', ...args); }
+
 // Generic media parser - works for videos, images, etc.
 function parseMediaItems(config, options = {}) {
   const items = [];
@@ -30,7 +37,8 @@ function parseMediaItems(config, options = {}) {
     urlsKey = 'urls',
     urlKey = 'url',
     captionsKey = 'captions',
-    altKey = 'alts'
+    altKey = 'alts',
+    alignmentKey = 'alignments'
   } = options;
 
   const pushItem = (src, i = 0) => {
@@ -39,7 +47,9 @@ function parseMediaItems(config, options = {}) {
     const caption = capArr[i] || '';
     const altArr = Array.isArray(config[altKey]) ? config[altKey] : [];
     const alt = altArr[i] || '';
-    items.push({ src, caption, alt, url: src });
+    const alignArr = Array.isArray(config[alignmentKey]) ? config[alignmentKey] : [];
+    const alignment = alignArr[i] || 'center';
+    items.push({ src, caption, alt, url: src, alignment });
   };
 
   // Handle multiple formats: items array, urls array, single item
@@ -49,11 +59,13 @@ function parseMediaItems(config, options = {}) {
       else if (item && typeof item === 'object') {
         const capArr = Array.isArray(config[captionsKey]) ? config[captionsKey] : [];
         const altArr = Array.isArray(config[altKey]) ? config[altKey] : [];
+        const alignArr = Array.isArray(config[alignmentKey]) ? config[alignmentKey] : [];
         items.push({ 
           src: item.src || item.url || item.image || '', 
           url: item.url || item.src || item.image || '',
           caption: item.caption || item.title || '',
-          alt: item.alt || item.alt_text || altArr[i] || capArr[i] || ''
+          alt: item.alt || item.alt_text || altArr[i] || capArr[i] || '',
+          alignment: item.alignment || alignArr[i] || 'center'
         });
       }
     });
@@ -91,10 +103,16 @@ function createMediaCarousel(items, cfg, options = {}) {
     const src = item.src || item.url;
     const title = item.title || item.caption || (isVideo ? 'Video' : 'Image');
     const alt = item.alt || title;
+    const alignment = item.alignment || 'center';
+    
+    // Convert alignment to CSS classes
+    const alignmentClass = alignment === 'top-left' ? 'object-position-top-left' : 
+                          alignment === 'top-right' ? 'object-position-top-right' : 
+                          'object-position-center';
     
     const content = isVideo 
       ? `<div class="video-frame ${borderClass}"><iframe src="${src}" title="${title}" allowfullscreen loading="lazy"></iframe></div>`
-      : `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100">`;
+      : `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: cover;">`;
     
     return `<div class="carousel-item ${index === 0 ? 'active' : ''}">${content}</div>`;
   }).join('');
@@ -431,11 +449,18 @@ function generateBackgroundShapes(cfg) {
 }
 
 // ===== Minimal TOML parser (subset) =====
-// Supports: [section], [[arrayOfTables]], key = value, arrays (incl. multi-line), strings, numbers, booleans.
+// Supports: [section], [[arrayOfTables]], dotted table names, key = value,
+// arrays (incl. multi-line), inline tables { ... }, strings, numbers, booleans.
 function parseTomlLight(input) {
   const obj = {};
   let current = obj;
   let currentArraySection = null;
+  // When inside an array-of-tables (e.g., [[documentation.pages]]),
+  // keep a persistent reference to the current array item root so that
+  // nested tables like [documentation.pages.introduction] and nested arrays
+  // like [[documentation.pages.comparisons]] attach to the page object,
+  // not to the last nested table we stepped into.
+  let currentArrayItemRoot = null;
 
   const stripComments = (line) => {
     let out = '';
@@ -466,14 +491,17 @@ function parseTomlLight(input) {
     const parts = [];
     let buf = '';
     let inStr = false;
-    let depth = 0;
+    let bracketDepth = 0;
+    let braceDepth = 0;
     for (let i = 0; i < s.length; i++) {
       const c = s[i];
       if (c === '"' && s[i - 1] !== '\\') inStr = !inStr;
       if (!inStr) {
-        if (c === '[') depth++;
-        else if (c === ']') depth--;
-        else if (c === ',' && depth === 0) {
+        if (c === '[') bracketDepth++;
+        else if (c === ']') bracketDepth--;
+        else if (c === '{') braceDepth++;
+        else if (c === '}') braceDepth--;
+        else if (c === ',' && bracketDepth === 0 && braceDepth === 0) {
           parts.push(buf.trim());
           buf = '';
           continue;
@@ -485,6 +513,81 @@ function parseTomlLight(input) {
     return parts;
   };
 
+  const parseInlineTable = (raw) => {
+    let v = raw.trim();
+    if (!v.startsWith('{') || !v.endsWith('}')) return null;
+    v = v.slice(1, -1).trim();
+    if (!v) return {};
+    const obj = {};
+    const fields = splitTopLevel(v);
+    for (const field of fields) {
+      const eq = field.indexOf('=');
+      if (eq < 0) continue;
+      const key = field.slice(0, eq).trim();
+      const val = field.slice(eq + 1).trim();
+      obj[key] = parseValue(val);
+    }
+    return obj;
+  };
+
+  const ensurePathObject = (root, dotted) => {
+    const parts = dotted.split('.');
+    let ref = root;
+    for (const p of parts) {
+      if (ref[p] === undefined || typeof ref[p] !== 'object' || Array.isArray(ref[p])) {
+        ref[p] = {};
+      }
+      ref = ref[p];
+    }
+    return ref;
+  };
+
+  const pushArrayTableAtPath = (root, dotted) => {
+    const parts = dotted.split('.');
+    const last = parts.pop();
+    let ref = root;
+    for (const p of parts) {
+      if (ref[p] === undefined || typeof ref[p] !== 'object' || Array.isArray(ref[p])) {
+        ref[p] = {};
+      }
+      ref = ref[p];
+    }
+    if (!Array.isArray(ref[last])) ref[last] = [];
+    const entry = {};
+    ref[last].push(entry);
+    return entry;
+  };
+
+  // Helpers that operate relative to a given root object instead of the global obj
+  const ensurePathObjectRelative = (root, dotted) => {
+    if (!dotted) return root;
+    const parts = dotted.split('.');
+    let ref = root;
+    for (const p of parts) {
+      if (ref[p] === undefined || typeof ref[p] !== 'object' || Array.isArray(ref[p])) {
+        ref[p] = {};
+      }
+      ref = ref[p];
+    }
+    return ref;
+  };
+
+  const pushArrayTableRelative = (root, dotted) => {
+    const parts = dotted.split('.');
+    const last = parts.pop();
+    let ref = root;
+    for (const p of parts) {
+      if (ref[p] === undefined || typeof ref[p] !== 'object' || Array.isArray(ref[p])) {
+        ref[p] = {};
+      }
+      ref = ref[p];
+    }
+    if (!Array.isArray(ref[last])) ref[last] = [];
+    const entry = {};
+    ref[last].push(entry);
+    return entry;
+  };
+
   const parseValue = (raw) => {
     let v = raw.trim();
     if (!v) return null;
@@ -493,6 +596,11 @@ function parseTomlLight(input) {
       v = v.replace(/^\[/, '').replace(/\]$/, '').trim();
       if (!v) return [];
       return splitTopLevel(v).map(el => parseValue(el));
+    }
+    if (v.startsWith('{')) {
+      // inline table
+      const t = parseInlineTable(v);
+      return t;
     }
     if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
       const quote = v[0];
@@ -516,11 +624,20 @@ function parseTomlLight(input) {
     let mArr = line.match(/^\[\[(.+?)\]\]$/);
     if (mArr) {
       const name = mArr[1].trim();
-      if (!Array.isArray(obj[name])) obj[name] = [];
-      const entry = {};
-      obj[name].push(entry);
-      current = entry;
-      currentArraySection = name;
+      // If we are inside an array-of-tables context (e.g., [[documentation.pages]])
+      // and encounter a nested array like [[documentation.pages.comparisons]], push relative to the
+      // current array item root (the page object), not to the last nested table.
+      if (currentArraySection && name.startsWith(currentArraySection + '.')) {
+        const subpath = name.slice(currentArraySection.length + 1);
+        const entry = pushArrayTableRelative(currentArrayItemRoot || current, subpath);
+        current = entry; // switch to new nested array table entry
+        // keep currentArraySection and currentArrayItemRoot as-is
+      } else {
+        const entry = pushArrayTableAtPath(obj, name);
+        current = entry;
+        currentArraySection = name; // entered a new top-level array-of-tables
+        currentArrayItemRoot = entry; // track the root object of the array item
+      }
       continue;
     }
 
@@ -528,9 +645,18 @@ function parseTomlLight(input) {
     let mTbl = line.match(/^\[(.+?)\]$/);
     if (mTbl) {
       const name = mTbl[1].trim();
-      if (!obj[name] || Array.isArray(obj[name])) obj[name] = {};
-      current = obj[name];
-      currentArraySection = null;
+      // If we are inside an array-of-tables (e.g., [[documentation.pages]]) and
+      // we see a nested table like [documentation.pages.introduction],
+      // resolve it relative to the current array item root.
+      if (currentArraySection && name.startsWith(currentArraySection + '.')) {
+        const subpath = name.slice(currentArraySection.length + 1);
+        current = ensurePathObjectRelative(currentArrayItemRoot || current, subpath);
+        // keep currentArraySection so subsequent nested tables remain relative
+      } else {
+        current = ensurePathObject(obj, name);
+        currentArraySection = null; // switched to a non-array table
+        currentArrayItemRoot = null;
+      }
       continue;
     }
 
@@ -562,20 +688,47 @@ function parseTomlLight(input) {
 
 // ===== Content loading and rendering from TOML =====
 async function loadTomlContent(url) {
+  dbg('loadTomlContent: fetching', url);
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
   const text = await res.text();
-  // Prefer local lightweight parser
-  try {
-    const parsed = parseTomlLight(text);
-    return parsed;
-  } catch (e) {
-    console.error('Local parser failed:', e);
-    // Fallback to any global TOML parser if available
-    const parser = (window.TOML && window.TOML.parse) || (window.toml && window.toml.parse);
-    if (!parser) throw new Error('TOML parser not found.');
-    return parser(text);
+  dbg('loadTomlContent: fetched bytes', text.length);
+  
+  // Prefer robust external TOML parser (supports inline tables and nested structures)
+  const externalParser = (window.TOML && window.TOML.parse) || (window.toml && window.toml.parse);
+  if (externalParser) {
+    try {
+      dbg('loadTomlContent: using external TOML parser');
+      const parsed = externalParser(text);
+      dbg('loadTomlContent: external parse keys', Object.keys(parsed || {}));
+      return parsed;
+    } catch (e) {
+      dbgw('External TOML parser failed, falling back to lightweight parser:', e);
+    }
   }
+  
+  // Normalize known multiline literal strings for fallback parser (triple quotes)
+  // Converts: content_html = '''...'''
+  // Into:     content_html = "...\n..." (JSON-escaped)
+  const normalizeTomlForFallback = (src) => {
+    try {
+      const re = /(\n|^)\s*content_html\s*=\s*'''([\s\S]*?)'''/g;
+      return src.replace(re, (full, leadingNl, inner) => {
+        const json = JSON.stringify(inner);
+        return `${leadingNl}content_html = ${json}`;
+      });
+    } catch {
+      return src;
+    }
+  };
+
+  const normalized = normalizeTomlForFallback(text);
+  
+  // Fallback to local lightweight parser
+  dbg('loadTomlContent: using lightweight parser');
+  const fallback = parseTomlLight(normalized);
+  dbg('loadTomlContent: fallback parse keys', Object.keys(fallback || {}));
+  return fallback;
 }
 
 function setMetaTags(meta = {}) {
@@ -693,7 +846,8 @@ function parseUsageImages(introduction) {
     itemsKey: 'usage_images',
     itemKey: 'usage_image', 
     captionsKey: 'usage_images_captions',
-    altKey: 'usage_images_alt'
+    altKey: 'usage_images_alt',
+    alignmentKey: 'usage_images_alignment'
   });
   
   // Fallback to legacy single image format
@@ -1427,6 +1581,631 @@ function renderContent(cfg) {
   applyOutlineTextStyles();
 }
 
+// Documentation functionality
+let currentView = 'showcase';
+let currentDocPage = null;
+let globalConfig = null;       // main site config (theme, showcase, etc.)
+let docsConfig = null;         // external documentation config when provided
+
+function getDocumentationPagesArray(cfg) {
+  const p = cfg?.documentation?.pages;
+  if (Array.isArray(p)) return p;
+  if (p && typeof p === 'object') {
+    try { return Object.values(p); } catch { return []; }
+  }
+  return [];
+}
+
+// Helper function to render introduction section (extracted from main renderContent)
+function renderIntroductionSection(introConfig, cfg, containerId) {
+  const introContent = document.getElementById(containerId);
+  if (!introContent || !introConfig) return;
+  
+  introContent.innerHTML = '';
+  
+  // Render paragraphs
+  const paras = introConfig.paragraphs || [];
+  paras.forEach(t => {
+    const p = document.createElement('p');
+    p.innerHTML = mdInlineToHtmlBoldOnly(String(t));
+    colorizeStrongIn(p, cfg);
+    introContent.appendChild(p);
+  });
+
+  // Build Parameters section
+  const paramsTitle = introConfig.parameters_title || 'Parameters';
+  const parameters = Array.isArray(introConfig.parameters) ? introConfig.parameters : [];
+  const paramNodes = [];
+  if (parameters.length > 0) {
+    const h3p = document.createElement('h3');
+    h3p.className = 'intro__params-title';
+    h3p.textContent = paramsTitle;
+    paramNodes.push(h3p);
+
+    const ulp = document.createElement('ul');
+    ulp.className = 'intro__params-list';
+    parameters.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+      ulp.appendChild(li);
+    });
+    paramNodes.push(ulp);
+  }
+
+  // Build Usage section
+  const usageTitle = introConfig.usage_title || '';
+  const usageItems = Array.isArray(introConfig.usage_steps) ? introConfig.usage_steps : [];
+  const usageNodes = [];
+  if (usageTitle && usageItems.length > 0) {
+    const h3 = document.createElement('h3');
+    h3.className = 'intro__usage-title';
+    h3.textContent = usageTitle;
+    usageNodes.push(h3);
+  }
+  if (usageItems.length > 0) {
+    const ul = document.createElement('ul');
+    ul.className = 'intro__usage-list';
+    usageItems.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+      colorizeStrongIn(li, cfg);
+      ul.appendChild(li);
+    });
+    usageNodes.push(ul);
+  }
+
+  // Usage images
+  const usageImages = parseUsageImages(introConfig);
+  
+  // Layout with images
+  if (usageImages.length > 0) {
+    const grid = document.createElement('div');
+    grid.className = 'intro__usage-grid';
+
+    const mainCol = document.createElement('div');
+    mainCol.className = 'intro__usage-main';
+    usageNodes.forEach(node => mainCol.appendChild(node));
+    paramNodes.forEach(node => mainCol.appendChild(node));
+    grid.appendChild(mainCol);
+
+    const mediaCol = document.createElement('div');
+    mediaCol.className = 'intro__usage-media';
+    
+    if (usageImages.length === 1) {
+      // Single image
+      const single = usageImages[0];
+      const fig = document.createElement('figure');
+      fig.className = 'intro__usage-figure';
+      const img = document.createElement('img');
+      img.src = single.src;
+      img.alt = single.alt || single.caption || 'Usage image';
+      img.className = 'intro__usage-image media-border';
+      if (single.alignment) {
+        img.classList.add(`object-position-${single.alignment}`);
+      }
+      fig.appendChild(img);
+      const capText = getImageCaptionText(single);
+      if (capText) {
+        const fc = document.createElement('figcaption');
+        fc.className = 'intro__usage-caption';
+        fc.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
+        fig.appendChild(fc);
+      }
+      mediaCol.appendChild(fig);
+    } else {
+      // Multiple images - create carousel
+      const carousel = createMediaCarousel(usageImages, cfg, {
+        className: 'usage-carousel',
+        type: 'image',
+        borderClass: 'media-border'
+      });
+      if (carousel) mediaCol.appendChild(carousel);
+    }
+    
+    grid.appendChild(mediaCol);
+    introContent.appendChild(grid);
+  } else {
+    // No images - just append sections normally
+    usageNodes.forEach(node => introContent.appendChild(node));
+    paramNodes.forEach(node => introContent.appendChild(node));
+  }
+  
+  // Colorize any remaining bold text
+  colorizeStrongIn(introContent, cfg);
+}
+
+// Helper function to create comparison elements (extracted from main renderContent)
+function createComparisonElement(comparison, cfg) {
+  if (!comparison) return null;
+  
+  // Handle different comparison types
+  if (comparison.image) {
+    // Single image card
+    const card = document.createElement('div');
+    card.className = 'comparison-card single-image-card';
+    
+    const img = document.createElement('img');
+    img.src = comparison.image;
+    img.alt = comparison.image_alt || comparison.caption || 'Comparison image';
+    img.className = 'comparison-single-image media-border';
+    card.appendChild(img);
+    
+    if (comparison.caption) {
+      const caption = document.createElement('p');
+      caption.className = 'comparison-caption';
+      caption.innerHTML = mdInlineToHtmlBoldOnly(String(comparison.caption));
+      colorizeStrongIn(caption, cfg);
+      card.appendChild(caption);
+    }
+    
+    return card;
+  } else if (comparison.images && Array.isArray(comparison.images)) {
+    // Carousel card
+    const card = document.createElement('div');
+    card.className = 'comparison-card carousel-card';
+    
+    const images = comparison.images.map((src, i) => ({
+      src,
+      alt: comparison.images_alt?.[i] || `Image ${i + 1}`,
+      caption: comparison.images_captions?.[i] || ''
+    }));
+    
+    const carousel = createMediaCarousel(images, cfg, {
+      className: 'comparison-carousel',
+      type: 'image',
+      borderClass: 'media-border'
+    });
+    
+    if (carousel) card.appendChild(carousel);
+    
+    if (comparison.caption) {
+      const caption = document.createElement('p');
+      caption.className = 'comparison-caption';
+      caption.innerHTML = mdInlineToHtmlBoldOnly(String(comparison.caption));
+      colorizeStrongIn(caption, cfg);
+      card.appendChild(caption);
+    }
+    
+    return card;
+  } else if (comparison.before && comparison.after) {
+    // Before/after slider - use same markup as main page for consistency
+    const card = document.createElement('div');
+    card.className = 'card card--compact';
+
+    const initial = typeof comparison.initial === 'number' ? comparison.initial : 0.5;
+    const color = comparison.color || 'purple';
+    const handleShape = comparison.handle_shape || 'pentagon';
+    const handleClass = handleShape ? `shape-${handleShape}` : '';
+    const sharedCap = getImageCaptionText({ caption: comparison.caption, alt: comparison.alt, title: comparison.title });
+    const safeAlt = sharedCap ? escapeHtml(String(sharedCap)) : '';
+
+    card.innerHTML = `
+      <div class="ba-slider interactive-border" data-initial="${initial}" data-color="${color}">
+        <div class="ba-pane after">${comparison.after ? `<img src="${comparison.after}" alt="${safeAlt}">` : '<span>After</span>'}</div>
+        <div class="ba-pane before">${comparison.before ? `<img src="${comparison.before}" alt="${safeAlt}">` : '<span>Before</span>'}</div>
+        <button class="ba-handle ${handleClass}" role="slider" aria-label="Drag to compare" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></button>
+      </div>
+    `;
+
+    if (sharedCap) {
+      const p = document.createElement('p');
+      p.className = 'intro__usage-caption';
+      p.innerHTML = mdInlineToHtmlBoldOnly(String(sharedCap));
+      card.appendChild(p);
+    }
+
+    return card;
+  }
+  
+  return null;
+}
+
+// Toggle between showcase and documentation views
+function toggleView() {
+  const showcaseView = document.getElementById('showcase-view');
+  const documentationView = document.getElementById('documentation-view');
+  const toggleBtn = document.getElementById('view-toggle-btn');
+  
+  if (!showcaseView || !documentationView || !toggleBtn || !globalConfig) return;
+  
+  if (currentView === 'showcase') {
+    // Switch to documentation
+    showcaseView.style.display = 'none';
+    documentationView.style.display = 'block';
+    currentView = 'documentation';
+    
+    const toggleText = globalConfig?.documentation?.toggle_text_documentation || 'View Product Showcase';
+    toggleBtn.textContent = toggleText;
+    
+    // Show TOC, hide any open page
+    showDocumentationTOC();
+  } else {
+    // Switch to showcase
+    documentationView.style.display = 'none';
+    showcaseView.style.display = 'block';
+    currentView = 'showcase';
+    
+    const toggleText = globalConfig?.documentation?.toggle_text_showcase || 'View Documentation';
+    toggleBtn.textContent = toggleText;
+  }
+}
+
+// Show documentation table of contents
+function showDocumentationTOC() {
+  const tocContainer = document.querySelector('.documentation-toc');
+  const pageContainer = document.getElementById('documentation-page');
+  
+  if (tocContainer) tocContainer.style.display = 'block';
+  if (pageContainer) pageContainer.style.display = 'none';
+  
+  currentDocPage = null;
+}
+
+// Show specific documentation page
+function showDocumentationPage(pageId) {
+  const tocContainer = document.querySelector('.documentation-toc');
+  const pageContainer = document.getElementById('documentation-page');
+  
+  if (tocContainer) tocContainer.style.display = 'none';
+  if (pageContainer) pageContainer.style.display = 'block';
+  
+  currentDocPage = pageId;
+  dbg('showDocumentationPage:', pageId);
+  renderDocumentationPage(pageId);
+}
+
+// Render documentation table of contents
+function renderDocumentationTOC(cfg) {
+  if (!cfg?.documentation?.enabled) return;
+  dbg('renderDocumentationTOC: enabled');
+  
+  const titleEl = document.getElementById('documentation-title');
+  const subtitleEl = document.getElementById('documentation-subtitle');
+  const gridEl = document.getElementById('documentation-toc-grid');
+  
+  if (!gridEl) return;
+  
+  // Set title and subtitle
+  if (titleEl && cfg.documentation.toc?.title) {
+    titleEl.textContent = cfg.documentation.toc.title;
+  }
+  if (subtitleEl && cfg.documentation.toc?.subtitle) {
+    subtitleEl.innerHTML = mdInlineToHtmlBoldOnly(cfg.documentation.toc.subtitle);
+    colorizeStrongIn(subtitleEl, cfg);
+  }
+  
+  // Clear and populate TOC grid
+  gridEl.innerHTML = '';
+  const sections = Array.isArray(cfg.documentation.toc?.sections) ? cfg.documentation.toc.sections : [];
+  const pagesArr = getDocumentationPagesArray(cfg);
+  const pageIdSet = new Set(pagesArr.filter(Boolean).map(p => p.id));
+  const filteredSections = sections.filter(s => !s?.id || pageIdSet.has(s.id));
+  dbg('renderDocumentationTOC: sections', sections.length, 'pages', pagesArr.length, 'filtered', filteredSections.length);
+  if (sections.length > 0) {
+    (filteredSections.length ? filteredSections : sections).forEach(section => {
+      const item = document.createElement('div');
+      item.className = 'documentation-toc-item';
+      const sectionId = (section && section.id) ? section.id : '';
+      item.onclick = () => sectionId && showDocumentationPage(sectionId);
+      
+      item.innerHTML = `
+        <div class="documentation-toc-icon">${(section && section.icon) || '📄'}</div>
+        <div class="documentation-toc-content">
+          <h3 class="documentation-toc-title">${(section && section.title) ? section.title : 'Untitled'}</h3>
+        </div>
+      `;
+      
+      gridEl.appendChild(item);
+    });
+  } else {
+    // Show helpful message if no sections parsed
+    const note = document.createElement('p');
+    note.className = 'text-muted';
+    note.textContent = 'No documentation sections found. Please check your TOML under [documentation.toc].';
+    gridEl.appendChild(note);
+  }
+  colorizeStrongIn(gridEl, cfg);
+}
+
+// Render specific documentation page
+function renderDocumentationPage(pageId) {
+  const cfgDoc = docsConfig || globalConfig;
+  const pagesArr = getDocumentationPagesArray(cfgDoc);
+  if (!pagesArr.length) return;
+  
+  const page = pagesArr.find(p => p && p.id === pageId);
+  dbg('renderDocumentationPage: target id', pageId, 'pages length', pagesArr.length, 'found?', !!page);
+  if (!page) {
+    // Graceful placeholder if no matching page exists
+    const titleEl = document.getElementById('doc-page-title');
+    if (titleEl) titleEl.textContent = 'Documentation page not found';
+    const introEl = document.getElementById('doc-page-intro');
+    if (introEl) {
+      introEl.innerHTML = `<p class="text-muted">No content found for page id: <code>${pageId}</code>. Check your TOML under <code>[[documentation.pages]]</code> for a matching <code>id</code>.</p>`;
+    }
+    return;
+  }
+  
+  // Set page title
+  const titleEl = document.getElementById('doc-page-title');
+  if (titleEl && page.title) {
+    titleEl.textContent = page.title;
+  }
+  
+  // Render introduction section (reuse existing function)
+  const introEl = document.getElementById('doc-page-intro');
+  if (introEl) {
+    if (page.introduction) {
+      introEl.style.display = '';
+      renderIntroductionSection(page.introduction, (cfgDoc || globalConfig), 'doc-page-intro');
+    } else {
+      introEl.innerHTML = '';
+      introEl.style.display = 'none';
+    }
+  }
+
+  // Render rich HTML content if provided (page.content_html or page.content_html_url)
+  try {
+    const pageContainer = document.getElementById('documentation-page');
+    if (pageContainer) {
+      // Ensure a dedicated rich content section exists
+      let richSection = document.getElementById('doc-page-rich');
+      let richContent = document.getElementById('doc-page-rich-content');
+      if (!richSection) {
+        richSection = document.createElement('section');
+        richSection.className = 'embed section';
+        richSection.id = 'doc-page-rich';
+        richSection.style.display = 'none';
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.id = 'doc-page-rich-title';
+        h2.textContent = page.title || 'Documentation';
+        const card = document.createElement('div');
+        card.className = 'card';
+        richContent = document.createElement('div');
+        richContent.id = 'doc-page-rich-content';
+        card.appendChild(richContent);
+        richSection.appendChild(h2);
+        richSection.appendChild(card);
+        // Append after intro block
+        pageContainer.appendChild(richSection);
+        // Avoid duplicate page title: hide rich section title when inline HTML will render its own headings
+        const richTitleElInit = document.getElementById('doc-page-rich-title');
+        if (richTitleElInit) richTitleElInit.style.display = 'none';
+      }
+
+      const inlineHtml = (typeof page.content_html === 'string' && page.content_html.trim())
+        || (typeof page.introduction?.content_html === 'string' && page.introduction.content_html.trim())
+        || '';
+      const htmlUrl = (typeof page.content_html_url === 'string' && page.content_html_url.trim())
+        || (typeof page.introduction?.content_html_url === 'string' && page.introduction.content_html_url.trim())
+        || '';
+      const hasInlineHtml = inlineHtml.length > 0;
+      const hasHtmlUrl = htmlUrl.length > 0;
+
+      // Always hide rich-section title to prevent duplicate page titles
+      const richTitleEl = document.getElementById('doc-page-rich-title');
+      if (richTitleEl) richTitleEl.style.display = 'none';
+
+      // Helper to load Prism for syntax highlighting
+      const ensurePrismLoaded = () => new Promise((resolve) => {
+        // Inject default Prism CSS if not present
+        if (!document.querySelector('link[data-prism-css]')) {
+          const css = document.createElement('link');
+          css.rel = 'stylesheet';
+          css.href = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css';
+          css.setAttribute('data-prism-css', 'true');
+          document.head.appendChild(css);
+        }
+        if (window.Prism) return resolve();
+        const core = document.createElement('script');
+        core.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
+        core.async = true;
+        core.onload = () => {
+          const lang = document.createElement('script');
+          lang.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js';
+          lang.async = true;
+          lang.onload = () => resolve();
+          document.head.appendChild(lang);
+        };
+        document.head.appendChild(core);
+      });
+
+      // Helper to tag likely function calls for browsers without :has()
+      const tagFunctionCalls = (root) => {
+        try {
+          const props = root.querySelectorAll('.token.property');
+          props.forEach((el) => {
+            let sib = el.nextSibling;
+            // Skip whitespace text nodes
+            while (sib && sib.nodeType === Node.TEXT_NODE && /^\s*$/.test(sib.textContent)) {
+              sib = sib.nextSibling;
+            }
+            if (sib && sib.nodeType === Node.ELEMENT_NODE) {
+              const s = sib;
+              if (s.classList.contains('token') && s.classList.contains('punctuation') && s.textContent.trim() === '(') {
+                el.classList.add('token-func-call');
+              }
+            }
+          });
+        } catch {}
+      };
+
+      const injectHtml = (html) => {
+        if (!richContent) return;
+        // Try extracting <main> inner content first, fallback to body
+        let toInject = html;
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const main = doc.querySelector('main');
+          toInject = (main && main.innerHTML) || (doc.body && doc.body.innerHTML) || html;
+        } catch {}
+        richContent.innerHTML = toInject;
+        richSection.style.display = 'block';
+        colorizeStrongIn(richContent, globalConfig);
+        // Attempt syntax highlighting if Prism is available (or after loading it)
+        ensurePrismLoaded().then(() => {
+          try {
+            if (window.Prism && typeof window.Prism.highlightAllUnder === 'function') {
+              window.Prism.highlightAllUnder(richContent);
+            }
+            // Add fallback class for function calls after Prism tokenization
+            tagFunctionCalls(richContent);
+          } catch {}
+        });
+      };
+
+      if (hasInlineHtml) {
+        injectHtml(String(inlineHtml));
+      } else if (hasHtmlUrl) {
+        fetch(htmlUrl, { cache: 'no-store' })
+          .then(r => r.ok ? r.text() : Promise.reject(new Error('Failed to fetch HTML content')))
+          .then(html => injectHtml(html))
+          .catch(err => {
+            console.error('Error loading rich documentation HTML:', err);
+            if (richContent) {
+              richContent.innerHTML = '<p class="text-muted">Unable to load documentation content.</p>';
+              richSection.style.display = 'block';
+            }
+          });
+      } else if (richSection) {
+        richSection.style.display = 'none';
+        if (richContent) richContent.innerHTML = '';
+      }
+    }
+  } catch (e) {
+    console.warn('renderDocumentationPage: rich content render failed:', e);
+  }
+  
+  // Render comparisons if they exist
+  const comparisonsSection = document.getElementById('doc-page-comparisons');
+  const comparisonsGrid = document.getElementById('doc-page-comparisons-grid');
+  if (page.comparisons && page.comparisons.length > 0 && comparisonsGrid) {
+    comparisonsSection.style.display = 'block';
+    comparisonsGrid.innerHTML = '';
+    
+    page.comparisons.forEach(comparison => {
+      const comparisonEl = createComparisonElement(comparison, globalConfig);
+      if (comparisonEl) {
+        comparisonsGrid.appendChild(comparisonEl);
+      }
+    });
+    
+    // Re-initialize sliders for this page
+    setTimeout(() => {
+      initBeforeAfterSliders();
+    }, 100);
+  } else if (comparisonsSection) {
+    comparisonsSection.style.display = 'none';
+  }
+  
+  // Render showcase if it exists
+  const showcaseSection = document.getElementById('doc-page-showcase');
+  const showcaseContainer = document.getElementById('doc-page-showcase-container');
+  if (page.showcase && showcaseContainer) {
+    dbg('renderDocumentationPage: showcase present');
+    showcaseSection.style.display = 'block';
+    showcaseContainer.innerHTML = '';
+    
+    const videos = parseShowcaseVideos(page.showcase);
+    if (videos.length > 0) {
+      const single = videos[0];
+      const fig = document.createElement('figure');
+      fig.className = 'intro__usage-figure';
+      const frame = document.createElement('div');
+      frame.className = 'intro__usage-video-frame media-border';
+      const iframe = document.createElement('iframe');
+      iframe.src = single.url;
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.loading = 'lazy';
+      frame.appendChild(iframe);
+      fig.appendChild(frame);
+      const capText = getImageCaptionText(single);
+      if (capText) {
+        const fc = document.createElement('figcaption');
+        fc.className = 'intro__usage-caption';
+        fc.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
+        fig.appendChild(fc);
+      }
+      showcaseContainer.appendChild(fig);
+      colorizeStrongIn(showcaseContainer, (cfgDoc || globalConfig));
+    }
+  } else if (showcaseSection) {
+    showcaseSection.style.display = 'none';
+  }
+
+  // Render embedded docs (external)
+  const embedSection = document.getElementById('doc-page-embed');
+  const embedIframe = document.getElementById('doc-embed-iframe');
+  const embedOpen = document.getElementById('doc-embed-open');
+  const embedTitleEl = document.getElementById('doc-page-embed-title');
+  if (embedSection && embedIframe && embedOpen) {
+    const embedUrl = page.embed_url || page.embedUrl || page.introduction?.embed_url || page.introduction?.embedUrl || '';
+    const embedTitle = page.embed_title || page.embedTitle || page.introduction?.embed_title || page.introduction?.embedTitle || 'Embedded Documentation';
+    dbg('renderDocumentationPage: embed url?', !!embedUrl, embedUrl);
+    if (embedUrl) {
+      embedSection.style.display = 'block';
+      if (embedTitleEl) embedTitleEl.textContent = embedTitle;
+      embedIframe.src = embedUrl;
+      embedOpen.href = embedUrl;
+    } else {
+      embedSection.style.display = 'none';
+      embedIframe.src = '';
+      embedOpen.href = '#';
+    }
+  }
+}
+
+// Initialize documentation functionality
+async function initDocumentation(cfg) {
+  globalConfig = cfg;
+  const docUrl = cfg?.documentation?.toml_url || cfg?.documentation?.source_toml;
+  const docsEnabled = (cfg?.documentation && cfg.documentation.enabled !== false) || Boolean(docUrl);
+  if (!docsEnabled) return;
+
+  // Load external documentation TOML if provided
+  if (docUrl) {
+    try {
+      const loaded = await loadTomlContent(docUrl);
+      // If the external file has [documentation], use it; otherwise treat root as documentation
+      docsConfig = loaded?.documentation ? loaded : { ...loaded, documentation: loaded.documentation || loaded?.documentation };
+      // Ensure theme is present for colorization
+      if (!docsConfig.theme_colors && cfg.theme_colors) docsConfig.theme_colors = cfg.theme_colors;
+      if (!docsConfig.fonts && cfg.fonts) docsConfig.fonts = cfg.fonts;
+      dbg('initDocumentation: external docs loaded from', docUrl);
+    } catch (e) {
+      console.warn('initDocumentation: failed to load documentation TOML:', e);
+      docsConfig = null;
+    }
+  }
+
+  const activeDocCfg = docsConfig || cfg;
+  dbg('initDocumentation: enabled, default_view =', activeDocCfg?.documentation?.default_view);
+
+  // Set up toggle button
+  const toggleBtn = document.getElementById('view-toggle-btn');
+  if (toggleBtn) {
+    const toggleText = (activeDocCfg?.documentation?.toggle_text_showcase)
+      || (cfg?.documentation?.toggle_text_showcase)
+      || 'View Documentation';
+    toggleBtn.textContent = toggleText;
+    toggleBtn.onclick = toggleView;
+    toggleBtn.style.display = 'inline-block';
+    dbg('initDocumentation: toggle button ready');
+  }
+  // Back to TOC
+  const backBtn = document.getElementById('back-to-toc-btn');
+  if (backBtn) backBtn.onclick = showDocumentationTOC;
+
+  // Render TOC using docsConfig if present
+  renderDocumentationTOC(activeDocCfg);
+
+  // Initial view
+  const defaultView = (activeDocCfg?.documentation?.default_view) || (cfg?.documentation?.default_view) || 'showcase';
+  if (defaultView === 'documentation') toggleView();
+}
+
 // Initialize all functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
   // Prevent flashing hardcoded link before TOML is applied
@@ -1442,7 +2221,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!tomlUrl) {
     const urlParams = new URLSearchParams(window.location.search);
     const page = urlParams.get('page') || urlParams.get('config');
-    
+    dbg('DOMContentLoaded: route page param =', page);
     if (page === 'coacd') {
       tomlUrl = 'content/coacd-collision-generator.toml';
     } else if (page === 'unity') {
@@ -1457,13 +2236,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       tomlUrl = 'content/ultistamp-decals.toml';
     } else if (page === 'animplus') {
       tomlUrl = 'content/animplus.toml';
+    } else if (page === 'api-docs' || page === 'apidocs' || page === 'api') {
+      // Route to main UltiBake config; it will load documentation from documentation.toml_url
+      tomlUrl = 'content/ultibake-main.toml';
     } else {
       tomlUrl = 'content/coacd-collision-generator.toml'; // default
     }
   }
+  dbg('DOMContentLoaded: tomlUrl =', tomlUrl);
   try {
     cfg = await loadTomlContent(tomlUrl);
+    dbg('DOMContentLoaded: cfg keys', Object.keys(cfg || {}));
+    dbg('DOMContentLoaded: documentation pages (array?)', Array.isArray(cfg?.documentation?.pages), cfg?.documentation?.pages?.length);
     renderContent(cfg);
+    await initDocumentation(cfg);
   } catch (err) {
     console.error('Content load failed:', err);
     console.warn('Using defaults due to error');

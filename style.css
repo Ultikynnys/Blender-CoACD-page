@@ -10,6 +10,14 @@
   --primary-purple: #8A66D9;
   --primary-teal: #7EBFA1;
   --primary-green: #94BF54;
+  --scrollbar-size: 8px; /* unified scrollbar thickness */
+  --radius-md: 12px; /* unified medium radius */
+  --surface-04: rgba(255, 255, 255, 0.04);
+  --surface-06: rgba(255, 255, 255, 0.06);
+  --border-12: rgba(255, 255, 255, 0.12);
+  --border-10: rgba(255, 255, 255, 0.10);
+  --surface-08: rgba(255, 255, 255, 0.08);
+  --radius-sm: 10px;
   
   /* Font configuration - fallback values until TOML loads */
   --font-family-primary: 'Outfit', sans-serif;
@@ -37,16 +45,16 @@
 /* Base border style for all media content */
 .media-border, .interactive-border {
   border: none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  background: var(--surface-04);
   box-shadow: 0 6px 24px rgba(0,0,0,0.35);
   box-sizing: border-box;
 }
 
 /* Enhanced styling for interactive elements */
 .interactive-border {
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  background: var(--surface-06);
 }
 
 body {
@@ -135,9 +143,9 @@ a:hover, a:focus-visible {
   font-family: var(--font-family-secondary);
   font-weight: var(--font-weight-medium);
   letter-spacing: var(--letter-spacing-wide);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--surface-08);
   border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--text-white) !important;
   box-shadow: 0 0 32px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(16px);
@@ -190,9 +198,9 @@ a:hover, a:focus-visible {
 
 /* Card styling */
 .card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  background: var(--surface-04);
+  border: 1px solid var(--border-12);
+  border-radius: var(--radius-md);
   padding: 1.5rem;
   backdrop-filter: blur(10px);
 }
@@ -527,7 +535,7 @@ strong {
   width: 100%;
   aspect-ratio: 16 / 9;
   background: #000;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   padding: 0;
   border: none;
@@ -691,7 +699,7 @@ strong {
   max-height: 500px;
   overflow-y: auto;
   padding-right: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-10);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.2);
 }
@@ -795,23 +803,57 @@ strong {
   border-left: 4px solid var(--primary-purple); /* fallback */
 }
 
-/* Scrollbar styling for changelog */
-.changelog-scroll-container::-webkit-scrollbar {
-  width: 8px;
+/* DRY: Unified themed scrollbar styles for changelog, code blocks, and tables */
+.changelog-scroll-container,
+#doc-page-rich-content pre,
+.documentation-page pre,
+#doc-page-rich-content table,
+.documentation-page table {
+  scrollbar-color: var(--primary-purple) rgba(255, 255, 255, 0.1);
+  scrollbar-width: thin;
 }
 
-.changelog-scroll-container::-webkit-scrollbar-track {
+.changelog-scroll-container::-webkit-scrollbar,
+#doc-page-rich-content pre::-webkit-scrollbar,
+.documentation-page pre::-webkit-scrollbar,
+#doc-page-rich-content table::-webkit-scrollbar,
+.documentation-page table::-webkit-scrollbar {
+  height: var(--scrollbar-size);
+  width: var(--scrollbar-size);
+}
+
+.changelog-scroll-container::-webkit-scrollbar-track,
+#doc-page-rich-content pre::-webkit-scrollbar-track,
+.documentation-page pre::-webkit-scrollbar-track,
+#doc-page-rich-content table::-webkit-scrollbar-track,
+.documentation-page table::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border-radius: calc(var(--scrollbar-size) / 2);
 }
 
-.changelog-scroll-container::-webkit-scrollbar-thumb {
+.changelog-scroll-container::-webkit-scrollbar-thumb,
+#doc-page-rich-content pre::-webkit-scrollbar-thumb,
+.documentation-page pre::-webkit-scrollbar-thumb,
+#doc-page-rich-content table::-webkit-scrollbar-thumb,
+.documentation-page table::-webkit-scrollbar-thumb {
   background: var(--primary-purple);
-  border-radius: 4px;
+  border-radius: calc(var(--scrollbar-size) / 2);
 }
 
-.changelog-scroll-container::-webkit-scrollbar-thumb:hover {
+.changelog-scroll-container::-webkit-scrollbar-thumb:hover,
+#doc-page-rich-content pre::-webkit-scrollbar-thumb:hover,
+.documentation-page pre::-webkit-scrollbar-thumb:hover,
+#doc-page-rich-content table::-webkit-scrollbar-thumb:hover,
+.documentation-page table::-webkit-scrollbar-thumb:hover {
   background: var(--primary-pink);
+}
+
+.changelog-scroll-container::-webkit-scrollbar-corner,
+#doc-page-rich-content pre::-webkit-scrollbar-corner,
+.documentation-page pre::-webkit-scrollbar-corner,
+#doc-page-rich-content table::-webkit-scrollbar-corner,
+.documentation-page table::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* Very small devices */
@@ -880,4 +922,453 @@ strong {
     margin-top: 0.4rem;
     font-size: 0.8rem;
   }
+}
+
+/* ===== IMAGE ALIGNMENT CLASSES ===== */
+/* Object position classes for image alignment */
+.object-position-top-left {
+  object-position: top left !important;
+}
+
+.object-position-top-right {
+  object-position: top right !important;
+}
+
+.object-position-center {
+  object-position: center !important;
+}
+
+/* ===== DOCUMENTATION STYLES ===== */
+/* Header buttons container */
+.header-buttons {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* View toggle button */
+.view-toggle-btn {
+  transition: all 0.3s ease;
+}
+
+.view-toggle-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* View containers */
+.view-container {
+  transition: opacity 0.3s ease;
+}
+
+/* Documentation Table of Contents */
+.documentation-toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.documentation-toc-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: var(--surface-04);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-10);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.documentation-toc-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  color: inherit;
+  text-decoration: none;
+}
+
+.documentation-toc-icon {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.documentation-toc-content {
+  flex: 1;
+}
+
+.documentation-toc-title {
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-white);
+}
+
+.documentation-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+/* Documentation navigation */
+.documentation-nav {
+  margin: 1rem 0 2rem; /* add top margin to push away from header */
+}
+
+.documentation-page {
+  animation: fadeIn 0.3s ease;
+  padding-top: 0.5rem; /* extra breathing room under fixed header */
+}
+
+/* Hide empty intro card in documentation pages to avoid blank space */
+.documentation-page .intro:empty { display: none; }
+
+/* Never show the rich-content section title (we already show the page title above) */
+#doc-page-rich-title { display: none; }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments for documentation */
+@media (max-width: 768px) {
+  .header-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .documentation-toc-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .documentation-toc-item {
+    padding: 0.75rem;
+  }
+  
+  .documentation-toc-icon {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+  }
+  
+  .documentation-toc-title {
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== DOCUMENTATION EMBED ===== */
+.doc-embed-container {
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.doc-embed-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+}
+
+.doc-embed-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin: 0.75rem 0.5rem 0.25rem 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .doc-embed-container { height: 65vh; }
+}
+
+/* ===== DOCUMENTATION CODE STYLES (Prism + inline) ===== */
+/* Container scoping for inline docs */
+#doc-page-rich-content,
+.documentation-page {
+  --code-bg: rgba(255, 255, 255, 0.06);
+  --code-border: rgba(255, 255, 255, 0.12);
+  --code-fg: var(--text-white);
+}
+
+/* Scale tables within inline docs by 25% (0.75x) without affecting global docs */
+#doc-page-rich-content { --table-scale: 0.75; }
+
+/* Block code */
+:is(#doc-page-rich-content, .documentation-page) pre,
+:is(#doc-page-rich-content, .documentation-page) pre[class*="language-"] {
+  background: var(--code-bg) !important;
+  color: var(--code-fg) !important;
+  border: 1px solid var(--code-border) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 1rem 1.25rem !important;
+  overflow: auto !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35) !important;
+  font-family: var(--font-family-mono) !important;
+  line-height: 1.5 !important;
+  font-size: 0.75em !important; /* 25% smaller */
+}
+
+/* Scrollbar styles unified above with DRY group */
+
+/* Firefox scrollbar styles unified with DRY group */
+
+/* Inline code */
+:is(#doc-page-rich-content, .documentation-page) code:not([class*="language-"]) {
+  background: var(--surface-08) !important;
+  color: var(--text-white) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 0.1rem 0.35rem !important;
+  font-family: var(--font-family-mono) !important;
+  font-size: 0.75em !important; /* 25% smaller */
+}
+
+/* Prism base */
+:is(#doc-page-rich-content, .documentation-page) code[class*="language-"] {
+  text-shadow: none !important;
+  color: var(--text-white) !important;
+  font-family: var(--font-family-mono) !important;
+}
+
+/* ===== DOCUMENTATION TABLE STYLES ===== */
+/* Tables are self-contained with border and radius (no wrapper needed) */
+:is(#doc-page-rich-content, .documentation-page) table {
+  margin: 0.75rem 0 1rem;
+  width: 100%;
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  background: var(--surface-04);
+  scrollbar-gutter: stable; /* keep layout from shifting when scrollbar appears */
+  font-size: calc(1em * var(--table-scale, 1));
+  box-sizing: border-box; /* include border in width to avoid right-edge cutoff */
+}
+
+/* Use default display values for thead/tbody to keep a single table formatting context */
+
+:is(#doc-page-rich-content, .documentation-page) table {
+  border-collapse: collapse; /* aligns column borders and row heights */
+  border-spacing: 0;
+  table-layout: fixed;      /* consistent column widths */
+  min-width: calc(640px * var(--table-scale, 1)); /* scales with table scale */
+}
+
+/* Cell sizing: include borders in width to keep columns aligned */
+:is(#doc-page-rich-content, .documentation-page) thead th,
+:is(#doc-page-rich-content, .documentation-page) tbody td {
+  box-sizing: border-box;
+}
+
+/* Table scrollbar styles unified with DRY group */
+
+/* Firefox table scrollbar styles unified with DRY group */
+
+/* Header cells */
+:is(#doc-page-rich-content, .documentation-page) thead th {
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 700;
+  text-align: left;
+  padding: calc(0.75rem * var(--table-scale, 1)) calc(0.9rem * var(--table-scale, 1));
+  border-bottom: 1px solid var(--code-border);
+  white-space: normal; /* Allow headers to wrap */
+  word-break: normal; /* Don't break words in headers */
+  overflow-wrap: break-word; /* Only break if absolutely necessary */
+}
+
+/* Body cells */
+:is(#doc-page-rich-content, .documentation-page) tbody td {
+  padding: calc(0.75rem * var(--table-scale, 1)) calc(0.9rem * var(--table-scale, 1));
+  vertical-align: middle; /* middle-left alignment */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Unified alignment: all text middle-left inside API tables */
+:is(#doc-page-rich-content, .documentation-page) table.api-table th,
+:is(#doc-page-rich-content, .documentation-page) table.api-table td {
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Guarantee rows/cells expand to fit content */
+:is(#doc-page-rich-content, .documentation-page) table.api-table tr,
+:is(#doc-page-rich-content, .documentation-page) table.api-table th,
+:is(#doc-page-rich-content, .documentation-page) table.api-table td {
+  height: auto;
+}
+:is(#doc-page-rich-content, .documentation-page) table.api-table td {
+  overflow: visible;
+}
+
+/* Column separators */
+:is(#doc-page-rich-content, .documentation-page) thead th,
+:is(#doc-page-rich-content, .documentation-page) tbody td {
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+:is(#doc-page-rich-content, .documentation-page) thead th:last-child,
+:is(#doc-page-rich-content, .documentation-page) tbody td:last-child {
+  /* Avoid an extra right-side border which can cause a 1px overflow and look like the edge is cut off */
+  border-right: none;
+}
+
+/* Last column alignment for compact values (e.g., Default Value) */
+:is(#doc-page-rich-content, .documentation-page) table td:last-child {
+  text-align: left; /* left-align values */
+  white-space: nowrap;
+}
+
+:is(#doc-page-rich-content, .documentation-page) table th:last-child {
+  text-align: left; /* left-align header */
+  /* Allow header to wrap if needed */
+}
+
+/* Column widths and wrapping - enforce the same widths on header and body (scoped to .api-table) */
+:is(#doc-page-rich-content, .documentation-page) table.api-table thead th:nth-child(1),
+:is(#doc-page-rich-content, .documentation-page) table.api-table tbody td:nth-child(1) { width: 26%; }
+:is(#doc-page-rich-content, .documentation-page) table.api-table thead th:nth-child(2),
+:is(#doc-page-rich-content, .documentation-page) table.api-table tbody td:nth-child(2) { width: 62%; }
+:is(#doc-page-rich-content, .documentation-page) table.api-table thead th:nth-child(3),
+:is(#doc-page-rich-content, .documentation-page) table.api-table tbody td:nth-child(3) { width: 12%; }
+
+:is(#doc-page-rich-content, .documentation-page) table.api-table td:nth-child(1),
+:is(#doc-page-rich-content, .documentation-page) table.api-table td:nth-child(3) {
+  white-space: nowrap; /* keep name and default on one line */
+}
+
+:is(#doc-page-rich-content, .documentation-page) table.api-table td:nth-child(2) {
+  white-space: normal;        /* allow wrapping only at natural points */
+  word-break: normal;         /* do not cut words */
+  overflow-wrap: normal;      /* break only at spaces/punctuation */
+  text-wrap: pretty;          /* nicer line breaks where supported */
+  hyphens: none;              /* never hyphenate */
+}
+
+/* Zebra striping for readability */
+:is(#doc-page-rich-content, .documentation-page) tbody tr:nth-child(odd) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Code elements inside table cells */
+:is(#doc-page-rich-content, .documentation-page) td code,
+:is(#doc-page-rich-content, .documentation-page) th code {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 0.05rem 0.35rem !important;
+  word-break: keep-all; /* keep tokens intact */
+  overflow-wrap: normal; /* wrap only at natural points */
+  white-space: normal;  /* allow wrapping */
+}
+
+/* In API tables, keep code tokens intact (no cutting) */
+:is(#doc-page-rich-content, .documentation-page) table.api-table td code {
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+/* Token colors mapped to TOML theme */
+#doc-page-rich-content .token.comment,
+.documentation-page .token.comment,
+#doc-page-rich-content .token.prolog,
+.documentation-page .token.prolog,
+#doc-page-rich-content .token.doctype,
+.documentation-page .token.doctype,
+#doc-page-rich-content .token.cdata,
+.documentation-page .token.cdata {
+  color: rgba(255,255,255,0.58) !important; /* darker than main code */
+  font-style: italic;
+}
+
+#doc-page-rich-content .token.punctuation,
+.documentation-page .token.punctuation,
+#doc-page-rich-content .token.operator,
+.documentation-page .token.operator {
+  color: rgba(255,255,255,0.9) !important;
+  background: transparent !important; /* avoid white pill backgrounds on '=' etc. */
+  box-shadow: none !important;
+  border: none !important;
+}
+
+#doc-page-rich-content .token.keyword,
+.documentation-page .token.keyword,
+#doc-page-rich-content .token.atrule,
+.documentation-page .token.atrule {
+  color: var(--primary-purple) !important;
+}
+
+/* Additional mappings for completeness */
+#doc-page-rich-content .token.tag,
+.documentation-page .token.tag,
+#doc-page-rich-content .token.selector,
+.documentation-page .token.selector,
+#doc-page-rich-content .token.property,
+.documentation-page .token.property,
+#doc-page-rich-content .token.attr-name,
+.documentation-page .token.attr-name {
+  color: var(--primary-purple) !important;
+}
+
+#doc-page-rich-content .token.boolean,
+.documentation-page .token.boolean,
+#doc-page-rich-content .token.number,
+.documentation-page .token.number,
+#doc-page-rich-content .token.constant,
+.documentation-page .token.constant {
+  color: var(--primary-pink) !important;
+}
+
+#doc-page-rich-content .token.string,
+.documentation-page .token.string,
+#doc-page-rich-content .token.char,
+.documentation-page .token.char {
+  color: var(--primary-green) !important;
+}
+
+#doc-page-rich-content .token.function,
+.documentation-page .token.function,
+#doc-page-rich-content .token.class-name,
+.documentation-page .token.class-name,
+#doc-page-rich-content .token.builtin,
+.documentation-page .token.builtin {
+  color: var(--primary-teal) !important;
+  font-weight: 600;
+}
+
+/* Treat dotted-call property before '(' as a function (modern browsers) */
+#doc-page-rich-content .token.property:has(+ .token.punctuation),
+.documentation-page .token.property:has(+ .token.punctuation) {
+  color: var(--primary-teal) !important;
+  font-weight: 600;
+}
+
+/* Fallback: class added via JS after Prism highlighting */
+#doc-page-rich-content .token-func-call,
+.documentation-page .token-func-call {
+  color: var(--primary-teal) !important;
+  font-weight: 600 !important;
+}
+
+/* Avoid double backgrounds on nested code */
+#doc-page-rich-content pre[class*="language-"] > code,
+.documentation-page pre[class*="language-"] > code {
+  background: transparent !important;
+}
+
+/* Selection in code blocks */
+#doc-page-rich-content pre ::selection,
+.documentation-page pre ::selection,
+#doc-page-rich-content code ::selection,
+.documentation-page code ::selection {
+  background: color-mix(in srgb, var(--primary-purple) 35%, transparent) !important;
 }
