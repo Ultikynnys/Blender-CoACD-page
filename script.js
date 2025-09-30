@@ -537,6 +537,10 @@ function makeImageZoomable(img, caption = '') {
     zoomedImg.src = img.src;
     zoomedImg.alt = img.alt;
     
+    // Store click position for centering
+    overlay.dataset.clickX = e.clientX;
+    overlay.dataset.clickY = e.clientY;
+    
     // Store carousel context for navigation
     const leftArrow = overlay.querySelector('#zoom-nav-left');
     const rightArrow = overlay.querySelector('#zoom-nav-right');
@@ -573,6 +577,20 @@ function makeImageZoomable(img, caption = '') {
     }
     
     overlay.style.display = 'flex';
+    
+    // Position the image at the click Y position, centered horizontally
+    requestAnimationFrame(() => {
+      const clickY = parseFloat(overlay.dataset.clickY) || window.innerHeight / 2;
+      
+      // Calculate position to center image at click Y, centered X
+      const imgRect = zoomedImg.getBoundingClientRect();
+      const left = (window.innerWidth - imgRect.width) / 2;
+      const top = clickY - (imgRect.height / 2);
+      
+      zoomedImg.style.position = 'absolute';
+      zoomedImg.style.left = `${left}px`;
+      zoomedImg.style.top = `${top}px`;
+    });
   });
 }
 
