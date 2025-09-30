@@ -598,10 +598,12 @@ function makeImageZoomable(img, caption = '') {
       const rightArrow = overlay.querySelector('#zoom-nav-right');
       
       if (leftArrow) {
-        leftArrow.style.top = `${top + imgRect.height / 2}px`;
+        leftArrow.style.top = `${top}px`;
+        leftArrow.style.height = `${imgRect.height}px`;
       }
       if (rightArrow) {
-        rightArrow.style.top = `${top + imgRect.height / 2}px`;
+        rightArrow.style.top = `${top}px`;
+        rightArrow.style.height = `${imgRect.height}px`;
       }
       if (captionEl && captionEl.style.display !== 'none') {
         captionEl.style.top = `${top + imgRect.height - 60}px`;
@@ -788,10 +790,12 @@ function initBeforeAfterSliders() {
           const rightArrow = overlay.querySelector('#zoom-nav-right');
           
           if (leftArrow) {
-            leftArrow.style.top = `${top + imgRect.height / 2}px`;
+            leftArrow.style.top = `${top}px`;
+            leftArrow.style.height = `${imgRect.height}px`;
           }
           if (rightArrow) {
-            rightArrow.style.top = `${top + imgRect.height / 2}px`;
+            rightArrow.style.top = `${top}px`;
+            rightArrow.style.height = `${imgRect.height}px`;
           }
           if (captionEl && captionEl.style.display !== 'none') {
             captionEl.style.top = `${top + imgRect.height - 60}px`;
