@@ -735,6 +735,10 @@ function initBeforeAfterSliders() {
         zoomedImg.src = img.src;
         zoomedImg.alt = img.alt;
         
+        // Store click position for centering
+        overlay.dataset.clickX = e.clientX;
+        overlay.dataset.clickY = e.clientY;
+        
         // Get caption from the slider's caption element
         const sliderCaption = slider.closest('.card')?.querySelector('.intro__usage-caption');
         if (sliderCaption && sliderCaption.textContent) {
@@ -749,6 +753,20 @@ function initBeforeAfterSliders() {
         }
         
         overlay.style.display = 'flex';
+        
+        // Position the image at the click Y position, centered horizontally
+        requestAnimationFrame(() => {
+          const clickY = parseFloat(overlay.dataset.clickY) || window.innerHeight / 2;
+          
+          // Calculate position to center image at click Y, centered X
+          const imgRect = zoomedImg.getBoundingClientRect();
+          const left = (window.innerWidth - imgRect.width) / 2;
+          const top = clickY - (imgRect.height / 2);
+          
+          zoomedImg.style.position = 'absolute';
+          zoomedImg.style.left = `${left}px`;
+          zoomedImg.style.top = `${top}px`;
+        });
       }, true); // Use capture phase to ensure we get the event first
     });
   }
