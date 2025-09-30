@@ -992,6 +992,18 @@ strong {
   text-decoration: none;
 }
 
+.documentation-toc-item.under-construction {
+  pointer-events: none;
+  filter: grayscale(0.5);
+}
+
+.documentation-toc-item.under-construction:hover {
+  transform: none;
+  box-shadow: none;
+  background: var(--surface-04);
+  border-color: var(--border-10);
+}
+
 .documentation-toc-content {
   display: flex;
   flex-direction: column;

@@ -2017,6 +2017,30 @@ function renderIntroductionSection(introConfig, cfg, containerId) {
     usageNodes.forEach(node => introContent.appendChild(node));
     paramNodes.forEach(node => introContent.appendChild(node));
   }
+
+  // Quick Start section
+  const quickstartTitle = introConfig.quickstart_title || '';
+  const quickstartImages = parseMediaItems(introConfig, {
+    itemsKey: 'quickstart_images',
+    captionsKey: 'quickstart_images_captions',
+    altKey: 'quickstart_images_alt',
+    alignmentKey: 'quickstart_images_alignment'
+  });
+
+  if (quickstartTitle && quickstartImages.length > 0) {
+    const quickstartSection = document.createElement('div');
+    quickstartSection.className = 'intro__quickstart';
+    
+    const h3 = document.createElement('h3');
+    h3.className = 'intro__usage-title';
+    h3.textContent = quickstartTitle;
+    quickstartSection.appendChild(h3);
+    
+    const carousel = createImageCarousel(quickstartImages, cfg, 'quickstart-carousel');
+    quickstartSection.appendChild(carousel);
+    
+    introContent.appendChild(quickstartSection);
+  }
   
   // Colorize any remaining bold text
   colorizeStrongIn(introContent, cfg);
@@ -2195,7 +2219,15 @@ function renderDocumentationTOC(cfg) {
       const item = document.createElement('div');
       item.className = 'documentation-toc-item';
       const sectionId = (section && section.id) ? section.id : '';
-      item.onclick = () => sectionId && showDocumentationPage(sectionId);
+      const isUnderConstruction = section && section.under_construction === true;
+      
+      if (isUnderConstruction) {
+        item.classList.add('under-construction');
+        item.style.cursor = 'not-allowed';
+        item.style.opacity = '0.6';
+      } else {
+        item.onclick = () => sectionId && showDocumentationPage(sectionId);
+      }
       
       const contentDiv = document.createElement('div');
       contentDiv.className = 'documentation-toc-content';
@@ -2203,6 +2235,27 @@ function renderDocumentationTOC(cfg) {
       const titleDiv = document.createElement('h3');
       titleDiv.className = 'documentation-toc-title';
       titleDiv.textContent = (section && section.title) ? section.title : 'Untitled';
+      
+      if (isUnderConstruction) {
+        const badge = document.createElement('span');
+        badge.className = 'under-construction-badge';
+        badge.textContent = 'Under Construction';
+        badge.style.cssText = `
+          display: inline-block;
+          margin-left: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          font-weight: var(--font-weight-medium);
+          background: rgba(255, 193, 7, 0.2);
+          color: #ffc107;
+          border: 1px solid rgba(255, 193, 7, 0.4);
+          border-radius: 4px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        `;
+        titleDiv.appendChild(badge);
+      }
+      
       contentDiv.appendChild(titleDiv);
       
       if (section && section.description) {
