@@ -119,22 +119,62 @@
     "top-right"
   ]
 
+  # Quick Start section
+  quickstart_title = "Quick Start"
+  quickstart_images = [
+    "images/Ultibake/BasicUsage/Step1.png",
+    "images/Ultibake/BasicUsage/Step2.png",
+    "images/Ultibake/BasicUsage/Step3.png",
+    "images/Ultibake/BasicUsage/Step4.png",
+    "images/Ultibake/BasicUsage/Step5.png",
+    "images/Ultibake/BasicUsage/Step7.png",
+    "images/Ultibake/BasicUsage/Step8.png",
+    "images/Ultibake/BasicUsage/Step11.png",
+    "images/Ultibake/BasicUsage/Step12.png",
+    "images/Ultibake/BasicUsage/Step12a.png",
+    "images/Ultibake/BasicUsage/Step13.png"
+  ]
+  quickstart_images_captions = [
+    "**Step 1:** Initial setup",
+    "**Step 2:** Configure bake settings",
+    "**Step 3:** Select objects",
+    "**Step 4:** Set up materials",
+    "**Step 5:** Configure output",
+    "**Step 6:** Prepare textures",
+    "**Step 7:** Bake process",
+    "**Step 8:** Review results",
+    "**Step 9:** Finalize textures",
+    "**Step 10:** Additional adjustments",
+    "**Step 11:** Export final output"
+  ]
+  quickstart_images_alignment = [
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right"
+  ]
+
 # Feature comparisons (using carousel-style content)
 [[comparisons]]
   initial = 0.5
   color = "pink"
-  before = "images/Logo.png"
-  after  = "images/BAKEVIS.webp"
-  caption = "**Traditional baking** vs **UltiBake Visualizer**"
+  before = "images/Ultibake/BasicUsage/UltibakePre.png"
+  after  = "images/Ultibake/BasicUsage/UltibakePost.png"
+  caption = "Transform **complex scene setups** into a **unified texture set**. Handles **advanced materials**, **multi-object workflows**, **decals**, and more with ease."
   handle_shape = "circle"
 
+# Profile System Showcase
 [[comparisons]]
-  initial = 0.6
-  color = "purple"
-  before = "images/Logo.png"
-  after  = "images/DECAL.webp"
-  caption = "**Standard workflow** vs **Decal baking integration**"
-  handle_shape = "circle"
+  image = "images/Ultibake/BasicUsage/ProfileShowcase.png"
+  image_alt = "UltiBake Profile System"
+  caption = "**Modular Profile System** — Define your baking workflow just like in **Substance Painter**. Save, load, and reuse your setups across projects."
 
 [[comparisons]]
   initial = 0.4

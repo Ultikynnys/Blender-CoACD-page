@@ -75,11 +75,20 @@
     "Post-Processing — **Generate LODs**: create multiple LOD levels via decimation; configure levels and ratios in the panel.",
   ]
 
-  # Optional image shown to the right of the Usage list
-  usage_image = "images/Coacd_params.gif"                    # Replace with a Blender UI screenshot, e.g. "images/blender-ui-usage.png"
-  usage_image_alt = "Where to find CoACD in the Blender UI"
-  usage_image_caption = "Panel location: 3D Viewport > N > CoACD Collision"
-  # Optional second image stacked under the first
+  # Multiple usage images with carousel
+  usage_images = [
+    "images/Coacd_params.gif"
+  ]
+  
+  # Captions for the images (in order)
+  usage_images_captions = [
+    "Panel location: 3D Viewport > N > CoACD Collision"
+  ]
+  
+  # Alignment for the images (in order) - options: "top-left", "top-right", "center"
+  usage_images_alignment = [
+    "center"
+  ]
 
 # Comparisons (Before/After sliders). Provide image paths relative to the site root.
 # Leave before/after empty strings if not available yet.

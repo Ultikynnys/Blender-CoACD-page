@@ -160,6 +160,13 @@ function createMediaCarousel(items, cfg, options = {}) {
     updateCaption(activeIndex);
   });
 
+  // Make images zoomable (only for image carousels, not videos)
+  if (type === 'image') {
+    setTimeout(() => {
+      wrapper.querySelectorAll('img').forEach(img => makeImageZoomable(img));
+    }, 100);
+  }
+
   setTimeout(() => colorizeStrongIn(wrapper, cfg), 0);
   return wrapper;
 }
@@ -175,6 +182,157 @@ const utils = {
   randomChoice: (array) => array[Math.floor(Math.random() * array.length)],
   getViewportWidth: () => Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 };
+
+// Image zoom functionality
+function initImageZoom() {
+  let zoomOverlay = document.getElementById('image-zoom-overlay');
+  
+  if (!zoomOverlay) {
+    zoomOverlay = document.createElement('div');
+    zoomOverlay.id = 'image-zoom-overlay';
+    zoomOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    `;
+    
+    const zoomedImg = document.createElement('img');
+    zoomedImg.id = 'zoomed-image';
+    zoomedImg.style.cssText = `
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+      transform-origin: center center;
+      transition: transform 0.1s ease-out;
+    `;
+    
+    zoomOverlay.appendChild(zoomedImg);
+    document.body.appendChild(zoomOverlay);
+    
+    // Close on click
+    zoomOverlay.addEventListener('click', () => {
+      zoomOverlay.style.display = 'none';
+      zoomedImg.style.transform = 'scale(1)';
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && zoomOverlay.style.display === 'flex') {
+        zoomOverlay.style.display = 'none';
+        zoomedImg.style.transform = 'scale(1)';
+      }
+    });
+    
+    // Track current zoom level
+    let currentZoom = 1.5;
+    
+    // Zoom on mouse position
+    zoomedImg.addEventListener('mousemove', (e) => {
+      if (zoomOverlay.style.display === 'flex') {
+        const rect = zoomedImg.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        zoomedImg.style.transformOrigin = `${x}% ${y}%`;
+        zoomedImg.style.transform = `scale(${currentZoom})`;
+      }
+    });
+    
+    zoomedImg.addEventListener('mouseleave', () => {
+      zoomedImg.style.transform = 'scale(1)';
+      currentZoom = 1.5; // Reset zoom level when mouse leaves
+    });
+    
+    // Scroll wheel zoom
+    zoomOverlay.addEventListener('wheel', (e) => {
+      if (zoomOverlay.style.display === 'flex') {
+        e.preventDefault();
+        
+        // Adjust zoom level based on scroll direction
+        const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
+        currentZoom = Math.max(1, Math.min(5, currentZoom + zoomDelta));
+        
+        // Update transform with current zoom
+        const rect = zoomedImg.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        zoomedImg.style.transformOrigin = `${x}% ${y}%`;
+        zoomedImg.style.transform = `scale(${currentZoom})`;
+      }
+    }, { passive: false });
+  }
+  
+  return zoomOverlay;
+}
+
+function makeImageZoomable(img) {
+  if (!img || img.classList.contains('zoomable-initialized')) return;
+  
+  img.style.cursor = 'zoom-in';
+  img.classList.add('zoomable-initialized');
+  
+  const carousel = img.closest('.carousel');
+  
+  // Update cursor based on mouse position
+  if (carousel) {
+    img.addEventListener('mousemove', (e) => {
+      const rect = img.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      // Define safe zones (in pixels from edges)
+      const safeZoneBottom = 60; // Bottom area for indicators
+      const safeZoneSides = 80;  // Left/right areas for prev/next buttons
+      
+      // Change cursor based on whether we're in a safe zone
+      if (mouseY > rect.height - safeZoneBottom || 
+          mouseX < safeZoneSides || 
+          mouseX > rect.width - safeZoneSides) {
+        img.style.cursor = 'default';
+      } else {
+        img.style.cursor = 'zoom-in';
+      }
+    });
+    
+    img.addEventListener('mouseleave', () => {
+      img.style.cursor = 'zoom-in';
+    });
+  }
+  
+  img.addEventListener('click', (e) => {
+    // Check if click is near carousel controls (safe zone)
+    if (carousel) {
+      const rect = img.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      
+      // Define safe zones (in pixels from edges)
+      const safeZoneBottom = 60; // Bottom area for indicators
+      const safeZoneSides = 80;  // Left/right areas for prev/next buttons
+      
+      // Don't zoom if clicking in safe zones
+      if (clickY > rect.height - safeZoneBottom || 
+          clickX < safeZoneSides || 
+          clickX > rect.width - safeZoneSides) {
+        return;
+      }
+    }
+    
+    e.stopPropagation();
+    const overlay = initImageZoom();
+    const zoomedImg = overlay.querySelector('#zoomed-image');
+    zoomedImg.src = img.src;
+    zoomedImg.alt = img.alt;
+    overlay.style.display = 'flex';
+  });
+}
 
 // Theme utilities
 function isOutlineThemeActive() {
@@ -258,14 +416,18 @@ function initBeforeAfterSliders() {
     let isDragging = false;
     
     const handlePointerDown = (event) => {
-      isDragging = true;
-      slider.classList.add('dragging');
-      setPosition(pointerToPosition(event));
-      event.preventDefault();
+      // Only start dragging if clicking on the handle
+      if (event.target === handle || handle.contains(event.target)) {
+        isDragging = true;
+        slider.classList.add('dragging');
+        event.preventDefault();
+      }
     };
     
     const handlePointerMove = (event) => {
-      if (isDragging) setPosition(pointerToPosition(event));
+      if (isDragging) {
+        setPosition(pointerToPosition(event));
+      }
     };
     
     const handlePointerUp = () => {
@@ -293,6 +455,23 @@ function initBeforeAfterSliders() {
         }
       });
     }
+
+    // Make slider images zoomable with single click
+    const sliderImages = slider.querySelectorAll('.ba-pane img');
+    sliderImages.forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.style.pointerEvents = 'auto'; // Ensure images can receive clicks
+      
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const overlay = initImageZoom();
+        const zoomedImg = overlay.querySelector('#zoomed-image');
+        zoomedImg.src = img.src;
+        zoomedImg.alt = img.alt;
+        overlay.style.display = 'flex';
+      }, true); // Use capture phase to ensure we get the event first
+    });
   }
   
   document.querySelectorAll('.ba-slider').forEach(initSlider);
@@ -880,10 +1059,20 @@ function parseItemImages(item) {
   // Use generic parser for consistent handling
   const images = parseMediaItems(item, {
     itemsKey: 'images',
-    itemKey: 'image',
+    urlKey: 'image',
     captionsKey: 'images_captions', 
     altKey: 'images_alt'
   });
+  
+  // Handle single image with image_alt (singular)
+  if (images.length === 0 && item.image) {
+    images.push({
+      src: item.image,
+      url: item.image,
+      alt: item.image_alt || item.alt || '',
+      caption: item.caption || ''
+    });
+  }
   
   // Add default alt text for items without it
   return images.map((img, idx) => ({
@@ -1397,6 +1586,7 @@ function renderContent(cfg) {
         img.loading = 'lazy';
         img.className = 'media-border';
         figure.appendChild(img);
+        makeImageZoomable(img);
         const capText = getImageCaptionText(single);
         if (capText) {
           const figcap = document.createElement('figcaption');
@@ -1418,6 +1608,30 @@ function renderContent(cfg) {
       // No images: append sequentially into intro content (Usage first)
       usageNodes.forEach(node => introContent.appendChild(node));
       paramNodes.forEach(node => introContent.appendChild(node));
+    }
+
+    // Quick Start section
+    const quickstartTitle = cfg?.introduction?.quickstart_title || '';
+    const quickstartImages = parseMediaItems(cfg?.introduction, {
+      itemsKey: 'quickstart_images',
+      captionsKey: 'quickstart_images_captions',
+      altKey: 'quickstart_images_alt',
+      alignmentKey: 'quickstart_images_alignment'
+    });
+
+    if (quickstartTitle && quickstartImages.length > 0) {
+      const quickstartSection = document.createElement('div');
+      quickstartSection.className = 'intro__quickstart';
+      
+      const h3 = document.createElement('h3');
+      h3.className = 'intro__usage-title';
+      h3.textContent = quickstartTitle;
+      quickstartSection.appendChild(h3);
+      
+      const carousel = createImageCarousel(quickstartImages, cfg, 'quickstart-carousel');
+      quickstartSection.appendChild(carousel);
+      
+      introContent.appendChild(quickstartSection);
     }
   }
 
@@ -1495,11 +1709,13 @@ function renderContent(cfg) {
           fig.className = 'image-card';
           const img = document.createElement('img');
           img.src = imgs[0].src;
-          img.alt = getImageCaptionText(imgs[0]) || '';
+          // Use comparison-level caption first, then fall back to image caption/alt
+          const capText = caption || getImageCaptionText(imgs[0]);
+          img.alt = imgs[0].alt || capText || '';
           img.loading = 'lazy';
           img.className = 'media-border';
           fig.appendChild(img);
-          const capText = getImageCaptionText(imgs[0]);
+          makeImageZoomable(img);
           if (capText) {
             const cap = document.createElement('figcaption');
             cap.className = 'intro__usage-caption';
@@ -1507,12 +1723,6 @@ function renderContent(cfg) {
             fig.appendChild(cap);
           }
           card.appendChild(fig);
-          if (captionHtml && !capText) {
-            const p = document.createElement('p');
-            p.className = 'comparison-caption';
-            p.innerHTML = captionHtml;
-            card.appendChild(p);
-          }
         }
       }
 
@@ -1729,6 +1939,7 @@ function createComparisonElement(comparison, cfg) {
     img.alt = comparison.image_alt || comparison.caption || 'Comparison image';
     img.className = 'comparison-single-image media-border';
     card.appendChild(img);
+    makeImageZoomable(img);
     
     if (comparison.caption) {
       const caption = document.createElement('p');
