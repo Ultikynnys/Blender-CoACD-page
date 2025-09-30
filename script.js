@@ -2197,12 +2197,30 @@ function renderDocumentationTOC(cfg) {
       const sectionId = (section && section.id) ? section.id : '';
       item.onclick = () => sectionId && showDocumentationPage(sectionId);
       
-      item.innerHTML = `
-        <div class="documentation-toc-icon">${(section && section.icon) || '📄'}</div>
-        <div class="documentation-toc-content">
-          <h3 class="documentation-toc-title">${(section && section.title) ? section.title : 'Untitled'}</h3>
-        </div>
-      `;
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'documentation-toc-content';
+      
+      const titleDiv = document.createElement('h3');
+      titleDiv.className = 'documentation-toc-title';
+      titleDiv.textContent = (section && section.title) ? section.title : 'Untitled';
+      contentDiv.appendChild(titleDiv);
+      
+      if (section && section.description) {
+        const descDiv = document.createElement('p');
+        descDiv.className = 'documentation-toc-description';
+        descDiv.textContent = section.description;
+        contentDiv.appendChild(descDiv);
+      }
+      
+      item.appendChild(contentDiv);
+      
+      if (section && section.image) {
+        const img = document.createElement('img');
+        img.src = section.image;
+        img.alt = section.title || 'Documentation image';
+        img.className = 'documentation-toc-image';
+        item.appendChild(img);
+      }
       
       gridEl.appendChild(item);
     });

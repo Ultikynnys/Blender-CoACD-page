@@ -9,18 +9,9 @@
     title = "Documentation"
     subtitle = "Complete guide to UltiBake features and workflows"
     sections = [
-      { id = "getting-started", title = "Getting Started", icon = "🚀" },
-      { id = "installation", title = "Installation Guide", icon = "📦" },
-      { id = "basic-workflow", title = "Basic Workflow", icon = "🔄" },
-      { id = "bake-visualizer", title = "Bake Visualizer", icon = "👁️" },
-      { id = "decal-baking", title = "Decal Baking", icon = "🎨" },
-      { id = "high-to-low", title = "High to Low Baking", icon = "📐" },
-      { id = "profiles", title = "Profiles & Presets", icon = "💾" },
-      { id = "udim-baking", title = "UDIM Baking", icon = "🗂️" },
-      { id = "post-processing", title = "Post Processing", icon = "✨" },
-      { id = "advanced-features", title = "Advanced Features", icon = "⚙️" },
-      { id = "troubleshooting", title = "Troubleshooting", icon = "🔧" },
-      { id = "api-reference", title = "API Reference", icon = "📚" }
+      { id = "getting-started", title = "Getting Started", description = "Learn the basics of UltiBake including bake sets, profiles, and your first baking project", image = "images/Ultibake/Ultibake_Bake1.png" },
+      { id = "common-issues", title = "Common Issues", description = "Troubleshoot common problems like black textures, missing materials, and export issues", image = "images/Ultibake/Ultibake_Settings1.png" },
+      { id = "advanced-baking", title = "Advanced Baking", description = "Master UDIM baking, channel packing, multi high-to-low workflows, and custom bake types", image = "images/Ultibake/Ultibake_Settings3.png" }
     ]
 
 [[documentation.pages]]
@@ -66,113 +57,42 @@
     handle_shape = "circle"
 
 [[documentation.pages]]
-  id = "installation"
-  title = "Installation Guide"
+  id = "common-issues"
+  title = "Common Issues"
 
   [documentation.pages.introduction]
-    title = "Installing UltiBake"
+    title = "Troubleshooting Common Problems"
     paragraphs = [
-      "UltiBake is distributed as a standard Blender addon. Follow these steps for a smooth installation process.",
-      "**System Requirements:** Blender 3.0+ recommended for full feature compatibility."
+      "This section covers the most common issues users encounter and their solutions.",
+      "If you don't find your issue here, join our Discord community for support."
     ]
-    parameters_title = "Installation Methods"
+    parameters_title = "Common Problems & Solutions"
     parameters = [
-      "**Standard Installation** — Install via Blender's Add-on preferences",
-      "**Manual Installation** — Extract and install from file system",
-      "**Development Installation** — For developers and beta testers"
-    ]
-    usage_title = "Installation Steps"
-    usage_steps = [
-      "**Step 1:** Download the UltiBake .zip file",
-      "**Step 2:** Open Blender Preferences (Edit > Preferences)",
-      "**Step 3:** Navigate to Add-ons tab",
-      "**Step 4:** Click 'Install...' and select the .zip file",
-      "**Step 5:** Enable the addon by checking the checkbox",
-      "**Step 6:** Save preferences to persist the installation"
+      "**Black/Pink Textures** — Check UV maps are properly assigned and not overlapping",
+      "**Missing Textures** — Ensure all materials use Principled BSDF nodes",
+      "**Slow Baking** — Reduce resolution or enable denoising in post-processing",
+      "**Decals Not Baking** — Verify decal addon is properly installed and objects are selected",
+      "**Export Issues** — Use Finalize feature to create export-ready objects with proper materials"
     ]
 
 [[documentation.pages]]
-  id = "bake-visualizer"
-  title = "Bake Visualizer"
+  id = "advanced-baking"
+  title = "Advanced Baking"
 
   [documentation.pages.introduction]
-    title = "Real-time Baking Preview"
+    title = "Advanced Baking Techniques"
     paragraphs = [
-      "The **Bake Visualizer** is UltiBake's signature feature, allowing you to see baking results before committing to the actual bake process.",
-      "This revolutionary tool adapts dynamically to your baking setup, showing only relevant texture channels and providing instant feedback."
+      "Master advanced workflows including UDIM baking, channel packing, and complex material setups.",
+      "These techniques are essential for professional game development pipelines."
     ]
-    parameters_title = "Visualizer Features"
+    parameters_title = "Advanced Features"
     parameters = [
-      "**Dynamic Adaptation** — Automatically detects and shows relevant bake types",
-      "**Real-time Updates** — Changes reflect immediately as you modify settings",
-      "**Multi-Channel Support** — Preview multiple texture types simultaneously",
-      "**UDIM Visualization** — See UDIM layouts and resolutions before baking",
-      "**Quality Preview** — Assess baking quality without waiting for full resolution"
+      "**UDIM Baking** — Automatically detect and bake UDIM tiles from UV layouts",
+      "**Channel Packing** — Pack multiple textures into RGBA channels for optimized game assets",
+      "**Multi High-to-Low** — Bake multiple high-poly sources to a single low-poly target",
+      "**Bent Normals** — Generate bent normal maps for improved ambient occlusion",
+      "**Custom Bake Types** — Use 23 different bake types including BSDF inputs and custom types"
     ]
-    usage_title = "Using the Visualizer"
-    usage_steps = [
-      "**Step 1:** Set up your bake configuration",
-      "**Step 2:** Enable Bake Visualizer in the panel",
-      "**Step 3:** Select objects to preview",
-      "**Step 4:** Adjust settings and see real-time changes",
-      "**Step 5:** Proceed with baking when satisfied"
-    ]
-    usage_images = [
-      "images/BAKEVIS.webp",
-      "images/Ultibake/Ultibake_Settings2.png"
-    ]
-    usage_images_captions = [
-      "Bake Visualizer showing real-time preview",
-      "Visualizer settings and configuration"
-    ]
-    usage_images_alignment = ["center", "top-right"]
-
-  [documentation.pages.showcase]
-    video_url = "https://www.youtube.com/embed/_gE_KFakj5Q"
-    placeholder = "Bake Visualizer demonstration"
-
-  [[documentation.pages.comparisons]]
-    initial = 0.6
-    color = "purple"
-    before = "images/Logo.png"
-    after = "images/BAKEVIS.webp"
-    caption = "**Traditional blind baking** vs **UltiBake Visualizer preview**"
-    handle_shape = "circle"
-
-[[documentation.pages]]
-  id = "decal-baking"
-  title = "Decal Baking"
-
-  [documentation.pages.introduction]
-    title = "Advanced Decal Integration"
-    paragraphs = [
-      "UltiBake's **Decal Baking** feature seamlessly integrates with popular decal addons, allowing you to bake decals directly onto your surfaces.",
-      "This unique workflow supports multiple decal systems and provides precise control over decal placement and baking."
-    ]
-    parameters_title = "Supported Decal Addons"
-    parameters = [
-      "**decalMACHINE** — Full integration with MACHIN3's decal system",
-      "**DecalMaster** — Complete support for DecalMaster workflows",
-      "**TrimFlow** — Seamless trim and detail baking",
-      "**Sanctus Library** — Asset library integration",
-      "**UltiStamp** — Native decal stamping support"
-    ]
-    usage_title = "Decal Baking Workflow"
-    usage_steps = [
-      "**Step 1:** Apply decals using your preferred addon",
-      "**Step 2:** Select base object and decal objects",
-      "**Step 3:** Configure decal baking settings in UltiBake",
-      "**Step 4:** Preview with Bake Visualizer",
-      "**Step 5:** Execute decal baking process"
-    ]
-
-  [[documentation.pages.comparisons]]
-    initial = 0.5
-    color = "teal"
-    before = "images/Logo.png"
-    after = "images/DECAL.webp"
-    caption = "**Manual decal baking** vs **UltiBake automated process**"
-    handle_shape = "circle"
 
 [[documentation.pages]]
   id = "api-reference"
