@@ -163,7 +163,13 @@ function createMediaCarousel(items, cfg, options = {}) {
   // Make images zoomable (only for image carousels, not videos)
   if (type === 'image') {
     setTimeout(() => {
-      wrapper.querySelectorAll('img').forEach(img => makeImageZoomable(img));
+      wrapper.querySelectorAll('.carousel-item').forEach((item, idx) => {
+        const img = item.querySelector('img');
+        if (img && items[idx]) {
+          const caption = getImageCaptionText(items[idx]) || '';
+          makeImageZoomable(img, caption);
+        }
+      });
     }, 100);
   }
 
@@ -214,7 +220,27 @@ function initImageZoom() {
       transition: transform 0.1s ease-out;
     `;
     
+    const captionOverlay = document.createElement('div');
+    captionOverlay.id = 'zoom-caption';
+    captionOverlay.style.cssText = `
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      max-width: 80%;
+      text-align: center;
+      display: none;
+      backdrop-filter: blur(4px);
+      z-index: 10001;
+    `;
+    
     zoomOverlay.appendChild(zoomedImg);
+    zoomOverlay.appendChild(captionOverlay);
     document.body.appendChild(zoomOverlay);
     
     // Close on click
@@ -272,13 +298,18 @@ function initImageZoom() {
   return zoomOverlay;
 }
 
-function makeImageZoomable(img) {
+function makeImageZoomable(img, caption = '') {
   if (!img || img.classList.contains('zoomable-initialized')) return;
   
   img.style.cursor = 'zoom-in';
   img.classList.add('zoomable-initialized');
   
   const carousel = img.closest('.carousel');
+  
+  // Store caption on the image element
+  if (caption) {
+    img.dataset.zoomCaption = caption;
+  }
   
   // Update cursor based on mouse position
   if (carousel) {
@@ -328,8 +359,23 @@ function makeImageZoomable(img) {
     e.stopPropagation();
     const overlay = initImageZoom();
     const zoomedImg = overlay.querySelector('#zoomed-image');
+    const captionEl = overlay.querySelector('#zoom-caption');
     zoomedImg.src = img.src;
     zoomedImg.alt = img.alt;
+    
+    // Set caption if available with markdown processing
+    const captionText = img.dataset.zoomCaption || img.alt || '';
+    if (captionText) {
+      captionEl.innerHTML = mdInlineToHtmlBoldOnly(String(captionText));
+      // Get the global config from window if available for colorization
+      if (window.globalConfig) {
+        colorizeStrongIn(captionEl, window.globalConfig);
+      }
+      captionEl.style.display = 'block';
+    } else {
+      captionEl.style.display = 'none';
+    }
+    
     overlay.style.display = 'flex';
   });
 }
@@ -467,8 +513,23 @@ function initBeforeAfterSliders() {
         e.preventDefault();
         const overlay = initImageZoom();
         const zoomedImg = overlay.querySelector('#zoomed-image');
+        const captionEl = overlay.querySelector('#zoom-caption');
         zoomedImg.src = img.src;
         zoomedImg.alt = img.alt;
+        
+        // Get caption from the slider's caption element
+        const sliderCaption = slider.closest('.card')?.querySelector('.intro__usage-caption');
+        if (sliderCaption && sliderCaption.textContent) {
+          captionEl.innerHTML = sliderCaption.innerHTML;
+          // Apply colorization to match site theme
+          if (window.globalConfig) {
+            colorizeStrongIn(captionEl, window.globalConfig);
+          }
+          captionEl.style.display = 'block';
+        } else {
+          captionEl.style.display = 'none';
+        }
+        
         overlay.style.display = 'flex';
       }, true); // Use capture phase to ensure we get the event first
     });
@@ -1586,8 +1647,8 @@ function renderContent(cfg) {
         img.loading = 'lazy';
         img.className = 'media-border';
         figure.appendChild(img);
-        makeImageZoomable(img);
         const capText = getImageCaptionText(single);
+        makeImageZoomable(img, capText);
         if (capText) {
           const figcap = document.createElement('figcaption');
           figcap.className = 'intro__usage-caption';
@@ -1715,7 +1776,7 @@ function renderContent(cfg) {
           img.loading = 'lazy';
           img.className = 'media-border';
           fig.appendChild(img);
-          makeImageZoomable(img);
+          makeImageZoomable(img, capText);
           if (capText) {
             const cap = document.createElement('figcaption');
             cap.className = 'intro__usage-caption';
@@ -1939,7 +2000,7 @@ function createComparisonElement(comparison, cfg) {
     img.alt = comparison.image_alt || comparison.caption || 'Comparison image';
     img.className = 'comparison-single-image media-border';
     card.appendChild(img);
-    makeImageZoomable(img);
+    makeImageZoomable(img, comparison.caption || '');
     
     if (comparison.caption) {
       const caption = document.createElement('p');
