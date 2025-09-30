@@ -455,3 +455,9 @@
 
 >## 1.9.85 - Improvement 23/09/2025
     * Bake Unit Isolation toggle replaced with an enviroment collection.
+
+
+>## 1.9.86 - Bugfixes 30/09/2025
+    * Massive speed improvements for heavy scenes.
+    * Normal augmentation moved to material properties. Allows you to Invert the generated normal map axis manually.(Advanced Users)
+    * Various Bug fixes
