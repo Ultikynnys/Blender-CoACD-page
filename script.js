@@ -590,6 +590,20 @@ function makeImageZoomable(img, caption = '') {
       zoomedImg.style.position = 'absolute';
       zoomedImg.style.left = `${left}px`;
       zoomedImg.style.top = `${top}px`;
+      
+      // Position caption and arrows relative to the image
+      const leftArrow = overlay.querySelector('#zoom-nav-left');
+      const rightArrow = overlay.querySelector('#zoom-nav-right');
+      
+      if (leftArrow) {
+        leftArrow.style.top = `${top + imgRect.height / 2}px`;
+      }
+      if (rightArrow) {
+        rightArrow.style.top = `${top + imgRect.height / 2}px`;
+      }
+      if (captionEl && captionEl.style.display !== 'none') {
+        captionEl.style.top = `${top + imgRect.height - 60}px`;
+      }
     });
   });
 }
@@ -766,6 +780,20 @@ function initBeforeAfterSliders() {
           zoomedImg.style.position = 'absolute';
           zoomedImg.style.left = `${left}px`;
           zoomedImg.style.top = `${top}px`;
+          
+          // Position caption and arrows relative to the image
+          const leftArrow = overlay.querySelector('#zoom-nav-left');
+          const rightArrow = overlay.querySelector('#zoom-nav-right');
+          
+          if (leftArrow) {
+            leftArrow.style.top = `${top + imgRect.height / 2}px`;
+          }
+          if (rightArrow) {
+            rightArrow.style.top = `${top + imgRect.height / 2}px`;
+          }
+          if (captionEl && captionEl.style.display !== 'none') {
+            captionEl.style.top = `${top + imgRect.height - 60}px`;
+          }
         });
       }, true); // Use capture phase to ensure we get the event first
     });
