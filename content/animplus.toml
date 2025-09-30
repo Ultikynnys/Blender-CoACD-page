@@ -39,11 +39,11 @@
 
   parameters_title = "Key Features"
   parameters = [
-    "**Animation Layers** — Non-destructive additive and override layers.",
-    "**Retargeting** — Bring motions across rigs with minimal setup.",
-    "**Baking Tools** — Bake procedural motion to keys quickly and safely.",
-    "**Graph Editor Utilities** — Cleanup, easing, and timing tools.",
-    "**Takes Management** — Iterate on ideas without losing work."
+    "**Animation Layers** - Non-destructive additive and override layers.",
+    "**Retargeting** - Bring motions across rigs with minimal setup.",
+    "**Baking Tools** - Bake procedural motion to keys quickly and safely.",
+    "**Graph Editor Utilities** - Cleanup, easing, and timing tools.",
+    "**Takes Management** - Iterate on ideas without losing work."
   ]
 
   usage_title = "Simple to Use"

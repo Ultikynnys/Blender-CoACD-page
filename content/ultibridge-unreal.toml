@@ -48,12 +48,12 @@
   # Parameters and Usage sections
   parameters_title = "Unreal Features"
   parameters = [
-    "**Direct Export** — Send assets straight to Unreal's Content Browser.",
-    "**Material Instances** — Map Blender materials to Unreal material instances.",
-    "**LOD Groups** — Generate and assign LODs compatible with Unreal import.",
-    "**Collision Meshes** — Export UCX/UBX-style colliders for Unreal physics.",
-    "**Animation Export** — Transfer rigs and actions compatible with Unreal's animation system.",
-    "**Project Structure** — Organize assets into Unreal-friendly folder layouts."
+    "**Direct Export** - Send assets straight to Unreal's Content Browser.",
+    "**Material Instances** - Map Blender materials to Unreal material instances.",
+    "**LOD Groups** - Generate and assign LODs compatible with Unreal import.",
+    "**Collision Meshes** - Export UCX/UBX-style colliders for Unreal physics.",
+    "**Animation Export** - Transfer rigs and actions compatible with Unreal's animation system.",
+    "**Project Structure** - Organize assets into Unreal-friendly folder layouts."
   ]
 
   usage_title = "Unreal Workflow"
@@ -61,7 +61,7 @@
     "**Configure** your Unreal project path in UltiBridge settings.",
     "**Select** Blender assets (meshes, materials, animations).",
     "**Choose** export options: LODs, materials, collisions, etc.",
-    "**Export to Unreal** — assets appear in the Content Browser.",
+    "**Export to Unreal** - assets appear in the Content Browser.",
     "**Iterate** quickly with a streamlined Blender ⇄ Unreal loop."
   ]
 

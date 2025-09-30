@@ -40,14 +40,14 @@
   # Features section
   parameters_title = "Key Features"
   parameters = [
-    "**Clickable Empty Handles** — Easily clickable empty handles and radial menu buttons for intuitive decal placement.",
-    "**Advanced PBR Decals** — Full PBR decals with alpha masking and realistic material properties.",
-    "**Detail Enhancement** — A great way to add more detail to existing props without complex modeling.",
-    "**Emissive Support** — Supports emissive decals for glowing effects and lighting details.",
-    "**Transparent Materials** — Add decals to transparent materials with proper blending.",
-    "**Seamless UVs** — Scale Decal UVs for seamless decal application across surfaces.",
-    "**UltiBake Integration** — Bake your decals into textures with UltiBake for game engine export.",
-    "**HSV Control** — Change the HSV (Hue, Saturation, Value) of stamps for color variation."
+    "**Clickable Empty Handles** - Easily clickable empty handles and radial menu buttons for intuitive decal placement.",
+    "**Advanced PBR Decals** - Full PBR decals with alpha masking and realistic material properties.",
+    "**Detail Enhancement** - A great way to add more detail to existing props without complex modeling.",
+    "**Emissive Support** - Supports emissive decals for glowing effects and lighting details.",
+    "**Transparent Materials** - Add decals to transparent materials with proper blending.",
+    "**Seamless UVs** - Scale Decal UVs for seamless decal application across surfaces.",
+    "**UltiBake Integration** - Bake your decals into textures with UltiBake for game engine export.",
+    "**HSV Control** - Change the HSV (Hue, Saturation, Value) of stamps for color variation."
   ]
 
   usage_title = "Workflow"

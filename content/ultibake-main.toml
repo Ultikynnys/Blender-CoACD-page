@@ -65,23 +65,23 @@
   title = ""
   paragraphs = [
     "**UltiBake** is a complete replacement for Blender's baking workflow, developed specifically for **game development**. Battle-tested with various asset packs and users, it handles even the most complicated scenes with ease.",
-    "Built for **Unreal Engine**, **Unity**, and industry-standard pipelines, UltiBake streamlines the entire baking process. **Multiple materials per model** and **automatic UV map selection** — no more manual setup. The addon handles all the unintuitive Blender stuff, allowing you to **focus on assets**."
+    "Built for **Unreal Engine**, **Unity**, and industry-standard pipelines, UltiBake streamlines the entire baking process. **Multiple materials per model** and **automatic UV map selection** - no more manual setup. The addon handles all the unintuitive Blender stuff, allowing you to **focus on assets**."
   ]
 
   # Features section
   parameters_title = "Key Features"
   parameters = [
-    "**Modular Design Pattern** — Stores bakes in hierarchical reusable containers called Bake Sets for organized workflows.",
-    "**Finalize** — Instantly creates export-ready objects with automatic texture material creation. Makes exporting to other pipelines a breeze.",
-    "**Automatic Texture Name Generation** — Texture names are automatically generated based on texture contents, saving you time.",
-    "**Advanced Material Support** — As long as your material uses the Principled BSDF node, even the most complicated materials can be baked into textures.",
-    "**Collection Baking** — Bake entire collections into a single texture as long as UVs aren't overlapping.",
-    "**Decal Baking** — Unique feature! Apply decals to your desired object's surface. Support for decal addons like decalMACHINE, DecalMaster, TrimFlow, Sanctus Library and UltiStamp.",
-    "**Multi High to Low Baking** — Transfer surface details from high-poly to low-poly meshes. You can bake as many high-to-low combinations as you wish with one click!",
-    "**Profiles** — Create your own bake setup profile. You can also save/load to external files for other projects.",
-    "**Bake Post Processing** — Apply antialiasing, denoising, sharpening and more.",
-    "**UDIM Baking** — Visualize your UDIM resolution before baking. UDIMs are automatically detected from UVs.",
-    "**Multi Texture Channel Packed Baking** — Bake multiple textures with a single click while having Full Control over texture channels with 23 unique bake types."
+    "**Modular Design Pattern** - Stores bakes in hierarchical reusable containers called Bake Sets for organized workflows.",
+    "**Finalize** - Instantly creates export-ready objects with automatic texture material creation. Makes exporting to other pipelines a breeze.",
+    "**Automatic Texture Name Generation** - Texture names are automatically generated based on texture contents, saving you time.",
+    "**Advanced Material Support** - As long as your material uses the Principled BSDF node, even the most complicated materials can be baked into textures.",
+    "**Collection Baking** - Bake entire collections into a single texture as long as UVs aren't overlapping.",
+    "**Decal Baking** - Unique feature! Apply decals to your desired object's surface. Support for decal addons like decalMACHINE, DecalMaster, TrimFlow, Sanctus Library and UltiStamp.",
+    "**Multi High to Low Baking** - Transfer surface details from high-poly to low-poly meshes. You can bake as many high-to-low combinations as you wish with one click!",
+    "**Profiles** - Create your own bake setup profile. You can also save/load to external files for other projects.",
+    "**Bake Post Processing** - Apply antialiasing, denoising, sharpening and more.",
+    "**UDIM Baking** - Visualize your UDIM resolution before baking. UDIMs are automatically detected from UVs.",
+    "**Multi Texture Channel Packed Baking** - Bake multiple textures with a single click while having Full Control over texture channels with 23 unique bake types."
   ]
 
   # Multiple usage images with carousel (simple array format for now)
@@ -140,14 +140,14 @@
     "images/Ultibake/BasicUsage/MultiBakeSet5.webp"
   ]
   images_captions = [
-    "**Modular Profile System** — Define your baking workflow just like in **Substance Painter**",
-    "**Easy Channel Packing** — Intuitive interface for packing multiple textures into RGBA channels",
-    "**23 Bake Types** — Mix of **BSDF inputs** and **custom types** for industry-standard workflows",
-    "**Automatic Suffix Generation** — Texture names are automatically generated based on your settings",
-    "**Manual Suffix Definition** — Manually define texture suffixes based on bake type to fit your project",
-    "**Bake Visualization** — Visualize the bake before you start it to ensure everything is set up correctly",
-    "**Bake Set Generator** — Automatically generate Bake Sets based on object names in a collection",
-    "**Finalize** — Instantly creates export-ready objects based on your baked textures after baking"
+    "**Modular Profile System** - Define your baking workflow just like in **Substance Painter**",
+    "**Easy Channel Packing** - Intuitive interface for packing multiple textures into RGBA channels",
+    "**23 Bake Types** - Mix of **BSDF inputs** and **custom types** for industry-standard workflows",
+    "**Automatic Suffix Generation** - Texture names are automatically generated based on your settings",
+    "**Manual Suffix Definition** - Manually define texture suffixes based on bake type to fit your project",
+    "**Bake Visualization** - Visualize the bake before you start it to ensure everything is set up correctly",
+    "**Bake Set Generator** - Automatically generate Bake Sets based on object names in a collection",
+    "**Finalize** - Instantly creates export-ready objects based on your baked textures after baking"
   ]
   images_alt = [
     "UltiBake Profile System",
@@ -159,7 +159,7 @@
     "Bake Set Generator",
     "Finalize Feature"
   ]
-  caption = "**Profile System Features** — Save, load, and reuse your setups across projects"
+  caption = "**Profile System Features** - Save, load, and reuse your setups across projects"
 
 
 # Support / Community

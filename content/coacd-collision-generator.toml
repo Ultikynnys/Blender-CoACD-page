@@ -55,14 +55,14 @@
   # Parameters and Usage sections
   parameters_title = "Parameters"
   parameters = [
-    "**Threshold** — Concavity tolerance. Lower = more cuts/tighter hulls; higher = fewer, coarser hulls. Typical 0.03–0.20.",
-    "**Max Convex Hulls** — Upper limit on number of hull pieces to output.",
-    "**Resolution** — Voxel grid detail for preprocessing and CoACD; higher = more detail, slower.",
-    "**Max Hull Vertices** — Per-hull vertex cap after simplification.",
-    "**Merge Sub-Hulls** — Merge adjacent sub-hull components when possible.",
-    "**Inflate Thickness** — Inflate mesh faces before voxelization. Set to 0 to disable.",
-    "**Min Volume Threshold** — Minimum volume for creating a hull; smaller pieces are discarded.",
-    "**MCTS Nodes/Iterations** — Search breadth and effort; higher can improve fit at the cost of time.",
+    "**Threshold** - Concavity tolerance. Lower = more cuts/tighter hulls; higher = fewer, coarser hulls. Typical 0.03–0.20.",
+    "**Max Convex Hulls** - Upper limit on number of hull pieces to output.",
+    "**Resolution** - Voxel grid detail for preprocessing and CoACD; higher = more detail, slower.",
+    "**Max Hull Vertices** - Per-hull vertex cap after simplification.",
+    "**Merge Sub-Hulls** - Merge adjacent sub-hull components when possible.",
+    "**Inflate Thickness** - Inflate mesh faces before voxelization. Set to 0 to disable.",
+    "**Min Volume Threshold** - Minimum volume for creating a hull; smaller pieces are discarded.",
+    "**MCTS Nodes/Iterations** - Search breadth and effort; higher can improve fit at the cost of time.",
   ]
 
   usage_title = "Usage"
@@ -70,9 +70,9 @@
     "**Select** one or more mesh objects.",
     "**Pick a Quality Preset** (Minimal/Low/Medium/High/Maximum) or adjust parameters.",
     "**Click Generate Collision**.",
-    "Post-Processing — **Mirror Collision Objects**: mirror across X/Y/Z with center threshold.",
-    "Post-Processing — **Combine Colliders**: merge selected collision hulls into one.",
-    "Post-Processing — **Generate LODs**: create multiple LOD levels via decimation; configure levels and ratios in the panel.",
+    "Post-Processing - **Mirror Collision Objects**: mirror across X/Y/Z with center threshold.",
+    "Post-Processing - **Combine Colliders**: merge selected collision hulls into one.",
+    "Post-Processing - **Generate LODs**: create multiple LOD levels via decimation; configure levels and ratios in the panel.",
   ]
 
   # Multiple usage images with carousel

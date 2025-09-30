@@ -48,12 +48,12 @@
   # Parameters and Usage sections
   parameters_title = "Unity Features"
   parameters = [
-    "**Direct Export** — Send assets directly to Unity project folders.",
-    "**Material Mapping** — Automatic Unity material creation and assignment.",
-    "**LOD Generation** — Create multiple detail levels for Unity's LOD system.",
-    "**Prefab Creation** — Generate Unity prefabs with proper component setup.",
-    "**Animation Export** — Transfer Blender animations to Unity's Animator system.",
-    "**Lightmap UVs** — Generate secondary UV channels for Unity lightmapping."
+    "**Direct Export** - Send assets directly to Unity project folders.",
+    "**Material Mapping** - Automatic Unity material creation and assignment.",
+    "**LOD Generation** - Create multiple detail levels for Unity's LOD system.",
+    "**Prefab Creation** - Generate Unity prefabs with proper component setup.",
+    "**Animation Export** - Transfer Blender animations to Unity's Animator system.",
+    "**Lightmap UVs** - Generate secondary UV channels for Unity lightmapping."
   ]
 
   usage_title = "Unity Workflow"
@@ -61,7 +61,7 @@
     "**Configure** Unity project path in UltiBridge settings.",
     "**Select** your Blender assets (meshes, materials, animations).",
     "**Choose** export options: LODs, materials, prefabs, etc.",
-    "**Click Export to Unity** — assets appear instantly in your Unity project.",
+    "**Click Export to Unity** - assets appear instantly in your Unity project.",
     "**Iterate** seamlessly between Blender and Unity with live sync."
   ]
 

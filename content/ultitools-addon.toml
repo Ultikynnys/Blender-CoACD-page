@@ -47,14 +47,14 @@
   # Tools overview
   parameters_title = "Tool Categories"
   parameters = [
-    "**Palette Manager** — Streamlined palette system with save/load functionality. Switching between colors made easy (Ctrl+Q for pie menu by default).",
-    "**Mesh Analysis** — See the state of your mesh with all its problems. Detects overlapping faces, non-manifold geometry, and more.",
-    "**Portfolio Renderer** — Automates wireframe render setup including text, font, size, and material settings for AO and wireframe renders.",
-    "**3D LUT Generator** — Create 3D LUTs for various engines and platforms. Includes 3D LUT visualizer for color space transformations.",
-    "**Sprite Sheet Creation** — Takes all camera frames and stitches them into a single texture. Perfect for sprite animations.",
-    "**Text Animation** — Toggle and keyframe different texts on your text object. Supports dynamic expressions and mathematical operations.",
-    "**UV++** — Better UV layer controls. Rearrange UV layers, create copies, and transfer UV layouts between objects.",
-    "**Game Ready FBX Exporter** — Reliable FBX export with game engine-friendly defaults, Unreal animation scale fix, and more."
+    "**Palette Manager** - Streamlined palette system with save/load functionality. Switching between colors made easy (Ctrl+Q for pie menu by default).",
+    "**Mesh Analysis** - See the state of your mesh with all its problems. Detects overlapping faces, non-manifold geometry, and more.",
+    "**Portfolio Renderer** - Automates wireframe render setup including text, font, size, and material settings for AO and wireframe renders.",
+    "**3D LUT Generator** - Create 3D LUTs for various engines and platforms. Includes 3D LUT visualizer for color space transformations.",
+    "**Sprite Sheet Creation** - Takes all camera frames and stitches them into a single texture. Perfect for sprite animations.",
+    "**Text Animation** - Toggle and keyframe different texts on your text object. Supports dynamic expressions and mathematical operations.",
+    "**UV++** - Better UV layer controls. Rearrange UV layers, create copies, and transfer UV layouts between objects.",
+    "**Game Ready FBX Exporter** - Reliable FBX export with game engine-friendly defaults, Unreal animation scale fix, and more."
   ]
 
   usage_title = "Tool Highlights"
@@ -139,7 +139,7 @@
   
   [tools.uv_plus]
     title = "UV++"
-    description = "Better UV layer controls—you can finally rearrange the UV layers, create a copy from a specific UV layer, and even copy the UV layout to selected objects (sadly, Blender's internal UV layer data transfer is broken)."
+    description = "Better UV layer controls-you can finally rearrange the UV layers, create a copy from a specific UV layer, and even copy the UV layout to selected objects (sadly, Blender's internal UV layer data transfer is broken)."
   
   [tools.fbx_exporter]
     title = "Game Ready FBX Exporter"

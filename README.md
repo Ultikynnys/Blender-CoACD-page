@@ -3,9 +3,9 @@
 ## TOML Configuration Overview
 The landing page content is driven entirely by TOML configuration files loaded at runtime by `script.js`. Each page variant points to a different TOML file:
 
-- `content.toml` — default CoACD landing page (used when no `page` query parameter is provided or `?page=coacd`).
-- `content2.toml` — UltiBridge for Unity variant (`?page=unity`).
-- `content3.toml` — UltiBridge for Unreal Engine variant (`?page=unreal`).
+- `content.toml` - default CoACD landing page (used when no `page` query parameter is provided or `?page=coacd`).
+- `content2.toml` - UltiBridge for Unity variant (`?page=unity`).
+- `content3.toml` - UltiBridge for Unreal Engine variant (`?page=unreal`).
 
 `script.js` determines which configuration to load in this order:
 
@@ -43,5 +43,5 @@ Each TOML file contains the same major sections that populate the HTML structure
 
 ## Tips
 - Use Markdown-style `**bold**` inside paragraphs and list items; `script.js` converts them to `<strong>` tags and applies theme colors automatically.
-- Leave optional sections blank or omit tables entirely if you do not need them—the renderer checks for presence before injecting HTML.
+- Leave optional sections blank or omit tables entirely if you do not need them-the renderer checks for presence before injecting HTML.
 - When disabling the research/documentation link, set both `research_link_enabled = false` and leave the other fields as-is for clarity.

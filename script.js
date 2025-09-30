@@ -112,9 +112,9 @@ function createMediaCarousel(items, cfg, options = {}) {
     
     const content = isVideo 
       ? `<div class="video-frame ${borderClass}"><iframe src="${src}" title="${title}" allowfullscreen loading="lazy"></iframe></div>`
-      : `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: cover;">`;
+      : `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: cover; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;">`;
     
-    return `<div class="carousel-item ${index === 0 ? 'active' : ''}">${content}</div>`;
+    return `<div class="carousel-item ${index === 0 ? 'active' : ''}" style="user-select: none;">${content}</div>`;
   }).join('');
 
   const indicatorsHtml = items.length > 1 ? `
@@ -132,10 +132,23 @@ function createMediaCarousel(items, cfg, options = {}) {
   if (className) {
     className.split(/\s+/).filter(Boolean).forEach(cls => wrapper.classList.add(cls));
   }
+  // Add navigation arrows HTML for carousels with multiple items
+  const navArrowsHtml = items.length > 1 ? `
+    <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  ` : '';
+  
   wrapper.innerHTML = `
     <div id="${carouselId}" class="carousel slide ${type === 'video' ? 'interactive-border' : ''}" data-bs-ride="false">
       <div class="carousel-inner">${itemsHtml}</div>
       ${indicatorsHtml}
+      ${navArrowsHtml}
     </div>
   `;
 
@@ -208,6 +221,10 @@ function initImageZoom() {
       align-items: center;
       justify-content: center;
       cursor: zoom-out;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     `;
     
     const zoomedImg = document.createElement('img');
@@ -218,6 +235,11 @@ function initImageZoom() {
       object-fit: contain;
       transform-origin: center center;
       transition: transform 0.1s ease-out;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      pointer-events: none;
     `;
     
     const captionOverlay = document.createElement('div');
@@ -239,41 +261,193 @@ function initImageZoom() {
       z-index: 10001;
     `;
     
-    zoomOverlay.appendChild(zoomedImg);
-    zoomOverlay.appendChild(captionOverlay);
-    document.body.appendChild(zoomOverlay);
-    
-    // Close on click
-    zoomOverlay.addEventListener('click', () => {
-      zoomOverlay.style.display = 'none';
-      zoomedImg.style.transform = 'scale(1)';
+    // Create left arrow indicator
+    const leftArrow = document.createElement('div');
+    leftArrow.id = 'zoom-nav-left';
+    leftArrow.innerHTML = '‹';
+    leftArrow.style.cssText = `
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 120px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      user-select: none;
+      z-index: 10001;
+      transition: color 0.2s, background-color 0.2s;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      line-height: 1;
+    `;
+    leftArrow.addEventListener('mouseenter', () => {
+      leftArrow.style.color = 'rgba(255, 255, 255, 1)';
+      leftArrow.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+    });
+    leftArrow.addEventListener('mouseleave', () => {
+      leftArrow.style.color = 'rgba(255, 255, 255, 0.7)';
+      leftArrow.style.backgroundColor = 'transparent';
+    });
+    leftArrow.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const navFunc = zoomOverlay.navigateZoomedImage;
+      if (navFunc) navFunc(-1);
     });
     
-    // Close on Escape key
+    // Create right arrow indicator
+    const rightArrow = document.createElement('div');
+    rightArrow.id = 'zoom-nav-right';
+    rightArrow.innerHTML = '›';
+    rightArrow.style.cssText = `
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 120px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      user-select: none;
+      z-index: 10001;
+      transition: color 0.2s, background-color 0.2s;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      line-height: 1;
+    `;
+    rightArrow.addEventListener('mouseenter', () => {
+      rightArrow.style.color = 'rgba(255, 255, 255, 1)';
+      rightArrow.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+    });
+    rightArrow.addEventListener('mouseleave', () => {
+      rightArrow.style.color = 'rgba(255, 255, 255, 0.7)';
+      rightArrow.style.backgroundColor = 'transparent';
+    });
+    rightArrow.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const navFunc = zoomOverlay.navigateZoomedImage;
+      if (navFunc) navFunc(1);
+    });
+    
+    zoomOverlay.appendChild(zoomedImg);
+    zoomOverlay.appendChild(captionOverlay);
+    zoomOverlay.appendChild(leftArrow);
+    zoomOverlay.appendChild(rightArrow);
+    document.body.appendChild(zoomOverlay);
+    
+    // Close on click (but not on navigation zones)
+    zoomOverlay.addEventListener('click', (e) => {
+      const rect = zoomOverlay.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const navZoneWidth = 100; // pixels from left/right edges
+      
+      // Check if clicking in navigation zones
+      if (clickX < navZoneWidth || clickX > rect.width - navZoneWidth) {
+        // Don't close, let navigation handler deal with it
+        return;
+      }
+      
+      zoomOverlay.style.display = 'none';
+      zoomedImg.style.transform = 'scale(1)';
+      delete zoomOverlay.dataset.carouselId;
+      delete zoomOverlay.dataset.currentIndex;
+    });
+    
+    // Close on Escape key and arrow key navigation
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && zoomOverlay.style.display === 'flex') {
-        zoomOverlay.style.display = 'none';
-        zoomedImg.style.transform = 'scale(1)';
+      if (zoomOverlay.style.display === 'flex') {
+        if (e.key === 'Escape') {
+          zoomOverlay.style.display = 'none';
+          zoomedImg.style.transform = 'scale(1)';
+          delete zoomOverlay.dataset.carouselId;
+          delete zoomOverlay.dataset.currentIndex;
+        } else if (e.key === 'ArrowLeft') {
+          navigateZoomedImage(-1);
+        } else if (e.key === 'ArrowRight') {
+          navigateZoomedImage(1);
+        }
       }
     });
     
-    // Track current zoom level
-    let currentZoom = 1.5;
+    // Add navigation on click (left/right zones)
+    zoomOverlay.addEventListener('click', (e) => {
+      const rect = zoomOverlay.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const navZoneWidth = 100;
+      
+      if (clickX < navZoneWidth) {
+        navigateZoomedImage(-1);
+        e.stopPropagation();
+      } else if (clickX > rect.width - navZoneWidth) {
+        navigateZoomedImage(1);
+        e.stopPropagation();
+      }
+    });
     
-    // Zoom on mouse position
-    zoomedImg.addEventListener('mousemove', (e) => {
-      if (zoomOverlay.style.display === 'flex') {
+    // Navigation function
+    function navigateZoomedImage(direction) {
+      const carouselId = zoomOverlay.dataset.carouselId;
+      const currentIndex = parseInt(zoomOverlay.dataset.currentIndex || '0');
+      
+      if (!carouselId) return;
+      
+      const carousel = document.getElementById(carouselId);
+      if (!carousel) return;
+      
+      const items = carousel.querySelectorAll('.carousel-item');
+      if (items.length <= 1) return;
+      
+      let newIndex = currentIndex + direction;
+      if (newIndex < 0) newIndex = items.length - 1;
+      if (newIndex >= items.length) newIndex = 0;
+      
+      const newItem = items[newIndex];
+      const newImg = newItem.querySelector('img');
+      
+      if (newImg) {
+        zoomedImg.src = newImg.src;
+        zoomedImg.alt = newImg.alt;
+        zoomOverlay.dataset.currentIndex = newIndex;
+        
+        // Update caption
+        const captionText = newImg.dataset.zoomCaption || newImg.alt || '';
+        if (captionText) {
+          captionOverlay.innerHTML = mdInlineToHtmlBoldOnly(String(captionText));
+          if (window.globalConfig) {
+            colorizeStrongIn(captionOverlay, window.globalConfig);
+          }
+          captionOverlay.style.display = 'block';
+        } else {
+          captionOverlay.style.display = 'none';
+        }
+        
+        // Also update the carousel position
+        const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+        if (bsCarousel) {
+          bsCarousel.to(newIndex);
+        }
+      }
+    }
+    
+    // Store navigation function on overlay for arrow click handlers
+    zoomOverlay.navigateZoomedImage = navigateZoomedImage;
+    
+    // Track current zoom level
+    let currentZoom = 1;
+    
+    // Zoom on mouse position - listen on overlay to capture all movement
+    zoomOverlay.addEventListener('mousemove', (e) => {
+      if (zoomOverlay.style.display === 'flex' && currentZoom > 1) {
         const rect = zoomedImg.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
         zoomedImg.style.transformOrigin = `${x}% ${y}%`;
         zoomedImg.style.transform = `scale(${currentZoom})`;
       }
-    });
-    
-    zoomedImg.addEventListener('mouseleave', () => {
-      zoomedImg.style.transform = 'scale(1)';
-      currentZoom = 1.5; // Reset zoom level when mouse leaves
     });
     
     // Scroll wheel zoom
@@ -362,6 +536,28 @@ function makeImageZoomable(img, caption = '') {
     const captionEl = overlay.querySelector('#zoom-caption');
     zoomedImg.src = img.src;
     zoomedImg.alt = img.alt;
+    
+    // Store carousel context for navigation
+    const leftArrow = overlay.querySelector('#zoom-nav-left');
+    const rightArrow = overlay.querySelector('#zoom-nav-right');
+    
+    if (carousel) {
+      overlay.dataset.carouselId = carousel.id;
+      const items = Array.from(carousel.querySelectorAll('.carousel-item'));
+      const currentItem = img.closest('.carousel-item');
+      const currentIndex = items.indexOf(currentItem);
+      overlay.dataset.currentIndex = currentIndex >= 0 ? currentIndex : 0;
+      
+      // Show arrows if there are multiple items
+      if (items.length > 1) {
+        if (leftArrow) leftArrow.style.display = 'flex';
+        if (rightArrow) rightArrow.style.display = 'flex';
+      }
+    } else {
+      // Hide arrows if not a carousel
+      if (leftArrow) leftArrow.style.display = 'none';
+      if (rightArrow) rightArrow.style.display = 'none';
+    }
     
     // Set caption if available with markdown processing
     const captionText = img.dataset.zoomCaption || img.alt || '';
@@ -507,6 +703,10 @@ function initBeforeAfterSliders() {
     sliderImages.forEach(img => {
       img.style.cursor = 'zoom-in';
       img.style.pointerEvents = 'auto'; // Ensure images can receive clicks
+      img.style.userSelect = 'none';
+      img.style.webkitUserSelect = 'none';
+      img.style.mozUserSelect = 'none';
+      img.style.msUserSelect = 'none';
       
       img.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1066,7 +1266,7 @@ function parseVersionTitleAndDate(fullTitle) {
       // Remove the date from the title
       cleanTitle = fullTitle.replace(pattern, '').trim();
       // Clean up any remaining separators
-      cleanTitle = cleanTitle.replace(/\s*[-–—]\s*$/, '').replace(/^\s*[-–—]\s*/, '').trim();
+      cleanTitle = cleanTitle.replace(/\s*[-–-]\s*$/, '').replace(/^\s*[-–-]\s*/, '').trim();
       break;
     }
   }
@@ -2323,6 +2523,601 @@ function renderDocumentationPage(pageId) {
       introEl.style.display = 'none';
     }
   }
+
+  // Render Profiles section as separate container after introduction
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const profilesTitle = introConfig.profiles_title || '';
+      const profilesSteps = Array.isArray(introConfig.profiles_steps) ? introConfig.profiles_steps : [];
+      const profilesImages = parseMediaItems(introConfig, {
+        itemsKey: 'profiles_images',
+        captionsKey: 'profiles_images_captions',
+        altKey: 'profiles_images_alt',
+        alignmentKey: 'profiles_images_alignment'
+      });
+
+      console.log('Profiles rendering:', { profilesTitle, stepsCount: profilesSteps.length, imagesCount: profilesImages.length });
+
+      // Remove existing profiles section if it exists
+      const existingProfiles = document.getElementById('doc-page-profiles');
+      if (existingProfiles) existingProfiles.remove();
+
+      if (profilesTitle && (profilesSteps.length > 0 || profilesImages.length > 0)) {
+        const profilesSection = document.createElement('section');
+        profilesSection.id = 'doc-page-profiles';
+        profilesSection.className = 'section section--profiles';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = profilesTitle;
+        profilesSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (profilesSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          profilesSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (profilesImages.length > 0) {
+          const carousel = createImageCarousel(profilesImages, (cfgDoc || globalConfig), 'profiles-carousel');
+          card.appendChild(carousel);
+        }
+        
+        profilesSection.appendChild(card);
+        
+        // Insert after intro section
+        const pageContainer = document.getElementById('documentation-page');
+        const introElDelayed = document.getElementById('doc-page-intro');
+        if (pageContainer && introElDelayed) {
+          introElDelayed.parentNode.insertBefore(profilesSection, introElDelayed.nextSibling);
+          console.log('Profiles section inserted after intro');
+        } else {
+          console.error('Could not insert profiles section', { pageContainer, introElDelayed });
+        }
+      }
+    }
+  }, 100);
+
+  // Render SuffixGen section as separate container after profiles
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const suffixgenTitle = introConfig.suffixgen_title || '';
+      const suffixgenSteps = Array.isArray(introConfig.suffixgen_steps) ? introConfig.suffixgen_steps : [];
+      const suffixgenImages = parseMediaItems(introConfig, {
+        itemsKey: 'suffixgen_images',
+        captionsKey: 'suffixgen_images_captions',
+        altKey: 'suffixgen_images_alt',
+        alignmentKey: 'suffixgen_images_alignment'
+      });
+
+      // Remove existing suffixgen section if it exists
+      const existingSuffixgen = document.getElementById('doc-page-suffixgen');
+      if (existingSuffixgen) existingSuffixgen.remove();
+
+      if (suffixgenTitle && (suffixgenSteps.length > 0 || suffixgenImages.length > 0)) {
+        const suffixgenSection = document.createElement('section');
+        suffixgenSection.id = 'doc-page-suffixgen';
+        suffixgenSection.className = 'section section--suffixgen';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = suffixgenTitle;
+        suffixgenSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (suffixgenSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          suffixgenSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (suffixgenImages.length > 0) {
+          const carousel = createImageCarousel(suffixgenImages, (cfgDoc || globalConfig), 'suffixgen-carousel');
+          card.appendChild(carousel);
+        }
+        
+        suffixgenSection.appendChild(card);
+        
+        // Insert after profiles section
+        const pageContainer = document.getElementById('documentation-page');
+        const profilesEl = document.getElementById('doc-page-profiles');
+        if (pageContainer && profilesEl) {
+          profilesEl.parentNode.insertBefore(suffixgenSection, profilesEl.nextSibling);
+        }
+      }
+    }
+  }, 150);
+
+  // Render BakeSetGen section as separate container after suffixgen
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const bakesetgenTitle = introConfig.bakesetgen_title || '';
+      const bakesetgenSteps = Array.isArray(introConfig.bakesetgen_steps) ? introConfig.bakesetgen_steps : [];
+      const bakesetgenImages = parseMediaItems(introConfig, {
+        itemsKey: 'bakesetgen_images',
+        captionsKey: 'bakesetgen_images_captions',
+        altKey: 'bakesetgen_images_alt',
+        alignmentKey: 'bakesetgen_images_alignment'
+      });
+
+      // Remove existing bakesetgen section if it exists
+      const existingBakesetgen = document.getElementById('doc-page-bakesetgen');
+      if (existingBakesetgen) existingBakesetgen.remove();
+
+      if (bakesetgenTitle && (bakesetgenSteps.length > 0 || bakesetgenImages.length > 0)) {
+        const bakesetgenSection = document.createElement('section');
+        bakesetgenSection.id = 'doc-page-bakesetgen';
+        bakesetgenSection.className = 'section section--bakesetgen';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = bakesetgenTitle;
+        bakesetgenSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (bakesetgenSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          bakesetgenSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (bakesetgenImages.length > 0) {
+          const carousel = createImageCarousel(bakesetgenImages, (cfgDoc || globalConfig), 'bakesetgen-carousel');
+          card.appendChild(carousel);
+        }
+        
+        bakesetgenSection.appendChild(card);
+        
+        // Insert after suffixgen section
+        const pageContainer = document.getElementById('documentation-page');
+        const suffixgenEl = document.getElementById('doc-page-suffixgen');
+        if (pageContainer && suffixgenEl) {
+          suffixgenEl.parentNode.insertBefore(bakesetgenSection, suffixgenEl.nextSibling);
+        }
+      }
+    }
+  }, 200);
+
+  // Render BakeVisualizer section as separate container after bakesetgen
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const bakevisualizerTitle = introConfig.bakevisualizer_title || '';
+      const bakevisualizerSteps = Array.isArray(introConfig.bakevisualizer_steps) ? introConfig.bakevisualizer_steps : [];
+      const bakevisualizerImages = parseMediaItems(introConfig, {
+        itemsKey: 'bakevisualizer_images',
+        captionsKey: 'bakevisualizer_images_captions',
+        altKey: 'bakevisualizer_images_alt',
+        alignmentKey: 'bakevisualizer_images_alignment'
+      });
+
+      // Remove existing bakevisualizer section if it exists
+      const existingBakevisualizer = document.getElementById('doc-page-bakevisualizer');
+      if (existingBakevisualizer) existingBakevisualizer.remove();
+
+      if (bakevisualizerTitle && (bakevisualizerSteps.length > 0 || bakevisualizerImages.length > 0)) {
+        const bakevisualizerSection = document.createElement('section');
+        bakevisualizerSection.id = 'doc-page-bakevisualizer';
+        bakevisualizerSection.className = 'section section--bakevisualizer';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = bakevisualizerTitle;
+        bakevisualizerSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (bakevisualizerSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          bakevisualizerSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (bakevisualizerImages.length > 0) {
+          const carousel = createImageCarousel(bakevisualizerImages, (cfgDoc || globalConfig), 'bakevisualizer-carousel');
+          card.appendChild(carousel);
+        }
+        
+        bakevisualizerSection.appendChild(card);
+        
+        // Insert after bakesetgen section
+        const pageContainer = document.getElementById('documentation-page');
+        const bakesetgenEl = document.getElementById('doc-page-bakesetgen');
+        if (pageContainer && bakesetgenEl) {
+          bakesetgenEl.parentNode.insertBefore(bakevisualizerSection, bakesetgenEl.nextSibling);
+        }
+      }
+    }
+  }, 250);
+
+  // Render MultiUV section as separate container after bakevisualizer
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const multiuvTitle = introConfig.multiuv_title || '';
+      const multiuvSteps = Array.isArray(introConfig.multiuv_steps) ? introConfig.multiuv_steps : [];
+      const multiuvImages = parseMediaItems(introConfig, {
+        itemsKey: 'multiuv_images',
+        captionsKey: 'multiuv_images_captions',
+        altKey: 'multiuv_images_alt',
+        alignmentKey: 'multiuv_images_alignment'
+      });
+
+      // Remove existing multiuv section if it exists
+      const existingMultiuv = document.getElementById('doc-page-multiuv');
+      if (existingMultiuv) existingMultiuv.remove();
+
+      if (multiuvTitle && (multiuvSteps.length > 0 || multiuvImages.length > 0)) {
+        const multiuvSection = document.createElement('section');
+        multiuvSection.id = 'doc-page-multiuv';
+        multiuvSection.className = 'section section--multiuv';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = multiuvTitle;
+        multiuvSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (multiuvSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          multiuvSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (multiuvImages.length > 0) {
+          const carousel = createImageCarousel(multiuvImages, (cfgDoc || globalConfig), 'multiuv-carousel');
+          card.appendChild(carousel);
+        }
+        
+        multiuvSection.appendChild(card);
+        
+        // Insert after bakevisualizer section
+        const pageContainer = document.getElementById('documentation-page');
+        const bakevisualizerEl = document.getElementById('doc-page-bakevisualizer');
+        if (pageContainer && bakevisualizerEl) {
+          bakevisualizerEl.parentNode.insertBefore(multiuvSection, bakevisualizerEl.nextSibling);
+        }
+      }
+    }
+  }, 300);
+
+  // Render CollectionBake section as separate container after multiuv
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const collectionbakeTitle = introConfig.collectionbake_title || '';
+      const collectionbakeSteps = Array.isArray(introConfig.collectionbake_steps) ? introConfig.collectionbake_steps : [];
+      const collectionbakeImages = parseMediaItems(introConfig, {
+        itemsKey: 'collectionbake_images',
+        captionsKey: 'collectionbake_images_captions',
+        altKey: 'collectionbake_images_alt',
+        alignmentKey: 'collectionbake_images_alignment'
+      });
+
+      // Remove existing collectionbake section if it exists
+      const existingCollectionbake = document.getElementById('doc-page-collectionbake');
+      if (existingCollectionbake) existingCollectionbake.remove();
+
+      if (collectionbakeTitle && (collectionbakeSteps.length > 0 || collectionbakeImages.length > 0)) {
+        const collectionbakeSection = document.createElement('section');
+        collectionbakeSection.id = 'doc-page-collectionbake';
+        collectionbakeSection.className = 'section section--collectionbake';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = collectionbakeTitle;
+        collectionbakeSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (collectionbakeSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          collectionbakeSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (collectionbakeImages.length > 0) {
+          const carousel = createImageCarousel(collectionbakeImages, (cfgDoc || globalConfig), 'collectionbake-carousel');
+          card.appendChild(carousel);
+        }
+        
+        collectionbakeSection.appendChild(card);
+        
+        // Insert after multiuv section
+        const pageContainer = document.getElementById('documentation-page');
+        const multiuvEl = document.getElementById('doc-page-multiuv');
+        if (pageContainer && multiuvEl) {
+          multiuvEl.parentNode.insertBefore(collectionbakeSection, multiuvEl.nextSibling);
+        }
+      }
+    }
+  }, 350);
+
+  // Render EnvironmentCollection section as separate container after collectionbake
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const environmentcollectionTitle = introConfig.environmentcollection_title || '';
+      const environmentcollectionSteps = Array.isArray(introConfig.environmentcollection_steps) ? introConfig.environmentcollection_steps : [];
+      const environmentcollectionImages = parseMediaItems(introConfig, {
+        itemsKey: 'environmentcollection_images',
+        captionsKey: 'environmentcollection_images_captions',
+        altKey: 'environmentcollection_images_alt',
+        alignmentKey: 'environmentcollection_images_alignment'
+      });
+
+      // Remove existing environmentcollection section if it exists
+      const existingEnvironmentcollection = document.getElementById('doc-page-environmentcollection');
+      if (existingEnvironmentcollection) existingEnvironmentcollection.remove();
+
+      if (environmentcollectionTitle && (environmentcollectionSteps.length > 0 || environmentcollectionImages.length > 0)) {
+        const environmentcollectionSection = document.createElement('section');
+        environmentcollectionSection.id = 'doc-page-environmentcollection';
+        environmentcollectionSection.className = 'section section--environmentcollection';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = environmentcollectionTitle;
+        environmentcollectionSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (environmentcollectionSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          environmentcollectionSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (environmentcollectionImages.length > 0) {
+          const carousel = createImageCarousel(environmentcollectionImages, (cfgDoc || globalConfig), 'environmentcollection-carousel');
+          card.appendChild(carousel);
+        }
+        
+        environmentcollectionSection.appendChild(card);
+        
+        // Insert after collectionbake section
+        const pageContainer = document.getElementById('documentation-page');
+        const collectionbakeEl = document.getElementById('doc-page-collectionbake');
+        if (pageContainer && collectionbakeEl) {
+          collectionbakeEl.parentNode.insertBefore(environmentcollectionSection, collectionbakeEl.nextSibling);
+        }
+      }
+    }
+  }, 400);
+
+  // Render Decals section as separate container after environmentcollection
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const decalsTitle = introConfig.decals_title || '';
+      const decalsSteps = Array.isArray(introConfig.decals_steps) ? introConfig.decals_steps : [];
+      const decalsImages = parseMediaItems(introConfig, {
+        itemsKey: 'decals_images',
+        captionsKey: 'decals_images_captions',
+        altKey: 'decals_images_alt',
+        alignmentKey: 'decals_images_alignment'
+      });
+
+      // Remove existing decals section if it exists
+      const existingDecals = document.getElementById('doc-page-decals');
+      if (existingDecals) existingDecals.remove();
+
+      if (decalsTitle && (decalsSteps.length > 0 || decalsImages.length > 0)) {
+        const decalsSection = document.createElement('section');
+        decalsSection.id = 'doc-page-decals';
+        decalsSection.className = 'section section--decals';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = decalsTitle;
+        decalsSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (decalsSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          decalsSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (decalsImages.length > 0) {
+          const carousel = createImageCarousel(decalsImages, (cfgDoc || globalConfig), 'decals-carousel');
+          card.appendChild(carousel);
+        }
+        
+        decalsSection.appendChild(card);
+        
+        // Insert after environmentcollection section
+        const pageContainer = document.getElementById('documentation-page');
+        const environmentcollectionEl = document.getElementById('doc-page-environmentcollection');
+        if (pageContainer && environmentcollectionEl) {
+          environmentcollectionEl.parentNode.insertBefore(decalsSection, environmentcollectionEl.nextSibling);
+        }
+      }
+    }
+  }, 450);
+
+  // Render HighToLow section as separate container after decals
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const hightolowTitle = introConfig.hightolow_title || '';
+      const hightolowSteps = Array.isArray(introConfig.hightolow_steps) ? introConfig.hightolow_steps : [];
+      const hightolowImages = parseMediaItems(introConfig, {
+        itemsKey: 'hightolow_images',
+        captionsKey: 'hightolow_images_captions',
+        altKey: 'hightolow_images_alt',
+        alignmentKey: 'hightolow_images_alignment'
+      });
+
+      // Remove existing hightolow section if it exists
+      const existingHightolow = document.getElementById('doc-page-hightolow');
+      if (existingHightolow) existingHightolow.remove();
+
+      if (hightolowTitle && (hightolowSteps.length > 0 || hightolowImages.length > 0)) {
+        const hightolowSection = document.createElement('section');
+        hightolowSection.id = 'doc-page-hightolow';
+        hightolowSection.className = 'section section--hightolow';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = hightolowTitle;
+        hightolowSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (hightolowSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          hightolowSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (hightolowImages.length > 0) {
+          const carousel = createImageCarousel(hightolowImages, (cfgDoc || globalConfig), 'hightolow-carousel');
+          card.appendChild(carousel);
+        }
+        
+        hightolowSection.appendChild(card);
+        
+        // Insert after decals section
+        const pageContainer = document.getElementById('documentation-page');
+        const decalsEl = document.getElementById('doc-page-decals');
+        if (pageContainer && decalsEl) {
+          decalsEl.parentNode.insertBefore(hightolowSection, decalsEl.nextSibling);
+        }
+      }
+    }
+  }, 500);
+
+  // Render AdvancedBaking section as separate container after hightolow
+  setTimeout(() => {
+    if (page.introduction) {
+      const introConfig = page.introduction;
+      const advancedbakingTitle = introConfig.advancedbaking_title || '';
+      const advancedbakingSteps = Array.isArray(introConfig.advancedbaking_steps) ? introConfig.advancedbaking_steps : [];
+      const advancedbakingImages = parseMediaItems(introConfig, {
+        itemsKey: 'advancedbaking_images',
+        captionsKey: 'advancedbaking_images_captions',
+        altKey: 'advancedbaking_images_alt',
+        alignmentKey: 'advancedbaking_images_alignment'
+      });
+
+      // Remove existing advancedbaking section if it exists
+      const existingAdvancedbaking = document.getElementById('doc-page-advancedbaking');
+      if (existingAdvancedbaking) existingAdvancedbaking.remove();
+
+      if (advancedbakingTitle && (advancedbakingSteps.length > 0 || advancedbakingImages.length > 0)) {
+        const advancedbakingSection = document.createElement('section');
+        advancedbakingSection.id = 'doc-page-advancedbaking';
+        advancedbakingSection.className = 'section section--advancedbaking';
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'section__title';
+        h2.textContent = advancedbakingTitle;
+        advancedbakingSection.appendChild(h2);
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        if (advancedbakingSteps.length > 0) {
+          const ul = document.createElement('ul');
+          ul.className = 'intro__usage-list';
+          advancedbakingSteps.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+            colorizeStrongIn(li, (cfgDoc || globalConfig));
+            ul.appendChild(li);
+          });
+          card.appendChild(ul);
+        }
+        
+        if (advancedbakingImages.length > 0) {
+          const carousel = createImageCarousel(advancedbakingImages, (cfgDoc || globalConfig), 'advancedbaking-carousel');
+          card.appendChild(carousel);
+        }
+        
+        advancedbakingSection.appendChild(card);
+        
+        // Insert after hightolow section
+        const pageContainer = document.getElementById('documentation-page');
+        const hightolowEl = document.getElementById('doc-page-hightolow');
+        if (pageContainer && hightolowEl) {
+          hightolowEl.parentNode.insertBefore(advancedbakingSection, hightolowEl.nextSibling);
+        }
+      }
+    }
+  }, 550);
 
   // Render rich HTML content if provided (page.content_html or page.content_html_url)
   try {
