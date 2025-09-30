@@ -246,7 +246,6 @@ function initImageZoom() {
     captionOverlay.id = 'zoom-caption';
     captionOverlay.style.cssText = `
       position: absolute;
-      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.75);
@@ -255,10 +254,13 @@ function initImageZoom() {
       border-radius: 8px;
       font-size: 1rem;
       max-width: 80%;
+      width: auto;
       text-align: center;
       display: none;
       backdrop-filter: blur(4px);
       z-index: 10001;
+      white-space: normal;
+      word-wrap: break-word;
     `;
     
     // Create left arrow indicator
