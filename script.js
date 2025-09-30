@@ -1601,7 +1601,7 @@ function renderContent(cfg) {
       usageItems = legacy;
     }
     const usageNodes = [];
-    if (usageTitle) {
+    if (usageTitle && usageItems.length > 0) {
       const h3 = document.createElement('h3');
       h3.className = 'intro__usage-title';
       h3.textContent = usageTitle;
@@ -1693,6 +1693,37 @@ function renderContent(cfg) {
       quickstartSection.appendChild(carousel);
       
       introContent.appendChild(quickstartSection);
+    }
+
+    // Video showcase in introduction
+    const videoTitle = cfg?.introduction?.video_title || '';
+    const videoUrl = cfg?.introduction?.video_url || '';
+    
+    if (videoUrl) {
+      const videoSection = document.createElement('div');
+      videoSection.className = 'intro__video';
+      
+      if (videoTitle) {
+        const h3 = document.createElement('h3');
+        h3.className = 'intro__usage-title';
+        h3.textContent = videoTitle;
+        videoSection.appendChild(h3);
+      }
+      
+      const videoContainer = document.createElement('div');
+      videoContainer.className = 'video-embed';
+      const videoFrame = document.createElement('div');
+      videoFrame.className = 'video-frame interactive-border';
+      const iframe = document.createElement('iframe');
+      iframe.src = videoUrl;
+      iframe.title = videoTitle || 'Video showcase';
+      iframe.allowFullscreen = true;
+      iframe.loading = 'lazy';
+      videoFrame.appendChild(iframe);
+      videoContainer.appendChild(videoFrame);
+      videoSection.appendChild(videoContainer);
+      
+      introContent.appendChild(videoSection);
     }
   }
 
@@ -1794,14 +1825,17 @@ function renderContent(cfg) {
 
   // Showcase (single or multiple videos with carousel)
   const showcase = document.getElementById('showcase-container');
+  const showcaseSection = showcase?.closest('section');
   if (showcase) {
     showcase.innerHTML = '';
     const videos = parseShowcaseVideos(cfg?.showcase || {});
     showcase.classList.remove('video-embed');
+    
     if (videos.length > 1) {
       showcase.classList.add('video-embed');
       const carousel = createVideoCarousel(videos, cfg, 'video-carousel');
       showcase.appendChild(carousel);
+      if (showcaseSection) showcaseSection.style.display = 'block';
     } else if (videos.length === 1) {
       showcase.classList.add('video-embed');
       const single = videos[0];
@@ -1824,8 +1858,11 @@ function renderContent(cfg) {
       }
       showcase.appendChild(fig);
       colorizeStrongIn(showcase, cfg);
+      if (showcaseSection) showcaseSection.style.display = 'block';
+    } else {
+      // No videos - hide the entire showcase section
+      if (showcaseSection) showcaseSection.style.display = 'none';
     }
-    // No fallback - if no videos, showcase container remains empty
   }
 
   // Support

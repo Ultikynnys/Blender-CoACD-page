@@ -56,7 +56,7 @@
 
 # Section titles
 [titles]
-  comparisons = "Features"
+  comparisons = "Showcase"
   showcase = "Videos"
   support = "Support"
 
@@ -64,29 +64,24 @@
 [introduction]
   title = ""
   paragraphs = [
-    "**UltiBake** is an all-in-one baking solution for Blender, which aims to streamline the baking process, while providing a wide range of features.",
-    "**Baking** is the act of turning surface details into textures. The modular design philosophy allows for easy baking of textures, **decals**, high to low poly, UDIMs and more, with the added benefit of **saving your setups for later use** using **Profiles**, like in Substance Painter."
+    "**UltiBake** is a complete replacement for Blender's baking workflow, developed specifically for **game development**. Battle-tested with various asset packs and users, it handles even the most complicated scenes with ease.",
+    "Built for **Unreal Engine**, **Unity**, and industry-standard pipelines, UltiBake streamlines the entire baking process. **Multiple materials per model** and **automatic UV map selection** — no more manual setup. The addon handles all the unintuitive Blender stuff, allowing you to **focus on assets**."
   ]
 
   # Features section
   parameters_title = "Key Features"
   parameters = [
-    "**Bake Visualizer** — See your baked textures before you bake them! It dynamically adapts to your baking setup to show only the relevant textures.",
+    "**Modular Design Pattern** — Stores bakes in hierarchical reusable containers called Bake Sets for organized workflows.",
+    "**Finalize** — Instantly creates export-ready objects with automatic texture material creation. Makes exporting to other pipelines a breeze.",
+    "**Automatic Texture Name Generation** — Texture names are automatically generated based on texture contents, saving you time.",
+    "**Advanced Material Support** — As long as your material uses the Principled BSDF node, even the most complicated materials can be baked into textures.",
+    "**Collection Baking** — Bake entire collections into a single texture as long as UVs aren't overlapping.",
     "**Decal Baking** — Unique feature! Apply decals to your desired object's surface. Support for decal addons like decalMACHINE, DecalMaster, TrimFlow, Sanctus Library and UltiStamp.",
     "**Multi High to Low Baking** — Transfer surface details from high-poly to low-poly meshes. You can bake as many high-to-low combinations as you wish with one click!",
     "**Profiles** — Create your own bake setup profile. You can also save/load to external files for other projects.",
     "**Bake Post Processing** — Apply antialiasing, denoising, sharpening and more.",
     "**UDIM Baking** — Visualize your UDIM resolution before baking. UDIMs are automatically detected from UVs.",
-    "**Bent Normals** — Control directional Specularity with Bent Normals.",
     "**Multi Texture Channel Packed Baking** — Bake multiple textures with a single click while having Full Control over texture channels with 23 unique bake types."
-  ]
-
-  usage_title = "Simple to Use"
-  usage_steps = [
-    "**Step 1:** Install the addon .zip from Blender Properties",
-    "**Step 2:** Select your objects to bake by creating a bake set",
-    "**Step 3:** Set up your bake profile and Save it",
-    "**Step 4:** Assign the Profile. Bake the Textures and Finalize for Export"
   ]
 
   # Multiple usage images with carousel (simple array format for now)
@@ -161,6 +156,10 @@
     "top-right"
   ]
 
+  # Video showcase in introduction
+  video_title = "Video Showcase"
+  video_url = "https://www.youtube.com/embed/_gE_KFakj5Q"
+
 # Feature comparisons (using carousel-style content)
 [[comparisons]]
   initial = 0.5
@@ -172,59 +171,38 @@
 
 # Profile System Showcase
 [[comparisons]]
-  image = "images/Ultibake/BasicUsage/ProfileShowcase.png"
-  image_alt = "UltiBake Profile System"
-  caption = "**Modular Profile System** — Define your baking workflow just like in **Substance Painter**. Save, load, and reuse your setups across projects."
-
-[[comparisons]]
-  initial = 0.4
-  color = "teal"
-  before = "images/Logo.png"
-  after  = "images/HIGHTOLOW.webp"
-  caption = "**Manual high-to-low** vs **Multi-object baking**"
-  handle_shape = "circle"
-
-[[comparisons]]
-  initial = 0.5
-  color = "green"
-  before = "images/Logo.png"
-  after  = "images/UDIM.webp"
-  caption = "**Traditional UDIM setup** vs **Automatic UDIM detection**"
-  handle_shape = "circle"
-
-# Single image card example (uses the new single-image mode)
-[[comparisons]]
-  image = "images/Logo2.png"
-  image_alt = "UltiBake streamlined baking workflow"
-  image_caption = "UltiBake streamlined baking workflow"
-  caption = "Single image card showcasing UltiBake's UI"
-
-# Carousel card example (uses the new carousel mode)
-[[comparisons]]
   images = [
-    "images/CompareBase1.png",
-    "images/CompareBase2.png",
-    "images/CompareColl1.png",
-    "images/CompareColl2.png"
-  ]
-  images_alt = [
-    "Base mesh example 1",
-    "Base mesh example 2",
-    "Result example 1",
-    "Result example 2"
+    "images/Ultibake/BasicUsage/ProfileShowcase.png",
+    "images/Ultibake/BasicUsage/EasyChannelPack.png",
+    "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.png",
+    "images/Ultibake/BasicUsage/AutomaticSuffixGen.png",
+    "images/Ultibake/BasicUsage/SuffixGenNaming.png",
+    "images/Ultibake/BasicUsage/BakeVisualization.png",
+    "images/Ultibake/BasicUsage/BakeSetGenerator.webp",
+    "images/Ultibake/BasicUsage/MultiBakeSet5.webp"
   ]
   images_captions = [
-    "Base mesh setup — variant 1",
-    "Base mesh setup — variant 2",
-    "Resulting output — variant 1",
-    "Resulting output — variant 2"
+    "**Modular Profile System** — Define your baking workflow just like in **Substance Painter**",
+    "**Easy Channel Packing** — Intuitive interface for packing multiple textures into RGBA channels",
+    "**23 Bake Types** — Mix of **BSDF inputs** and **custom types** for industry-standard workflows",
+    "**Automatic Suffix Generation** — Texture names are automatically generated based on your settings",
+    "**Manual Suffix Definition** — Manually define texture suffixes based on bake type to fit your project",
+    "**Bake Visualization** — Visualize the bake before you start it to ensure everything is set up correctly",
+    "**Bake Set Generator** — Automatically generate Bake Sets based on object names in a collection",
+    "**Finalize** — Instantly creates export-ready objects based on your baked textures after baking"
   ]
-  caption = "Carousel example — cycle through multiple screenshots"
+  images_alt = [
+    "UltiBake Profile System",
+    "Channel Packing Interface",
+    "Available Bake Types",
+    "Automatic Suffix Generation",
+    "Manual Suffix Definition",
+    "Bake Visualization",
+    "Bake Set Generator",
+    "Finalize Feature"
+  ]
+  caption = "**Profile System Features** — Save, load, and reuse your setups across projects"
 
-# Showcase videos
-[showcase]
-  video_url = "https://www.youtube.com/embed/_gE_KFakj5Q"
-  placeholder = "UltiBake demonstration videos"
 
 # Support / Community
 [support]
