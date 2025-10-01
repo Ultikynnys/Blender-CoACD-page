@@ -2594,42 +2594,74 @@ function renderDocumentationPage(pageId) {
     }
   }
 
-  // Render Profiles section as separate container after introduction
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const profilesTitle = introConfig.profiles_title || '';
-      const profilesSteps = Array.isArray(introConfig.profiles_steps) ? introConfig.profiles_steps : [];
-      const profilesImages = parseMediaItems(introConfig, {
-        itemsKey: 'profiles_images',
-        captionsKey: 'profiles_images_captions',
-        altKey: 'profiles_images_alt',
-        alignmentKey: 'profiles_images_alignment'
+  // Dynamic section renderer - automatically detects and renders all sections from TOML
+  const renderDynamicSections = () => {
+    if (!page.introduction) return;
+    
+    const introConfig = page.introduction;
+    
+    // Get section order from TOML config, or use auto-detection as fallback
+    let sectionOrder = introConfig.section_order;
+    
+    // Fallback: auto-detect sections if not explicitly defined in TOML
+    if (!Array.isArray(sectionOrder) || sectionOrder.length === 0) {
+      sectionOrder = [];
+      // Auto-detect all sections by looking for *_title properties
+      for (const key in introConfig) {
+        if (key.endsWith('_title') && key !== 'parameters_title') {
+          const sectionKey = key.replace('_title', '');
+          // Skip quickstart as it's rendered separately
+          if (sectionKey !== 'quickstart') {
+            sectionOrder.push(sectionKey);
+          }
+        }
+      }
+    }
+    
+    // Get section ID prefix from config
+    const sectionIdPrefix = introConfig.section_id_prefix || 'doc-page-';
+    
+    // Helper function to create a section
+    const createSection = (sectionKey, previousSectionKey) => {
+      const titleKey = `${sectionKey}_title`;
+      const stepsKey = `${sectionKey}_steps`;
+      const imagesKey = `${sectionKey}_images`;
+      const captionsKey = `${sectionKey}_images_captions`;
+      const altKey = `${sectionKey}_images_alt`;
+      const alignmentKey = `${sectionKey}_images_alignment`;
+      
+      const title = introConfig[titleKey] || '';
+      const steps = Array.isArray(introConfig[stepsKey]) ? introConfig[stepsKey] : [];
+      const images = parseMediaItems(introConfig, {
+        itemsKey: imagesKey,
+        captionsKey: captionsKey,
+        altKey: altKey,
+        alignmentKey: alignmentKey
       });
-
-      console.log('Profiles rendering:', { profilesTitle, stepsCount: profilesSteps.length, imagesCount: profilesImages.length });
-
-      // Remove existing profiles section if it exists
-      const existingProfiles = document.getElementById('doc-page-profiles');
-      if (existingProfiles) existingProfiles.remove();
-
-      if (profilesTitle && (profilesSteps.length > 0 || profilesImages.length > 0)) {
-        const profilesSection = document.createElement('section');
-        profilesSection.id = 'doc-page-profiles';
-        profilesSection.className = 'section section--profiles';
+      
+      // Remove existing section if it exists
+      const sectionId = `${sectionIdPrefix}${sectionKey}`;
+      const existingSection = document.getElementById(sectionId);
+      if (existingSection) existingSection.remove();
+      
+      // Only create section if it has content
+      if (title && (steps.length > 0 || images.length > 0)) {
+        const section = document.createElement('section');
+        section.id = sectionId;
+        section.className = `section section--${sectionKey}`;
         
         const h2 = document.createElement('h2');
         h2.className = 'section__title';
-        h2.textContent = profilesTitle;
-        profilesSection.appendChild(h2);
+        h2.textContent = title;
+        section.appendChild(h2);
         
         const card = document.createElement('div');
         card.className = 'card';
         
-        if (profilesSteps.length > 0) {
+        if (steps.length > 0) {
           const ul = document.createElement('ul');
           ul.className = 'intro__usage-list';
-          profilesSteps.forEach(item => {
+          steps.forEach(item => {
             const li = document.createElement('li');
             li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
             colorizeStrongIn(li, (cfgDoc || globalConfig));
@@ -2638,556 +2670,43 @@ function renderDocumentationPage(pageId) {
           card.appendChild(ul);
         }
         
-        if (profilesImages.length > 0) {
-          const carousel = createImageCarousel(profilesImages, (cfgDoc || globalConfig), 'profiles-carousel');
+        if (images.length > 0) {
+          const carousel = createImageCarousel(images, (cfgDoc || globalConfig), `${sectionKey}-carousel`);
           card.appendChild(carousel);
         }
         
-        profilesSection.appendChild(card);
+        section.appendChild(card);
         
-        // Insert after intro section
+        // Insert after previous section
         const pageContainer = document.getElementById('documentation-page');
-        const introElDelayed = document.getElementById('doc-page-intro');
-        if (pageContainer && introElDelayed) {
-          introElDelayed.parentNode.insertBefore(profilesSection, introElDelayed.nextSibling);
-          console.log('Profiles section inserted after intro');
-        } else {
-          console.error('Could not insert profiles section', { pageContainer, introElDelayed });
+        const previousSectionId = `${sectionIdPrefix}${previousSectionKey}`;
+        const previousEl = document.getElementById(previousSectionId);
+        
+        if (pageContainer && previousEl) {
+          previousEl.parentNode.insertBefore(section, previousEl.nextSibling);
         }
       }
-    }
-  }, 100);
-
-  // Render SuffixGen section as separate container after profiles
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const suffixgenTitle = introConfig.suffixgen_title || '';
-      const suffixgenSteps = Array.isArray(introConfig.suffixgen_steps) ? introConfig.suffixgen_steps : [];
-      const suffixgenImages = parseMediaItems(introConfig, {
-        itemsKey: 'suffixgen_images',
-        captionsKey: 'suffixgen_images_captions',
-        altKey: 'suffixgen_images_alt',
-        alignmentKey: 'suffixgen_images_alignment'
-      });
-
-      // Remove existing suffixgen section if it exists
-      const existingSuffixgen = document.getElementById('doc-page-suffixgen');
-      if (existingSuffixgen) existingSuffixgen.remove();
-
-      if (suffixgenTitle && (suffixgenSteps.length > 0 || suffixgenImages.length > 0)) {
-        const suffixgenSection = document.createElement('section');
-        suffixgenSection.id = 'doc-page-suffixgen';
-        suffixgenSection.className = 'section section--suffixgen';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = suffixgenTitle;
-        suffixgenSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (suffixgenSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          suffixgenSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (suffixgenImages.length > 0) {
-          const carousel = createImageCarousel(suffixgenImages, (cfgDoc || globalConfig), 'suffixgen-carousel');
-          card.appendChild(carousel);
-        }
-        
-        suffixgenSection.appendChild(card);
-        
-        // Insert after profiles section
-        const pageContainer = document.getElementById('documentation-page');
-        const profilesEl = document.getElementById('doc-page-profiles');
-        if (pageContainer && profilesEl) {
-          profilesEl.parentNode.insertBefore(suffixgenSection, profilesEl.nextSibling);
-        }
-      }
-    }
-  }, 150);
-
-  // Render BakeSetGen section as separate container after suffixgen
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const bakesetgenTitle = introConfig.bakesetgen_title || '';
-      const bakesetgenSteps = Array.isArray(introConfig.bakesetgen_steps) ? introConfig.bakesetgen_steps : [];
-      const bakesetgenImages = parseMediaItems(introConfig, {
-        itemsKey: 'bakesetgen_images',
-        captionsKey: 'bakesetgen_images_captions',
-        altKey: 'bakesetgen_images_alt',
-        alignmentKey: 'bakesetgen_images_alignment'
-      });
-
-      // Remove existing bakesetgen section if it exists
-      const existingBakesetgen = document.getElementById('doc-page-bakesetgen');
-      if (existingBakesetgen) existingBakesetgen.remove();
-
-      if (bakesetgenTitle && (bakesetgenSteps.length > 0 || bakesetgenImages.length > 0)) {
-        const bakesetgenSection = document.createElement('section');
-        bakesetgenSection.id = 'doc-page-bakesetgen';
-        bakesetgenSection.className = 'section section--bakesetgen';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = bakesetgenTitle;
-        bakesetgenSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (bakesetgenSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          bakesetgenSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (bakesetgenImages.length > 0) {
-          const carousel = createImageCarousel(bakesetgenImages, (cfgDoc || globalConfig), 'bakesetgen-carousel');
-          card.appendChild(carousel);
-        }
-        
-        bakesetgenSection.appendChild(card);
-        
-        // Insert after suffixgen section
-        const pageContainer = document.getElementById('documentation-page');
-        const suffixgenEl = document.getElementById('doc-page-suffixgen');
-        if (pageContainer && suffixgenEl) {
-          suffixgenEl.parentNode.insertBefore(bakesetgenSection, suffixgenEl.nextSibling);
-        }
-      }
-    }
-  }, 200);
-
-  // Render BakeVisualizer section as separate container after bakesetgen
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const bakevisualizerTitle = introConfig.bakevisualizer_title || '';
-      const bakevisualizerSteps = Array.isArray(introConfig.bakevisualizer_steps) ? introConfig.bakevisualizer_steps : [];
-      const bakevisualizerImages = parseMediaItems(introConfig, {
-        itemsKey: 'bakevisualizer_images',
-        captionsKey: 'bakevisualizer_images_captions',
-        altKey: 'bakevisualizer_images_alt',
-        alignmentKey: 'bakevisualizer_images_alignment'
-      });
-
-      // Remove existing bakevisualizer section if it exists
-      const existingBakevisualizer = document.getElementById('doc-page-bakevisualizer');
-      if (existingBakevisualizer) existingBakevisualizer.remove();
-
-      if (bakevisualizerTitle && (bakevisualizerSteps.length > 0 || bakevisualizerImages.length > 0)) {
-        const bakevisualizerSection = document.createElement('section');
-        bakevisualizerSection.id = 'doc-page-bakevisualizer';
-        bakevisualizerSection.className = 'section section--bakevisualizer';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = bakevisualizerTitle;
-        bakevisualizerSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (bakevisualizerSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          bakevisualizerSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (bakevisualizerImages.length > 0) {
-          const carousel = createImageCarousel(bakevisualizerImages, (cfgDoc || globalConfig), 'bakevisualizer-carousel');
-          card.appendChild(carousel);
-        }
-        
-        bakevisualizerSection.appendChild(card);
-        
-        // Insert after bakesetgen section
-        const pageContainer = document.getElementById('documentation-page');
-        const bakesetgenEl = document.getElementById('doc-page-bakesetgen');
-        if (pageContainer && bakesetgenEl) {
-          bakesetgenEl.parentNode.insertBefore(bakevisualizerSection, bakesetgenEl.nextSibling);
-        }
-      }
-    }
-  }, 250);
-
-  // Render MultiUV section as separate container after bakevisualizer
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const multiuvTitle = introConfig.multiuv_title || '';
-      const multiuvSteps = Array.isArray(introConfig.multiuv_steps) ? introConfig.multiuv_steps : [];
-      const multiuvImages = parseMediaItems(introConfig, {
-        itemsKey: 'multiuv_images',
-        captionsKey: 'multiuv_images_captions',
-        altKey: 'multiuv_images_alt',
-        alignmentKey: 'multiuv_images_alignment'
-      });
-
-      // Remove existing multiuv section if it exists
-      const existingMultiuv = document.getElementById('doc-page-multiuv');
-      if (existingMultiuv) existingMultiuv.remove();
-
-      if (multiuvTitle && (multiuvSteps.length > 0 || multiuvImages.length > 0)) {
-        const multiuvSection = document.createElement('section');
-        multiuvSection.id = 'doc-page-multiuv';
-        multiuvSection.className = 'section section--multiuv';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = multiuvTitle;
-        multiuvSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (multiuvSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          multiuvSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (multiuvImages.length > 0) {
-          const carousel = createImageCarousel(multiuvImages, (cfgDoc || globalConfig), 'multiuv-carousel');
-          card.appendChild(carousel);
-        }
-        
-        multiuvSection.appendChild(card);
-        
-        // Insert after bakevisualizer section
-        const pageContainer = document.getElementById('documentation-page');
-        const bakevisualizerEl = document.getElementById('doc-page-bakevisualizer');
-        if (pageContainer && bakevisualizerEl) {
-          bakevisualizerEl.parentNode.insertBefore(multiuvSection, bakevisualizerEl.nextSibling);
-        }
-      }
-    }
-  }, 300);
-
-  // Render CollectionBake section as separate container after multiuv
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const collectionbakeTitle = introConfig.collectionbake_title || '';
-      const collectionbakeSteps = Array.isArray(introConfig.collectionbake_steps) ? introConfig.collectionbake_steps : [];
-      const collectionbakeImages = parseMediaItems(introConfig, {
-        itemsKey: 'collectionbake_images',
-        captionsKey: 'collectionbake_images_captions',
-        altKey: 'collectionbake_images_alt',
-        alignmentKey: 'collectionbake_images_alignment'
-      });
-
-      // Remove existing collectionbake section if it exists
-      const existingCollectionbake = document.getElementById('doc-page-collectionbake');
-      if (existingCollectionbake) existingCollectionbake.remove();
-
-      if (collectionbakeTitle && (collectionbakeSteps.length > 0 || collectionbakeImages.length > 0)) {
-        const collectionbakeSection = document.createElement('section');
-        collectionbakeSection.id = 'doc-page-collectionbake';
-        collectionbakeSection.className = 'section section--collectionbake';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = collectionbakeTitle;
-        collectionbakeSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (collectionbakeSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          collectionbakeSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (collectionbakeImages.length > 0) {
-          const carousel = createImageCarousel(collectionbakeImages, (cfgDoc || globalConfig), 'collectionbake-carousel');
-          card.appendChild(carousel);
-        }
-        
-        collectionbakeSection.appendChild(card);
-        
-        // Insert after multiuv section
-        const pageContainer = document.getElementById('documentation-page');
-        const multiuvEl = document.getElementById('doc-page-multiuv');
-        if (pageContainer && multiuvEl) {
-          multiuvEl.parentNode.insertBefore(collectionbakeSection, multiuvEl.nextSibling);
-        }
-      }
-    }
-  }, 350);
-
-  // Render EnvironmentCollection section as separate container after collectionbake
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const environmentcollectionTitle = introConfig.environmentcollection_title || '';
-      const environmentcollectionSteps = Array.isArray(introConfig.environmentcollection_steps) ? introConfig.environmentcollection_steps : [];
-      const environmentcollectionImages = parseMediaItems(introConfig, {
-        itemsKey: 'environmentcollection_images',
-        captionsKey: 'environmentcollection_images_captions',
-        altKey: 'environmentcollection_images_alt',
-        alignmentKey: 'environmentcollection_images_alignment'
-      });
-
-      // Remove existing environmentcollection section if it exists
-      const existingEnvironmentcollection = document.getElementById('doc-page-environmentcollection');
-      if (existingEnvironmentcollection) existingEnvironmentcollection.remove();
-
-      if (environmentcollectionTitle && (environmentcollectionSteps.length > 0 || environmentcollectionImages.length > 0)) {
-        const environmentcollectionSection = document.createElement('section');
-        environmentcollectionSection.id = 'doc-page-environmentcollection';
-        environmentcollectionSection.className = 'section section--environmentcollection';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = environmentcollectionTitle;
-        environmentcollectionSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (environmentcollectionSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          environmentcollectionSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (environmentcollectionImages.length > 0) {
-          const carousel = createImageCarousel(environmentcollectionImages, (cfgDoc || globalConfig), 'environmentcollection-carousel');
-          card.appendChild(carousel);
-        }
-        
-        environmentcollectionSection.appendChild(card);
-        
-        // Insert after collectionbake section
-        const pageContainer = document.getElementById('documentation-page');
-        const collectionbakeEl = document.getElementById('doc-page-collectionbake');
-        if (pageContainer && collectionbakeEl) {
-          collectionbakeEl.parentNode.insertBefore(environmentcollectionSection, collectionbakeEl.nextSibling);
-        }
-      }
-    }
-  }, 400);
-
-  // Render Decals section as separate container after environmentcollection
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const decalsTitle = introConfig.decals_title || '';
-      const decalsSteps = Array.isArray(introConfig.decals_steps) ? introConfig.decals_steps : [];
-      const decalsImages = parseMediaItems(introConfig, {
-        itemsKey: 'decals_images',
-        captionsKey: 'decals_images_captions',
-        altKey: 'decals_images_alt',
-        alignmentKey: 'decals_images_alignment'
-      });
-
-      // Remove existing decals section if it exists
-      const existingDecals = document.getElementById('doc-page-decals');
-      if (existingDecals) existingDecals.remove();
-
-      if (decalsTitle && (decalsSteps.length > 0 || decalsImages.length > 0)) {
-        const decalsSection = document.createElement('section');
-        decalsSection.id = 'doc-page-decals';
-        decalsSection.className = 'section section--decals';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = decalsTitle;
-        decalsSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (decalsSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          decalsSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (decalsImages.length > 0) {
-          const carousel = createImageCarousel(decalsImages, (cfgDoc || globalConfig), 'decals-carousel');
-          card.appendChild(carousel);
-        }
-        
-        decalsSection.appendChild(card);
-        
-        // Insert after environmentcollection section
-        const pageContainer = document.getElementById('documentation-page');
-        const environmentcollectionEl = document.getElementById('doc-page-environmentcollection');
-        if (pageContainer && environmentcollectionEl) {
-          environmentcollectionEl.parentNode.insertBefore(decalsSection, environmentcollectionEl.nextSibling);
-        }
-      }
-    }
-  }, 450);
-
-  // Render HighToLow section as separate container after decals
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const hightolowTitle = introConfig.hightolow_title || '';
-      const hightolowSteps = Array.isArray(introConfig.hightolow_steps) ? introConfig.hightolow_steps : [];
-      const hightolowImages = parseMediaItems(introConfig, {
-        itemsKey: 'hightolow_images',
-        captionsKey: 'hightolow_images_captions',
-        altKey: 'hightolow_images_alt',
-        alignmentKey: 'hightolow_images_alignment'
-      });
-
-      // Remove existing hightolow section if it exists
-      const existingHightolow = document.getElementById('doc-page-hightolow');
-      if (existingHightolow) existingHightolow.remove();
-
-      if (hightolowTitle && (hightolowSteps.length > 0 || hightolowImages.length > 0)) {
-        const hightolowSection = document.createElement('section');
-        hightolowSection.id = 'doc-page-hightolow';
-        hightolowSection.className = 'section section--hightolow';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = hightolowTitle;
-        hightolowSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (hightolowSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          hightolowSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (hightolowImages.length > 0) {
-          const carousel = createImageCarousel(hightolowImages, (cfgDoc || globalConfig), 'hightolow-carousel');
-          card.appendChild(carousel);
-        }
-        
-        hightolowSection.appendChild(card);
-        
-        // Insert after decals section
-        const pageContainer = document.getElementById('documentation-page');
-        const decalsEl = document.getElementById('doc-page-decals');
-        if (pageContainer && decalsEl) {
-          decalsEl.parentNode.insertBefore(hightolowSection, decalsEl.nextSibling);
-        }
-      }
-    }
-  }, 500);
-
-  // Render AdvancedBaking section as separate container after hightolow
-  setTimeout(() => {
-    if (page.introduction) {
-      const introConfig = page.introduction;
-      const advancedbakingTitle = introConfig.advancedbaking_title || '';
-      const advancedbakingSteps = Array.isArray(introConfig.advancedbaking_steps) ? introConfig.advancedbaking_steps : [];
-      const advancedbakingImages = parseMediaItems(introConfig, {
-        itemsKey: 'advancedbaking_images',
-        captionsKey: 'advancedbaking_images_captions',
-        altKey: 'advancedbaking_images_alt',
-        alignmentKey: 'advancedbaking_images_alignment'
-      });
-
-      // Remove existing advancedbaking section if it exists
-      const existingAdvancedbaking = document.getElementById('doc-page-advancedbaking');
-      if (existingAdvancedbaking) existingAdvancedbaking.remove();
-
-      if (advancedbakingTitle && (advancedbakingSteps.length > 0 || advancedbakingImages.length > 0)) {
-        const advancedbakingSection = document.createElement('section');
-        advancedbakingSection.id = 'doc-page-advancedbaking';
-        advancedbakingSection.className = 'section section--advancedbaking';
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'section__title';
-        h2.textContent = advancedbakingTitle;
-        advancedbakingSection.appendChild(h2);
-        
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        if (advancedbakingSteps.length > 0) {
-          const ul = document.createElement('ul');
-          ul.className = 'intro__usage-list';
-          advancedbakingSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-            colorizeStrongIn(li, (cfgDoc || globalConfig));
-            ul.appendChild(li);
-          });
-          card.appendChild(ul);
-        }
-        
-        if (advancedbakingImages.length > 0) {
-          const carousel = createImageCarousel(advancedbakingImages, (cfgDoc || globalConfig), 'advancedbaking-carousel');
-          card.appendChild(carousel);
-        }
-        
-        advancedbakingSection.appendChild(card);
-        
-        // Insert after hightolow section
-        const pageContainer = document.getElementById('documentation-page');
-        const hightolowEl = document.getElementById('doc-page-hightolow');
-        if (pageContainer && hightolowEl) {
-          hightolowEl.parentNode.insertBefore(advancedbakingSection, hightolowEl.nextSibling);
-        }
-      }
-    }
-  }, 550);
+    };
+    
+    // Render all sections in order with delays
+    const initialSection = introConfig.initial_section || 'intro';
+    
+    // Timing values are implementation details - hardcoded here
+    let delay = 100;
+    const delayIncrement = 50;
+    let previousSection = initialSection;
+    
+    sectionOrder.forEach((sectionKey) => {
+      setTimeout(() => {
+        createSection(sectionKey, previousSection);
+        previousSection = sectionKey;
+      }, delay);
+      delay += delayIncrement;
+    });
+  };
+  
+  // Call the dynamic renderer
+  renderDynamicSections();
 
   // Render rich HTML content if provided (page.content_html or page.content_html_url)
   try {

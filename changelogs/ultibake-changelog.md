@@ -461,3 +461,7 @@
     * Massive speed improvements for heavy scenes.
     * Normal augmentation moved to material properties. Allows you to Invert the generated normal map axis manually.(Advanced Users)
     * Various Bug fixes
+
+
+>## 1.9.93 - Addition 01/10/2025
+    * Added Bake Set UV selection

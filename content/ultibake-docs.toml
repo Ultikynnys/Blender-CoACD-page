@@ -22,6 +22,23 @@
     paragraphs = [
       "This guide will walk you through the essential concepts and help you get started with your first baking project."
     ]
+    # Define the order of dynamic sections to render (quickstart is rendered separately in intro)
+    section_order = [
+      "profiles",
+      "suffixgen",
+      "bakesetgen",
+      "bakevisualizer",
+      "multiuv",
+      "collectionbake",
+      "environmentcollection",
+      "decals",
+      "hightolow",
+      "advancedbaking",
+      "advanceduvcontrols"
+    ]
+    # Section configuration (names and order only - no implementation details)
+    initial_section = "intro"  # The section to insert after initially
+    section_id_prefix = "doc-page-"  # Prefix for section DOM IDs
     parameters_title = "Key Concepts"
     parameters = [
       "**Bake Sets** - The primary container for organizing your work. A Bake Set groups multiple Bake Units and instructs them to be combined into a single, unified texture set",
@@ -306,6 +323,25 @@
       "top-right",
       "top-right",
       "top-right"
+    ]
+    advanceduvcontrols_title = "Advanced UV Controls"
+    advanceduvcontrols_steps = [
+      "Normally in Blender we are forced to change the UVs for an object one at a time. We do this because for unwrapping to work we must select the correct UVmap for each object... now this is insane when we have more than a few objects",
+      "Now with Ultibake we can finally select multiple object UVs at the same time. With the button next to Finalize on each Bake Set, it will select the correct UVmap defined by the bake unit itself for the low objects or low collections",
+      "**Ctrl + Left Click** will also select all Bake Sets that share the same texture name. This is important since Bake Sets that have the same texture name will be implicitly combined texturewise, this means we must correct for UV overlapping, unless we are using stacked UVs which are the only exception",
+      "Here we can see how simple fixing UVs for multiple objects is now"
+    ]
+    advanceduvcontrols_images = [
+      "images/Ultibake/BasicUsage/UltibakeDefaultUV.webp",
+      "images/Ultibake/BasicUsage/UltibakeFixedUV.webp"
+    ]
+    advanceduvcontrols_images_captions = [
+      "Default UV state - selecting UVs one at a time is tedious with multiple objects",
+      "Fixed UVs - easily manage multiple object UVs simultaneously with Ultibake"
+    ]
+    advanceduvcontrols_images_alignment = [
+      "center",
+      "center"
     ]
 
 [[documentation.pages]]
