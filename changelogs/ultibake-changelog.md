@@ -463,6 +463,6 @@
     * Various Bug fixes
 
 
->## 1.9.96 - Addition 01/10/2025
+>## 1.9.97 - Addition 01/10/2025
     * Added Bake Set UV selection
     * Finalize with Ctrl + Left Click now works with shared Texture Name Bake Sets
