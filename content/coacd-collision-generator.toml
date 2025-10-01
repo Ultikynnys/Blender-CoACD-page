@@ -1,7 +1,7 @@
 # Site settings
 [site]
   title = "CoACD Collision Generator"
-  banner = "images/Banner.png"
+  banner = "images/Banner.webp"
   research_link_text = "Research Paper"
   research_link_url = "https://colin97.github.io/CoACD/"
 
@@ -77,7 +77,7 @@
 
   # Multiple usage images with carousel
   usage_images = [
-    "images/Coacd_params.gif"
+    "images/Coacd_params.webp"
   ]
   
   # Captions for the images (in order)
@@ -97,16 +97,16 @@
 [[comparisons]]
   initial = 0.5
   color = "purple"
-  before = "images/CompareBase1.png"
-  after  = "images/CompareColl1.png"
+  before = "images/CompareBase1.webp"
+  after  = "images/CompareColl1.webp"
   caption = "Before/After with CoACD decomposition"
   handle_shape = "pentagon"
 
 [[comparisons]]
   initial = 0.5
   color = "green"
-  before = "images/CompareBase2.png"
-  after  = "images/CompareColl2.png"
+  before = "images/CompareBase2.webp"
+  after  = "images/CompareColl2.webp"
   caption = "Collision pieces with Convex Mirror Post-Processing"
   handle_shape = "diamond"
 

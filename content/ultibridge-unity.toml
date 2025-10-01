@@ -1,7 +1,7 @@
 # Site settings (UltiBridge Unity)
 [site]
   title = "UltiBridge | Unity"
-  banner = "images/BannerUltiBridge.png"
+  banner = "images/BannerUltiBridge.webp"
   research_link_text = "Unity Documentation"
   research_link_url = "https://docs.unity3d.com/"
   research_link_enabled = false
@@ -28,7 +28,7 @@
   og_url = "https://ultikynnys.com/ultibridge/unity"
   og_title = "UltiBridge | Unity"
   og_description = "Seamless bridge between Blender and Unity for efficient asset workflows."
-  og_image = "images/UltiBridge2_Unity.png"
+  og_image = "images/UltiBridge2_Unity.webp"
 
 # Section titles (optional overrides)
 [titles]
@@ -65,7 +65,7 @@
     "**Iterate** seamlessly between Blender and Unity with live sync."
   ]
 
-  usage_image = "images/UltiBridge2_Unity.png"
+  usage_image = "images/UltiBridge2_Unity.webp"
   usage_image_alt = "UltiBridge Unity integration interface"
   usage_image_caption = "UltiBridge panel showing Unity-specific export options"
 
@@ -73,24 +73,24 @@
 [[comparisons]]
   initial = 0.3
   color = "teal"
-  before = "images/Logo.png"
-  after  = "images/UltiBridge2_Unity.png"
+  before = "images/Logo.webp"
+  after  = "images/UltiBridge2_Unity.webp"
   caption = "**Traditional workflow** vs **UltiBridge Unity integration**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.6
   color = "purple"
-  before = "images/Logo.png"
-  after  = "images/UltiBridge2_Unity.png"
+  before = "images/Logo.webp"
+  after  = "images/UltiBridge2_Unity.webp"
   caption = "**Manual export process** vs **automated Unity pipeline**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.4
   color = "green"
-  before = "images/Logo.png"
-  after  = "images/UltiBridge2_Unity.png"
+  before = "images/Logo.webp"
+  after  = "images/UltiBridge2_Unity.webp"
   caption = "**Material recreation** vs **automatic Unity material mapping**"
   handle_shape = "circle"
 

@@ -1,7 +1,7 @@
 # Site settings (Version 3)
 [site]
   title = "UltiBridge | Unreal Engine"
-  banner = "images/BannerUltiBridge.png"
+  banner = "images/BannerUltiBridge.webp"
   research_link_text = "Unreal Engine Documentation"
   research_link_url = "https://docs.unrealengine.com/"
   research_link_enabled = false
@@ -28,7 +28,7 @@
   og_url = "https://ultikynnys.com/ultibridge/unreal"
   og_title = "UltiBridge | Unreal Engine"
   og_description = "Seamless bridge between Blender and Unreal Engine for production-ready asset workflows."
-  og_image = "images/UltiBridge2_Unreal.png"
+  og_image = "images/UltiBridge2_Unreal.webp"
 
 # Section titles (optional overrides)
 [titles]
@@ -65,10 +65,10 @@
     "**Iterate** quickly with a streamlined Blender ⇄ Unreal loop."
   ]
 
-  usage_image = "images/UltiBridge2_Unreal.png"
+  usage_image = "images/UltiBridge2_Unreal.webp"
   usage_image_alt = "UltiBridge Unreal integration interface"
   usage_image_caption = "UltiBridge panel showing Unreal-specific export options"
-  usage_image_2 = "images/Logo.png"
+  usage_image_2 = "images/Logo.webp"
   usage_image_2_alt = "Batch processing interface"
   usage_image_2_caption = "Batch processing tools for production workflows"
 
@@ -76,32 +76,32 @@
 [[comparisons]]
   initial = 0.3
   color = "teal"
-  before = "images/Logo.png"
-  after  = "images/UltiBridge2_Unreal.png"
+  before = "images/Logo.webp"
+  after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Traditional workflow** vs **UltiBridge Unreal integration**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.6
   color = "purple"
-  before = "images/Logo.png"
-  after  = "images/UltiBridge2_Unreal.png"
+  before = "images/Logo.webp"
+  after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Manual export process** vs **automated Unreal pipeline**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.4
   color = "green"
-  before = "images/Logo.png"
-  after  = "images/UltiBridge2_Unreal.png"
+  before = "images/Logo.webp"
+  after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Material recreation** vs **automatic Unreal material mapping**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.6
   color = "pink"
-  before = "images/Logo.png"
-  after  = "images/UltiBridge2_Unreal.png"
+  before = "images/Logo.webp"
+  after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Multiple steps** vs **streamlined Content Browser import**"
   handle_shape = "circle"
 

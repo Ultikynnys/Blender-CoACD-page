@@ -1,7 +1,7 @@
 # Site settings (UltiStamp)
 [site]
   title = "UltiStamp"
-  banner = "images/Banner.png"
+  banner = "images/Banner.webp"
   research_link_text = "Discord Support"
   research_link_url = "https://discord.gg/Pm7TDf2rV5"
   research_link_enabled = true
@@ -21,7 +21,7 @@
   og_url = "https://blendermarket.com/products/ultistamp"
   og_title = "UltiStamp"
   og_description = "This addon lets you easily apply decals to your Blender meshes, similar to Substance Painter. With built-in UltiBake support for seamless export to game engines."
-  og_image = "images/Banner.png"
+  og_image = "images/Banner.webp"
 
 # Section titles
 [titles]
@@ -60,7 +60,7 @@
     "**Export** your textured models to Unity, Unreal, or other game engines"
   ]
 
-  usage_image = "images/Logo.png"
+  usage_image = "images/Logo.webp"
   usage_image_alt = "UltiStamp decal application interface"
   usage_image_caption = "UltiStamp - Substance Painter-style decals for Blender"
 
@@ -68,32 +68,32 @@
 [[comparisons]]
   initial = 0.5
   color = "purple"
-  before = "images/Logo.png"
-  after  = "images/Logo2.png"
+  before = "images/Logo.webp"
+  after  = "images/Logo2.webp"
   caption = "**Plain surface** vs **UltiStamp decal enhancement**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.6
   color = "teal"
-  before = "images/Logo.png"
-  after  = "images/Logo2.png"
+  before = "images/Logo.webp"
+  after  = "images/Logo2.webp"
   caption = "**Manual texture painting** vs **Instant decal application**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.4
   color = "green"
-  before = "images/Logo.png"
-  after  = "images/Logo2.png"
+  before = "images/Logo.webp"
+  after  = "images/Logo2.webp"
   caption = "**Basic materials** vs **PBR decal details**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.3
   color = "pink"
-  before = "images/Logo.png"
-  after  = "images/Logo2.png"
+  before = "images/Logo.webp"
+  after  = "images/Logo2.webp"
   caption = "**Static textures** vs **Dynamic decal placement**"
   handle_shape = "circle"
 

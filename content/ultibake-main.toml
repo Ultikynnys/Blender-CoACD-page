@@ -1,7 +1,7 @@
 # Site settings (UltiBake)
 [site]
   title = "Ultibake"
-  banner = "images/UltibakeBanner.png"
+  banner = "images/UltibakeBanner.webp"
   research_link_text = "API Documentation"
   research_link_url = "https://ultikynnys.github.io/UltiBake/documentation"
   research_link_enabled = false
@@ -52,7 +52,7 @@
   og_url = "https://ultikynnys.github.io/UltiBake"
   og_title = "UltiBake"
   og_description = "An all-in-one baking solution for Blender, which aims to streamline the baking process, while providing a wide range of features."
-  og_image = "images/Banner.png"
+  og_image = "images/Banner.webp"
 
 # Section titles
 [titles]
@@ -86,12 +86,12 @@
 
   # Multiple usage images with carousel (simple array format for now)
   usage_images = [
-    "images/Ultibake/Ultibake_Bake1.png",
-    "images/Ultibake/Ultibake_Bake2.png",
-    "images/Ultibake/Ultibake_Settings1.png",
-    "images/Ultibake/Ultibake_Settings2.png",
-    "images/Ultibake/Ultibake_Settings3.png",
-    "images/Ultibake/Ultibake_Settings_4.gif"
+    "images/Ultibake/Ultibake_Bake1.webp",
+    "images/Ultibake/Ultibake_Bake2.webp",
+    "images/Ultibake/Ultibake_Settings1.webp",
+    "images/Ultibake/Ultibake_Settings2.webp",
+    "images/Ultibake/Ultibake_Settings3.webp",
+    "images/Ultibake/Ultibake_Settings_4.webp"
   ]
   
   # Captions for the images (in order)
@@ -122,20 +122,20 @@
 [[comparisons]]
   initial = 0.5
   color = "pink"
-  before = "images/Ultibake/BasicUsage/UltibakePre.png"
-  after  = "images/Ultibake/BasicUsage/UltibakePost.png"
+  before = "images/Ultibake/BasicUsage/UltibakePre.webp"
+  after  = "images/Ultibake/BasicUsage/UltibakePost.webp"
   caption = "Transform **complex scene setups** into a **unified texture set**. Handles **advanced materials**, **multi-object workflows**, **decals**, and more with ease."
   handle_shape = "circle"
 
 # Profile System Showcase
 [[comparisons]]
   images = [
-    "images/Ultibake/BasicUsage/ProfileShowcase.png",
-    "images/Ultibake/BasicUsage/EasyChannelPack.png",
-    "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.png",
-    "images/Ultibake/BasicUsage/AutomaticSuffixGen.png",
-    "images/Ultibake/BasicUsage/SuffixGenNaming.png",
-    "images/Ultibake/BasicUsage/BakeVisualization.png",
+    "images/Ultibake/BasicUsage/ProfileShowcase.webp",
+    "images/Ultibake/BasicUsage/EasyChannelPack.webp",
+    "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.webp",
+    "images/Ultibake/BasicUsage/AutomaticSuffixGen.webp",
+    "images/Ultibake/BasicUsage/SuffixGenNaming.webp",
+    "images/Ultibake/BasicUsage/BakeVisualization.webp",
     "images/Ultibake/BasicUsage/BakeSetGenerator.webp",
     "images/Ultibake/BasicUsage/MultiBakeSet5.webp"
   ]

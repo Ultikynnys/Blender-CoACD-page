@@ -8,9 +8,9 @@
     title = "Documentation"
     subtitle = "Complete guide to UltiBake features and workflows"
     sections = [
-      { id = "getting-started", title = "Getting Started", description = "Learn the basics of UltiBake including bake sets, profiles, and your first baking project", image = "images/Ultibake/Ultibake_Bake1.png" },
-      { id = "common-issues", title = "Common Issues", description = "Troubleshoot common problems like black textures, missing materials, and export issues", image = "images/Ultibake/Ultibake_Settings1.png", under_construction = true },
-      { id = "advanced-baking", title = "Advanced Baking", description = "Master UDIM baking, channel packing, multi high-to-low workflows, and custom bake types", image = "images/Ultibake/Ultibake_Settings3.png", under_construction = true }
+      { id = "getting-started", title = "Getting Started", description = "Learn the basics of UltiBake including bake sets, profiles, and your first baking project", image = "images/Ultibake/Ultibake_Bake1.webp" },
+      { id = "common-issues", title = "Common Issues", description = "Troubleshoot common problems like black textures, missing materials, and export issues", image = "images/Ultibake/Ultibake_Settings1.webp", under_construction = true },
+      { id = "advanced-baking", title = "Advanced Baking", description = "Master UDIM baking, channel packing, multi high-to-low workflows, and custom bake types", image = "images/Ultibake/Ultibake_Settings3.webp", under_construction = true }
     ]
 
 [[documentation.pages]]
@@ -37,10 +37,10 @@
       "A Texture Unit can have up to 4 bake types: R, G, B, A - one for each channel"
     ]
     profiles_images = [
-      "images/Ultibake/BasicUsage/EasyChannelPack.png",
+      "images/Ultibake/BasicUsage/EasyChannelPack.webp",
       "images/Ultibake/BasicUsage/Profile Creation.webp",
       "images/Ultibake/BasicUsage/ProfileCreation2.webp",
-      "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.png"
+      "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.webp"
     ]
     profiles_images_captions = [
       "Image of a 3 texture Profile, where ORM is a channel packed texture",
@@ -61,8 +61,8 @@
       "The reason it's done this way is because the suffixes are stored on the .blend file which isolates the standards there. This allows you to have for example Unity and Unreal suffixes per file"
     ]
     suffixgen_images = [
-      "images/Ultibake/BasicUsage/SuffixGenNaming.png",
-      "images/Ultibake/BasicUsage/AutomaticSuffixGen.png"
+      "images/Ultibake/BasicUsage/SuffixGenNaming.webp",
+      "images/Ultibake/BasicUsage/AutomaticSuffixGen.webp"
     ]
     suffixgen_images_captions = [
       "SuffixGenNaming configuration",
@@ -91,7 +91,7 @@
       "The button is highlighted red in the image"
     ]
     bakevisualizer_images = [
-      "images/Ultibake/BasicUsage/BakeVisualization.png"
+      "images/Ultibake/BasicUsage/BakeVisualization.webp"
     ]
     bakevisualizer_images_captions = [
       "Bake Visualizer showing channel splits"
@@ -107,7 +107,7 @@
       "Enable **Active Render** on your desired material UVmap. You can also define it with a UV node on the material instead of setting the Active Render"
     ]
     multiuv_images = [
-      "images/Ultibake/BasicUsage/BakingWithMultipleUV.png",
+      "images/Ultibake/BasicUsage/BakingWithMultipleUV.webp",
       "images/Ultibake/BasicUsage/BakingWithMultiplEUV2.webp",
       "images/Ultibake/BasicUsage/UVDIFF.webp"
     ]
@@ -144,7 +144,7 @@
     ]
     environmentcollection_images = [
       "images/Ultibake/BasicUsage/CollectionBake.webp",
-      "images/Ultibake/BasicUsage/EnvironmentCollection.png"
+      "images/Ultibake/BasicUsage/EnvironmentCollection.webp"
     ]
     environmentcollection_images_captions = [
       "Without Environment Collection - pure white edges",
@@ -167,17 +167,17 @@
       "With 2D decals that are too close to each other, there is one post-processing step using the **Alpha Stack GeoNode** as shown in Step 10, otherwise they stay broken like in Step 11. This is rarely needed unless you plan to stack decals"
     ]
     decals_images = [
-      "images/Ultibake/BasicUsage/Decal1.png",
+      "images/Ultibake/BasicUsage/Decal1.webp",
       "images/Ultibake/BasicUsage/Decal2.webp",
-      "images/Ultibake/BasicUsage/Decal3.png",
-      "images/Ultibake/BasicUsage/Decal4.png",
-      "images/Ultibake/BasicUsage/Decal5.png",
-      "images/Ultibake/BasicUsage/Decal6.png",
-      "images/Ultibake/BasicUsage/Decal7.png",
-      "images/Ultibake/BasicUsage/Decal8.png",
-      "images/Ultibake/BasicUsage/Decal9.png",
+      "images/Ultibake/BasicUsage/Decal3.webp",
+      "images/Ultibake/BasicUsage/Decal4.webp",
+      "images/Ultibake/BasicUsage/Decal5.webp",
+      "images/Ultibake/BasicUsage/Decal6.webp",
+      "images/Ultibake/BasicUsage/Decal7.webp",
+      "images/Ultibake/BasicUsage/Decal8.webp",
+      "images/Ultibake/BasicUsage/Decal9.webp",
       "images/Ultibake/BasicUsage/DecalStackFixed.webp",
-      "images/Ultibake/BasicUsage/DecalStackBreak.png"
+      "images/Ultibake/BasicUsage/DecalStackBreak.webp"
     ]
     decals_images_captions = [
       "Decal workflow step 1 - All decals must be in the decal collection, either directly or in a subcollection",
@@ -215,8 +215,8 @@
     ]
     hightolow_images = [
       "images/Ultibake/BasicUsage/HightoLow2.webp",
-      "images/Ultibake/BasicUsage/HightoLow3.png",
-      "images/Ultibake/BasicUsage/HightoLow4.png"
+      "images/Ultibake/BasicUsage/HightoLow3.webp",
+      "images/Ultibake/BasicUsage/HightoLow4.webp"
     ]
     hightolow_images_captions = [
       "Unapplied transform agnostic behavior - objects can be moved freely as long as initial pose overlaps",
@@ -241,9 +241,9 @@
       "We finally fix this by setting the collection (shown in image 5)"
     ]
     advancedbaking_images = [
-      "images/Ultibake/BasicUsage/HightoLow.png",
-      "images/Ultibake/BasicUsage/MultiBakeSet3.png",
-      "images/Ultibake/BasicUsage/CollectionBakeADV.png",
+      "images/Ultibake/BasicUsage/HightoLow.webp",
+      "images/Ultibake/BasicUsage/MultiBakeSet3.webp",
+      "images/Ultibake/BasicUsage/CollectionBakeADV.webp",
       "images/Ultibake/BasicUsage/MultiBakeSet5.webp",
       "images/Ultibake/BasicUsage/MultiBakeSet6.webp"
     ]
@@ -263,19 +263,19 @@
     ]
     quickstart_title = "Quick Start"
     quickstart_images = [
-      "images/Ultibake/BasicUsage/Step1.png",
-      "images/Ultibake/BasicUsage/Step2.png",
-      "images/Ultibake/BasicUsage/Step3.png",
-      "images/Ultibake/BasicUsage/Step4.png",
-      "images/Ultibake/BasicUsage/Step5.png",
+      "images/Ultibake/BasicUsage/Step1.webp",
+      "images/Ultibake/BasicUsage/Step2.webp",
+      "images/Ultibake/BasicUsage/Step3.webp",
+      "images/Ultibake/BasicUsage/Step4.webp",
+      "images/Ultibake/BasicUsage/Step5.webp",
       "images/Ultibake/BasicUsage/Step6.webp",
-      "images/Ultibake/BasicUsage/Step7.png",
-      "images/Ultibake/BasicUsage/Step8.png",
+      "images/Ultibake/BasicUsage/Step7.webp",
+      "images/Ultibake/BasicUsage/Step8.webp",
       "images/Ultibake/BasicUsage/step9.webp",
-      "images/Ultibake/BasicUsage/Step10.png",
-      "images/Ultibake/BasicUsage/Step11.png",
-      "images/Ultibake/BasicUsage/Step12.png",
-      "images/Ultibake/BasicUsage/Step13.png"
+      "images/Ultibake/BasicUsage/Step10.webp",
+      "images/Ultibake/BasicUsage/Step11.webp",
+      "images/Ultibake/BasicUsage/Step12.webp",
+      "images/Ultibake/BasicUsage/Step13.webp"
     ]
     quickstart_images_captions = [
       "**Step 1:** Load default baking profiles, add a Bake Set, and set the target location for baked textures (circled in red)",

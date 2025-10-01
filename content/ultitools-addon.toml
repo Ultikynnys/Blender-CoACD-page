@@ -1,7 +1,7 @@
 # Site settings (UltiTools)
 [site]
   title = "UltiTools"
-  banner = "images/Banner.png"
+  banner = "images/Banner.webp"
   research_link_text = "Discord Support"
   research_link_url = "https://discord.gg/Xh7eB5Rn5b"
   research_link_enabled = true
@@ -28,7 +28,7 @@
   og_url = "https://ultikynnys.github.io/UltiBake/Ultitools"
   og_title = "UltiTools"
   og_description = "An add-on that includes various tools for Blender, including Palette Manager, Mesh Analysis, Portfolio Renderer, and more."
-  og_image = "images/Banner.png"
+  og_image = "images/Banner.webp"
 
 # Section titles
 [titles]
@@ -65,7 +65,7 @@
     "**FBX Exporter:** Game engine optimized with Unity/Unreal specific fixes"
   ]
 
-  usage_image = "images/Logo.png"
+  usage_image = "images/Logo.webp"
   usage_image_alt = "UltiTools interface"
   usage_image_caption = "UltiTools - Essential Blender utilities"
 
@@ -73,24 +73,24 @@
 [[comparisons]]
   initial = 0.5
   color = "purple"
-  before = "images/Logo.png"
-  after  = "images/Logo2.png"
+  before = "images/Logo.webp"
+  after  = "images/Logo2.webp"
   caption = "**Standard Blender tools** vs **UltiTools enhanced workflow**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.6
   color = "teal"
-  before = "images/Logo.png"
-  after  = "images/Logo2.png"
+  before = "images/Logo.webp"
+  after  = "images/Logo2.webp"
   caption = "**Manual mesh checking** vs **Automated mesh analysis**"
   handle_shape = "circle"
 
 [[comparisons]]
   initial = 0.4
   color = "green"
-  before = "images/Logo.png"
-  after  = "images/Logo2.png"
+  before = "images/Logo.webp"
+  after  = "images/Logo2.webp"
   caption = "**Complex FBX setup** vs **Game-ready export presets**"
   handle_shape = "circle"
 
