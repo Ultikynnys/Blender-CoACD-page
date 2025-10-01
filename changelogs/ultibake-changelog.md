@@ -463,5 +463,5 @@
     * Various Bug fixes
 
 
->## 1.9.93 - Addition 01/10/2025
+>## 1.9.95 - Addition 01/10/2025
     * Added Bake Set UV selection
