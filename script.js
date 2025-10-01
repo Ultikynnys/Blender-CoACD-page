@@ -2594,6 +2594,19 @@ function renderDocumentationPage(pageId) {
     }
   }
 
+  // Clean up any previously rendered dynamic sections from other pages
+  const cleanupDynamicSections = () => {
+    const pageContainer = document.getElementById('documentation-page');
+    if (!pageContainer) return;
+    
+    // Remove all sections that match the pattern section--*
+    const dynamicSections = pageContainer.querySelectorAll('section[class*="section--"]');
+    dynamicSections.forEach(section => section.remove());
+  };
+  
+  // Clean up before rendering new page
+  cleanupDynamicSections();
+
   // Dynamic section renderer - automatically detects and renders all sections from TOML
   const renderDynamicSections = () => {
     if (!page.introduction) return;

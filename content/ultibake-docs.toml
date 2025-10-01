@@ -9,8 +9,7 @@
     subtitle = "Complete guide to UltiBake features and workflows"
     sections = [
       { id = "getting-started", title = "Getting Started", description = "Learn the basics of UltiBake including bake sets, profiles, and your first baking project", image = "images/Ultibake/Ultibake_Bake1.webp" },
-      { id = "common-issues", title = "Common Issues", description = "Troubleshoot common problems like black textures, missing materials, and export issues", image = "images/Ultibake/Ultibake_Settings1.webp", under_construction = true },
-      { id = "advanced-baking", title = "Advanced Baking", description = "Master UDIM baking, channel packing, multi high-to-low workflows, and custom bake types", image = "images/Ultibake/Ultibake_Settings3.webp", under_construction = true }
+      { id = "api-reference", title = "API Reference", description = "Python API documentation for scripting and automation with UltiBake", image = "images/Ultibake/APIREF.png" }
     ]
 
 [[documentation.pages]]
@@ -300,7 +299,7 @@
       "**Step 3:** Set the UVmap on the Bake Unit to match your unwrapped UVmap. Verify that the UVMap is inside the UV Bounds (shown on the left). No need to worry about UVmap selection in the bottom right corner (old Blender method) - UltiBake handles this automatically with this new parameter",
       "**Step 4:** The outlined box shows the base texture name. Elements on the right are separated by | as suffixes. You can see it will bake 3 textures as defined by our profile",
       "**Step 5:** Ready to bake!",
-      "**Step 6:** Once the bake is finished, use **Finalize** to create a copy of your mesh with a generated material that uses the baked textures. Perfect for exporting and previewing results",
+      "**Step 6:** Once the bake is finished, use **Finalize** to create a copy of your mesh with a generated material that uses the baked textures. Perfect for exporting and previewing results. **Ctrl + Left Click** on Finalize will finalize all Bake Sets that share the same texture name",
       "**Step 7:** This prop has 3 parts: the gate frame and its doors. To bake all parts into the same texture, assign 1 Bake Unit per object. Ensure the combined UVmaps don't overlap by checking in the UV Editor with the correct UVmap selected (highlighted in blue). This isn't a problem if your object has only a single UVmap",
       "**Step 8:** The top left corner shows the current UVmap for the **Active object**. Check each object to ensure they all have the correct UV selected (UVMap in this case). Verify there's no overlap with UV islands and they fit within the first UV tile. Ultibake Handles UDIMS automatically. You can configure the resolution scaling in the profile per UDIM. For UDIM baking, follow standard UDIM tiling from 1001 to 1100 in the X+ and Y+ directions",
       "**Step 9:** After baking and finalizing, multiple objects are created instead of one. Finalize keeps track of your exportables and automatically creates the right number of objects for export. Hassle-free!",
@@ -344,43 +343,6 @@
       "center"
     ]
 
-[[documentation.pages]]
-  id = "common-issues"
-  title = "Common Issues"
-
-  [documentation.pages.introduction]
-    title = "Troubleshooting Common Problems"
-    paragraphs = [
-      "This section covers the most common issues users encounter and their solutions.",
-      "If you don't find your issue here, join our Discord community for support."
-    ]
-    parameters_title = "Common Problems & Solutions"
-    parameters = [
-      "**Black/Pink Textures** - Check UV maps are properly assigned and not overlapping",
-      "**Missing Textures** - Ensure all materials use Principled BSDF nodes",
-      "**Slow Baking** - Reduce resolution or enable denoising in post-processing",
-      "**Decals Not Baking** - Verify decal addon is properly installed and objects are selected",
-      "**Export Issues** - Use Finalize feature to create export-ready objects with proper materials"
-    ]
-
-[[documentation.pages]]
-  id = "advanced-baking"
-  title = "Advanced Baking"
-
-  [documentation.pages.introduction]
-    title = "Advanced Baking Techniques"
-    paragraphs = [
-      "Master advanced workflows including UDIM baking, channel packing, and complex material setups.",
-      "These techniques are essential for professional game development pipelines."
-    ]
-    parameters_title = "Advanced Features"
-    parameters = [
-      "**UDIM Baking** - Automatically detect and bake UDIM tiles from UV layouts",
-      "**Channel Packing** - Pack multiple textures into RGBA channels for optimized game assets",
-      "**Multi High-to-Low** - Bake multiple high-poly sources to a single low-poly target",
-      "**Bent Normals** - Generate bent normal maps for improved ambient occlusion",
-      "**Custom Bake Types** - Use 23 different bake types including BSDF inputs and custom types"
-    ]
 
 [[documentation.pages]]
   id = "api-reference"
