@@ -24,6 +24,7 @@
   primary_green = "#A0252A"     # Deep crimson
   bg_dark = "#1A0A0A"           # Very dark crimson
   text_white = "#FFFFFF"
+  hyperlink_color = "#DC143C"   # Crimson for hyperlinks
   outline_variant = "crimson-outline"
   outline_fill_color = "#FFFFFF"
   outline_stroke_color = "#FFFFFF"
@@ -76,7 +77,7 @@
     "**Automatic Texture Name Generation** - Texture names are automatically generated based on texture contents, saving you time.",
     "**Advanced Material Support** - As long as your material uses the Principled BSDF node, even the most complicated materials can be baked into textures.",
     "**Collection Baking** - Bake entire collections into a single texture as long as UVs aren't overlapping.",
-    "**Decal Baking** - Unique feature! Apply decals to your desired object's surface. Support for decal addons like decalMACHINE, DecalMaster, TrimFlow, Sanctus Library and UltiStamp.",
+    "**Decal Baking** - Unique feature! Apply decals to your desired object's surface. Support for decal addons like decalMACHINE, DecalMaster, TrimFlow, Sanctus Library and [UltiStamp](https://superhivemarket.com/products/ultistamp).",
     "**Multi High to Low Baking** - Transfer surface details from high-poly to low-poly meshes. You can bake as many high-to-low combinations as you wish with one click!",
     "**Profiles** - Create your own bake setup profile. You can also save/load to external files for other projects.",
     "**Bake Post Processing** - Apply antialiasing, denoising, sharpening and more.",
