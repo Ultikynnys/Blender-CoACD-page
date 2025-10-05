@@ -605,10 +605,16 @@ strong {
 }
 
 /* Carousel item images */
+.media-carousel .carousel-item {
+  aspect-ratio: 16 / 9;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .media-carousel .carousel-item img {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: cover;
 }
 
 /* Unified carousel indicators */
