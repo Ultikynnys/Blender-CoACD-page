@@ -58,8 +58,8 @@
     ]
     bakesetup_title = "Bake Setup with Stamps"
     bakesetup_steps = [
-      "Once your stamps are created, integrate them into your UltiBake workflow",
-      "Configure the bake settings to ensure stamps are properly applied to your target surfaces"
+      "Once your stamps are created, simply add your object to a Bake Set. Since the decals are part of the material it doesn't require using the decal collection",
+      "Select your bake profile to get the desired texture maps and that's it!"
     ]
     bakesetup_images = [
       "images/UltiStamp/StampBakeSetup1.webp",
