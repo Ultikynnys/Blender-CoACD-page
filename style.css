@@ -68,8 +68,8 @@ body {
   letter-spacing: var(--letter-spacing-normal);
 }
 
-/* Unified text color override */
-*, .card, .card *, p, span, div, .content-container, .content-container * {
+/* Unified text color override (exclude links to allow theme colors) */
+*:not(a), .card, .card *:not(a), p, span, div, .content-container, .content-container *:not(a) {
   color: var(--text-white) !important;
 }
 
@@ -120,6 +120,7 @@ a {
   color: var(--primary-pink);
   text-decoration: none;
   text-shadow: none;
+  font-weight: 700;
   transition: color 150ms ease, opacity 150ms ease;
 }
 
