@@ -1,0 +1,276 @@
+# UltiStamp Documentation
+[documentation]
+  enabled = true
+  default_view = "showcase"  # "showcase" or "documentation"
+  toggle_text_showcase = "View Documentation"
+
+  [documentation.toc]
+    title = "Documentation"
+    subtitle = "Complete guide to UltiStamp features and workflows"
+    sections = [
+      { id = "getting-started", title = "Getting Started", description = "Learn the basics of UltiStamp including stamp creation and baking workflows", image = "images/UltiStamp/Step1.webp" },
+      { id = "adjustments", title = "Adjustments & Controls", description = "Fine-tune your stamps with HSV, alpha, masking, and other controls", image = "images/UltiStamp/HSV.webp" }
+    ]
+
+[[documentation.pages]]
+  id = "getting-started"
+  title = "Getting Started with UltiStamp"
+
+  [documentation.pages.introduction]
+    title = "Welcome to UltiStamp"
+    paragraphs = [
+      "This guide will walk you through creating stamps and using them in your baking workflow with UltiBake."
+    ]
+    # Define the order of dynamic sections to render (quickstart is rendered separately in intro)
+    section_order = [
+      "stampcreation",
+      "bakesetup",
+      "troubleshooting"
+    ]
+    # Section configuration (names and order only - no implementation details)
+    initial_section = "intro"  # The section to insert after initially
+    section_id_prefix = "doc-page-"  # Prefix for section DOM IDs
+    stampcreation_title = "Creating Stamps"
+    stampcreation_steps = [
+      "Creating stamps in UltiStamp is straightforward and follows a simple workflow",
+      "Click the Add button on the UltiStamp Panel to create a new decal",
+      "Import images using the Add Images button for faster workflow, or use Blender's standard import",
+      "Assign images to your decal - you don't need all inputs. A minimal decal can be just base color with an alpha channel for masking",
+      "Modify parameters to your liking and save your decal to an external file using the Save button"
+    ]
+    stampcreation_images = [
+      "images/UltiStamp/StampCreateStep1.webp",
+      "images/UltiStamp/StampCreateStep2.webp",
+      "images/UltiStamp/StampCreateStep3.webp",
+      "images/UltiStamp/StampCreateStep4.webp"
+    ]
+    stampcreation_images_captions = [
+      "**Step 1:** Click the Add button on the UltiStamp Panel",
+      "**Step 2:** Click Add Images - you can also import the images to Blender normally, but this is faster",
+      "**Step 3:** Assign the images to our new decal. Note that we don't need all of the inputs. For a minimal decal, we can have a base color with an alpha channel which is used for masking. The packs are a good way to see various setups",
+      "**Step 4:** Finally modify the parameters to your liking. You can also save your decal to an external file using the Save button. This is how the packs were made in the first place!"
+    ]
+    stampcreation_images_alignment = [
+      "center",
+      "center",
+      "center",
+      "center"
+    ]
+    bakesetup_title = "Bake Setup with Stamps"
+    bakesetup_steps = [
+      "Once your stamps are created, integrate them into your UltiBake workflow",
+      "Configure the bake settings to ensure stamps are properly applied to your target surfaces"
+    ]
+    bakesetup_images = [
+      "images/UltiStamp/StampBakeSetup1.webp",
+      "images/UltiStamp/StampBakeSetup2.webp"
+    ]
+    bakesetup_images_captions = [
+      "Simply select your object that has the material with the decals applied to it.",
+      "Choose your profile and bake!"
+    ]
+    bakesetup_images_alignment = [
+      "center",
+      "center"
+    ]
+    bakesetup_video_url = "https://www.youtube.com/embed/xXyf7oBT0rg"
+    troubleshooting_title = "Troubleshooting"
+    troubleshooting_steps = [
+      "**Shader Hard Limit:** Since Blender's internal shader engine has a limit(around 50) on the maximum amount of shader nodes, we must split the material into two separate materials and split the decals amongst them",
+      "**Shader Soft Limit (Complexity):** Another Blender limit is shader complexity which at a certain point will take so much memory that it will appear black. This is visually identical to the hard limit, but the difference being that baking is still possible, so it's purely visual"
+    ]
+    troubleshooting_images = [
+      "images/UltiStamp/MaterialFix.webp",
+      "images/UltiStamp/ShaderHardLimit.webp",
+      "images/UltiStamp/OutofMemory.webp"
+    ]
+    troubleshooting_images_captions = [
+      "Broken shader fix - Sometimes we can accidently break our material, no worries UltiStamp has a fix for that in the pie menu. As long as our decals exist we can fix this by clicking the 'Fix Stamps' button in the pie menu",
+      "Shader hard limit - Since Blender's internal shader engine has a limit on the maximum amount of shader nodes, we must split the material into two separate materials and split the decals amongst them",
+      "Shader soft limit - Another Blender limit is shader complexity which at a certain point will take so much memory that it will appear black. This is visually identical to the hard limit, but the difference being that baking is still possible, so it's purely visual"
+    ]
+    troubleshooting_images_alignment = [
+      "center",
+      "center",
+      "center"
+    ]
+    quickstart_title = "Quick Start"
+    quickstart_images = [
+      "images/UltiStamp/Step1.webp",
+      "images/UltiStamp/Step2.webp",
+      "images/UltiStamp/Step3.webp",
+      "images/UltiStamp/Step4.webp",
+      "images/UltiStamp/Step5.webp",
+      "images/UltiStamp/Step6.webp",
+      "images/UltiStamp/Step7.webp",
+      "images/UltiStamp/Step8.webp",
+      "images/UltiStamp/Step9.webp",
+      "images/UltiStamp/Step10.webp"
+    ]
+    quickstart_images_captions = [
+      "**Step 1:** All objects must have a material, create one if it doesn't exist",
+      "**Step 2:** Load a decal pack - the addon provides a lot of these",
+      "**Step 3:** Currently we have 9 packs available",
+      "**Step 4:** Using the Ctrl+R hotkey (rebindable), open the pie menu and select Create Decal. This will create a decal based on the active selection in our decal list on the right",
+      "**Step 5:** With Shift+D we can duplicate our decal without issues. Also for proper snapping toggle the surface snapping, which can be easily done from the button at the top right",
+      "**Step 6:** We can select multiple decals of the same type with the select similar button, and then we can reassign our decals to a new decal with the assign button",
+      "**Step 7:** For variations of the same decal, we can simply duplicate it and modify the parameters",
+      "**Step 8:** We have to assign each decal to our duplicates first",
+      "**Step 9:** Since the decals are hard to see in dense or dark scenes, enabling the Visualizer from the pie menu will solve this problem",
+      "**Step 10:** We can push a decal to the top of the stack by clicking the 'Move Stamp to front' button on the pie menu"
+    ]
+    quickstart_images_alignment = [
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center"
+    ]
+
+
+
+[[documentation.pages]]
+  id = "adjustments"
+  title = "Adjustments & Controls"
+
+  [documentation.pages.introduction]
+    title = "Fine-Tuning Your Stamps"
+    paragraphs = [
+      "UltiStamp provides full PBR decals with various image inputs. Each can be independently configured with its own texture image:",
+      "Adjust stamp appearance with color, transparency, masking, and material controls for perfect integration.",
+      "**Important:** The alpha channels of both the **Base Color** and **Normal** images are used as additional mask inputs, not for transparency. The alpha/transparency is defined separately through the **Alpha Image**. These three masks (Base Color alpha, Normal alpha, and Alpha Image) are multiplied together, then combined with the **Mask Image** to produce the final mask for the decal.",
+      "**Note:** The Normal channel can be toggled to function as a Height map using the **Height Map Toggle** parameter, allowing you to use height-based displacement instead of normal mapping."
+    ]
+    usage_images = [
+      "images/UltiStamp/ImageInputs.webp"
+    ]
+    usage_images_captions = [
+      "Decal Image inputs"
+    ]
+    usage_images_alignment = [
+      "center"
+    ]
+    usage_images_layout = "wide"  # Options: "vertical" (side-by-side) or "wide" (below text, for 16:9 images)
+    section_order = [
+      "hsvcontrols",
+      "alphacontrols",
+      "heightmapmasking",
+      "normalmasking",
+      "custommasks"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-"
+    parameters_title = "Image Inputs"
+    parameters = [
+      "**Base Color** - Diffuse/albedo textures",
+      "**Roughness** - Surface smoothness",
+      "**Metallic** - Metallic properties",
+      "**Normal** - Surface detail (can be toggled to Height map)",
+      "**Alpha** - Transparency control",
+      "**Mask** - Blending with original material or other decals",
+      "**Emission** - Emissive/glow effects",
+      "**Specular** - Reflectivity"
+    ]
+    hsvcontrols_title = "HSV Color Adjustments"
+    hsvcontrols_steps = [
+      "Use HSV controls to match stamp colors with your target surface",
+      "Adjust hue to shift colors, saturation for intensity, and value for brightness",
+      "These controls provide non-destructive color grading for your stamps"
+    ]
+    hsvcontrols_images = [
+      "images/UltiStamp/HSV.webp"
+    ]
+    hsvcontrols_images_captions = [
+      "HSV adjustment panel with real-time preview"
+    ]
+    hsvcontrols_images_alignment = [
+      "center"
+    ]
+    alphacontrols_title = "Alpha & Transparency"
+    alphacontrols_steps = [
+      "Control stamp transparency and blending behavior",
+      "Use alpha flip to invert transparency masks when needed",
+      "Essential for achieving certain effects"
+    ]
+    alphacontrols_images = [
+      "images/UltiStamp/AlphaFlip.webp"
+    ]
+    alphacontrols_images_captions = [
+      "Alpha flip control for inverting transparency"
+    ]
+    alphacontrols_images_alignment = [
+      "center"
+    ]
+    heightmapmasking_title = "Height Map Masking"
+    heightmapmasking_steps = [
+      "Height map masking allows you to control stamp visibility based on surface elevation",
+      "This is particularly useful for applying stamps only to raised or recessed areas",
+      "Adjust the height threshold to control which areas receive the stamp"
+    ]
+    heightmapmasking_images = [
+      "images/UltiStamp/HeightMapMasking.webp",
+      "images/UltiStamp/HeightMapMasking2.webp",
+      "images/UltiStamp/RoundedMask.webp"
+    ]
+    heightmapmasking_images_captions = [
+      "Height map masking configuration and preview",
+      "Bleding using a height map",
+      "Height map blending demonstration"
+    ]
+    heightmapmasking_images_alignment = [
+      "center",
+      "center",
+      "center"
+    ]
+    normalmasking_title = "Normal Masking"
+    normalmasking_steps = [
+      "Normal masking controls stamp application based on surface orientation",
+      "Use normal Y-axis flipping to adjust how normals affect the mask",
+      "This is essential for ensuring stamps align correctly with surface geometry"
+    ]
+    normalmasking_images = [
+      "images/UltiStamp/NormalMasking.webp",
+      "images/UltiStamp/NormalYFlip.webp"
+    ]
+    normalmasking_images_captions = [
+      "Normal masking setup and configuration",
+      "Normal Y-axis flip adjustment for proper alignment"
+    ]
+    normalmasking_images_alignment = [
+      "center",
+      "center"
+    ]
+    custommasks_title = "Extras"
+    custommasks_steps = [
+      "Additional controls for fine-tuning stamp behavior",
+      "Cube mask is a hardcoded property of the decal that defines the falloff from the bounds of the decal object to the edges. The strength can be adjusted with the cube mask parameter",
+      "Mask flip, scale, and strength controls provide additional flexibility for blending"
+    ]
+    custommasks_images = [
+      "images/UltiStamp/CubeMask.webp",
+      "images/UltiStamp/MaskFlip.webp",
+      "images/UltiStamp/MaskScale.webp",
+      "images/UltiStamp/MaskStrength.webp"
+    ]
+    custommasks_images_captions = [
+      "Cube mask falloff control",
+      "Mask flip options for inverting mask behavior",
+      "Mask scale adjustment for fine-tuning coverage",
+      "Mask strength control for blending intensity"
+    ]
+    custommasks_images_alignment = [
+      "center",
+      "center",
+      "center",
+      "center"
+    ]
+    quickstart_title = ""
+    quickstart_images = []
+    quickstart_images_captions = []
+    quickstart_images_alignment = []
+

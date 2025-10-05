@@ -634,9 +634,31 @@ function escapeHtml(s) {
 }
 
 function mdInlineToHtmlBoldOnly(s) {
-  const escaped = escapeHtml(s);
+  // First, extract and protect markdown links from escaping
+  const linkPlaceholders = [];
+  let text = String(s);
+  
+  // Extract markdown links [text](url) and replace with placeholders
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, linkText, url) => {
+    const placeholder = `__LINK_${linkPlaceholders.length}__`;
+    linkPlaceholders.push({ text: linkText, url: url });
+    return placeholder;
+  });
+  
+  // Now escape HTML
+  const escaped = escapeHtml(text);
+  
   // Convert **text** to <strong>text</strong>
-  return escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  let result = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  
+  // Restore links as HTML <a> tags
+  linkPlaceholders.forEach((link, index) => {
+    const placeholder = `__LINK_${index}__`;
+    const linkHtml = `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.text)}</a>`;
+    result = result.replace(placeholder, linkHtml);
+  });
+  
+  return result;
 }
 
 // Assign a theme color to any <strong> elements inside a root node
@@ -667,6 +689,17 @@ function colorizeStrongIn(root, cfg) {
     }
     // Do not apply outline stroke to strong text to avoid overlapping glyphs
     // in display fonts that lack a true bold face (e.g., Digitalt).
+  });
+  
+  // Also colorize links with theme colors from TOML
+  root.querySelectorAll('a').forEach((el) => {
+    if (!el.classList.contains('themed-link')) {
+      el.classList.add('themed-link');
+      // Use hyperlink_color from theme_colors, fallback to primary_pink
+      const linkColor = cfg?.theme_colors?.hyperlink_color || cfg?.theme_colors?.primary_pink || '#00DCDC';
+      el.style.setProperty('--link-color', linkColor);
+      el.style.color = linkColor;
+    }
   });
 }
 
@@ -1853,6 +1886,7 @@ function renderContent(cfg) {
       parameters.forEach(item => {
         const li = document.createElement('li');
         li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+        colorizeStrongIn(li, cfg);
         ulp.appendChild(li);
       });
       paramNodes.push(ulp);
@@ -2205,6 +2239,7 @@ function renderIntroductionSection(introConfig, cfg, containerId) {
     parameters.forEach(item => {
       const li = document.createElement('li');
       li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+      colorizeStrongIn(li, cfg);
       ulp.appendChild(li);
     });
     paramNodes.push(ulp);
@@ -2235,53 +2270,117 @@ function renderIntroductionSection(introConfig, cfg, containerId) {
   // Usage images
   const usageImages = parseUsageImages(introConfig);
   
+  // Check image layout preference (vertical/portrait or wide/16:9)
+  const imageLayout = introConfig.usage_images_layout || introConfig.usage_image_layout || 'vertical'; // 'vertical' or 'wide'
+  const isWideLayout = imageLayout === 'wide' || imageLayout === '16:9' || imageLayout === 'horizontal';
+  
   // Layout with images
   if (usageImages.length > 0) {
-    const grid = document.createElement('div');
-    grid.className = 'intro__usage-grid';
-
-    const mainCol = document.createElement('div');
-    mainCol.className = 'intro__usage-main';
-    usageNodes.forEach(node => mainCol.appendChild(node));
-    paramNodes.forEach(node => mainCol.appendChild(node));
-    grid.appendChild(mainCol);
-
-    const mediaCol = document.createElement('div');
-    mediaCol.className = 'intro__usage-media';
-    
-    if (usageImages.length === 1) {
-      // Single image
-      const single = usageImages[0];
-      const fig = document.createElement('figure');
-      fig.className = 'intro__usage-figure';
-      const img = document.createElement('img');
-      img.src = single.src;
-      img.alt = single.alt || single.caption || 'Usage image';
-      img.className = 'intro__usage-image media-border';
-      if (single.alignment) {
-        img.classList.add(`object-position-${single.alignment}`);
+    if (isWideLayout) {
+      // Wide layout: text above, image below (full width)
+      usageNodes.forEach(node => introContent.appendChild(node));
+      paramNodes.forEach(node => introContent.appendChild(node));
+      
+      const mediaContainer = document.createElement('div');
+      mediaContainer.className = 'intro__usage-media-wide';
+      
+      if (usageImages.length === 1) {
+        // Single wide image - wrap in carousel-like structure for consistent styling
+        const carouselWrapper = document.createElement('div');
+        carouselWrapper.className = 'media-carousel usage-carousel--wide';
+        
+        const carouselInner = document.createElement('div');
+        carouselInner.className = 'carousel-inner';
+        
+        const carouselItem = document.createElement('div');
+        carouselItem.className = 'carousel-item active';
+        
+        const img = document.createElement('img');
+        img.src = usageImages[0].src;
+        img.alt = usageImages[0].alt || usageImages[0].caption || 'Usage image';
+        img.className = 'd-block w-100';
+        img.style.cssText = 'object-fit: contain; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;';
+        img.loading = 'lazy';
+        
+        carouselItem.appendChild(img);
+        carouselInner.appendChild(carouselItem);
+        carouselWrapper.appendChild(carouselInner);
+        
+        // Add caption
+        const capText = getImageCaptionText(usageImages[0]);
+        if (capText) {
+          const captionEl = document.createElement('div');
+          captionEl.className = 'usage-carousel-caption intro__usage-caption';
+          captionEl.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
+          colorizeStrongIn(captionEl, cfg);
+          carouselWrapper.appendChild(captionEl);
+        }
+        
+        // Make image zoomable
+        setTimeout(() => {
+          makeImageZoomable(img, capText);
+        }, 100);
+        
+        mediaContainer.appendChild(carouselWrapper);
+      } else {
+        // Multiple images - create carousel
+        const carousel = createMediaCarousel(usageImages, cfg, {
+          className: 'usage-carousel usage-carousel--wide',
+          type: 'image',
+          borderClass: 'media-border'
+        });
+        if (carousel) mediaContainer.appendChild(carousel);
       }
-      fig.appendChild(img);
-      const capText = getImageCaptionText(single);
-      if (capText) {
-        const fc = document.createElement('figcaption');
-        fc.className = 'intro__usage-caption';
-        fc.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
-        fig.appendChild(fc);
-      }
-      mediaCol.appendChild(fig);
+      
+      introContent.appendChild(mediaContainer);
     } else {
-      // Multiple images - create carousel
-      const carousel = createMediaCarousel(usageImages, cfg, {
-        className: 'usage-carousel',
-        type: 'image',
-        borderClass: 'media-border'
-      });
-      if (carousel) mediaCol.appendChild(carousel);
+      // Vertical layout: side-by-side grid (original behavior)
+      const grid = document.createElement('div');
+      grid.className = 'intro__usage-grid';
+
+      const mainCol = document.createElement('div');
+      mainCol.className = 'intro__usage-main';
+      usageNodes.forEach(node => mainCol.appendChild(node));
+      paramNodes.forEach(node => mainCol.appendChild(node));
+      grid.appendChild(mainCol);
+
+      const mediaCol = document.createElement('div');
+      mediaCol.className = 'intro__usage-media';
+      
+      if (usageImages.length === 1) {
+        // Single image
+        const single = usageImages[0];
+        const fig = document.createElement('figure');
+        fig.className = 'intro__usage-figure';
+        const img = document.createElement('img');
+        img.src = single.src;
+        img.alt = single.alt || single.caption || 'Usage image';
+        img.className = 'intro__usage-image media-border';
+        if (single.alignment) {
+          img.classList.add(`object-position-${single.alignment}`);
+        }
+        fig.appendChild(img);
+        const capText = getImageCaptionText(single);
+        if (capText) {
+          const fc = document.createElement('figcaption');
+          fc.className = 'intro__usage-caption';
+          fc.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
+          fig.appendChild(fc);
+        }
+        mediaCol.appendChild(fig);
+      } else {
+        // Multiple images - create carousel
+        const carousel = createMediaCarousel(usageImages, cfg, {
+          className: 'usage-carousel',
+          type: 'image',
+          borderClass: 'media-border'
+        });
+        if (carousel) mediaCol.appendChild(carousel);
+      }
+      
+      grid.appendChild(mediaCol);
+      introContent.appendChild(grid);
     }
-    
-    grid.appendChild(mediaCol);
-    introContent.appendChild(grid);
   } else {
     // No images - just append sections normally
     usageNodes.forEach(node => introContent.appendChild(node));
@@ -2652,6 +2751,12 @@ function renderDocumentationPage(pageId) {
         alignmentKey: alignmentKey
       });
       
+      // Debug logging
+      dbg(`Section ${sectionKey}: title="${title}", steps=${steps.length}, images=${images.length}`);
+      if (images.length > 0) {
+        dbg(`  Images for ${sectionKey}:`, images);
+      }
+      
       // Remove existing section if it exists
       const sectionId = `${sectionIdPrefix}${sectionKey}`;
       const existingSection = document.getElementById(sectionId);
@@ -2686,6 +2791,22 @@ function renderDocumentationPage(pageId) {
         if (images.length > 0) {
           const carousel = createImageCarousel(images, (cfgDoc || globalConfig), `${sectionKey}-carousel`);
           card.appendChild(carousel);
+        }
+        
+        // Check for video URL
+        const videoUrlKey = `${sectionKey}_video_url`;
+        const videoUrl = introConfig[videoUrlKey] || '';
+        if (videoUrl) {
+          const videoContainer = document.createElement('div');
+          videoContainer.className = 'video-frame interactive-border';
+          videoContainer.style.marginTop = '1rem';
+          const iframe = document.createElement('iframe');
+          iframe.src = videoUrl;
+          iframe.title = `${title} Video`;
+          iframe.allowFullscreen = true;
+          iframe.loading = 'lazy';
+          videoContainer.appendChild(iframe);
+          card.appendChild(videoContainer);
         }
         
         section.appendChild(card);

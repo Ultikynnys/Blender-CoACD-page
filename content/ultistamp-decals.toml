@@ -1,111 +1,137 @@
 # Site settings (UltiStamp)
 [site]
   title = "UltiStamp"
-  banner = "images/Banner.webp"
-  research_link_text = "Discord Support"
-  research_link_url = "https://discord.gg/Pm7TDf2rV5"
-  research_link_enabled = true
+  banner = "images/UltiStamp/UltiStamp.webp"
+  research_link_enabled = false
+  # Background pattern (black/white mask with color mapping)
+  background_image = "images/Pattern.svg"
+  background_size = "auto"
+  background_position = "center"
+  background_repeat = "repeat"
+  background_opacity = "0.15"
+  background_rotation = "45"            # Rotate pattern in degrees
+  # Color mapping for black/white patterns
+  background_color_black = "#1A0A0A"    # Very dark cyan (matches bg_dark)
+  background_color_white = "#000000"    # Dark cyan accent
 
-# Theme colors (UltiStamp theme)
+# Theme colors (Azure Blue theme)
 [theme_colors]
-  primary_pink = "#D94E81"
-  primary_purple = "#8A66D9"
-  primary_teal = "#7EBFA1"
-  primary_green = "#94BF54"
-  bg_dark = "#232626"
-  text_white = "#ffffff"
+  primary_pink = "#007FFF"      # Azure Blue
+  primary_purple = "#000000"    # Black
+  primary_teal = "#000000"      # Dark blue
+  primary_green = "#000000"     # Deep blue
+  bg_dark = "#0A0A1A"           # Very dark blue
+  text_white = "#FFFFFF"
+  hyperlink_color = "#007FFF"   # Hyperlink color (defaults to primary_pink if not set)
+  outline_variant = "cyan-outline"
+  outline_fill_color = "#FFFFFF"
+  outline_stroke_color = "#FFFFFF"
 
-# Open Graph / SEO
-[meta]
-  og_type = "website"
-  og_url = "https://blendermarket.com/products/ultistamp"
-  og_title = "UltiStamp"
-  og_description = "This addon lets you easily apply decals to your Blender meshes, similar to Substance Painter. With built-in UltiBake support for seamless export to game engines."
-  og_image = "images/Banner.webp"
+# Font configuration (optional - overrides default fonts)
+[fonts]
+  font_family_primary = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_secondary = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_heading = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_mono = "'JetBrains Mono', 'Fira Code', 'Consolas', monospace"
+  font_size_base = "1.1rem"
+  font_size_heading = "2.5rem"
+  font_size_small = "0.9rem"
+  font_weight_normal = "400"
+  font_weight_medium = "500"
+  font_weight_bold = "700"
+  line_height_base = "1.6"
+  line_height_heading = "1.2"
+  letter_spacing_normal = "0"
+  letter_spacing_wide = "0.025em"
+
 
 # Section titles
 [titles]
-  comparisons = "Features"
-  showcase = "How to Use"
+  comparisons = "Showcase"
+  showcase = "Videos"
   support = "Support"
 
 # Introduction section
 [introduction]
   title = ""
   paragraphs = [
-    "This addon lets you easily apply **decals** to your **Blender** meshes, similar to **Substance Painter**. With built-in **UltiBake** support, these decals can be baked directly into your textures for seamless export to **game engines**.",
-    "The addon offers over **100 PBR decals**, customizable preset packs, and the ability to create new decals from any image. Perfect for adding detail and realism to your 3D models."
+    "**UltiStamp** is a powerful decal system for Blender that provides **full PBR decal support** with seamless integration into **[UltiBake's](https://superhivemarket.com/products/ultibake) baking workflow**. Create, manage, and apply decals with ease.",
+    "Built for **game development** and **production workflows**, UltiStamp offers complete control over decal placement, blending, and masking. The addon **includes 9 decal packs** out of the box, and you can create and use **as many custom packs as you want** to quickly add surface detail to your assets."
   ]
 
   # Features section
   parameters_title = "Key Features"
   parameters = [
-    "**Clickable Empty Handles** - Easily clickable empty handles and radial menu buttons for intuitive decal placement.",
-    "**Advanced PBR Decals** - Full PBR decals with alpha masking and realistic material properties.",
-    "**Detail Enhancement** - A great way to add more detail to existing props without complex modeling.",
-    "**Emissive Support** - Supports emissive decals for glowing effects and lighting details.",
-    "**Transparent Materials** - Add decals to transparent materials with proper blending.",
-    "**Seamless UVs** - Scale Decal UVs for seamless decal application across surfaces.",
-    "**UltiBake Integration** - Bake your decals into textures with UltiBake for game engine export.",
-    "**HSV Control** - Change the HSV (Hue, Saturation, Value) of stamps for color variation."
+    "**Full PBR Decals** - Support for Base Color, Roughness, Metallic, Normal, Alpha, Mask, Emission, and Specular image inputs.",
+    "**Custom Stamp Creation** - Create your own decals with the simple Add button workflow. Save and load custom stamps to external files.",
+    "**Pie Menu Workflow** - Quick access with Ctrl+R hotkey (rebindable) for creating, managing, and visualizing decals.",
+    "**Surface Snapping** - Easy decal placement with surface snapping toggle for precise positioning.",
+    "**Decal Stacking** - Move stamps to front or back in the stack for proper layering control.",
+    "**Advanced Masking** - Height map masking, normal masking, cube mask falloff, and custom mask controls.",
+    "**HSV & Alpha Controls** - Fine-tune colors and transparency with HSV adjustments and alpha flip options.",
+    "**Visualizer Mode** - See decals clearly in dense or dark scenes with the built-in visualizer.",
+    "**Material Fix** - Broken material? No problem! Fix stamps with one click from the pie menu.",
+    "**[UltiBake](https://superhivemarket.com/products/ultibake) Integration** - Seamlessly bake your decals with UltiBake for game-ready assets."
   ]
 
-  usage_title = "Workflow"
-  usage_steps = [
-    "**Select** your target mesh object in Blender",
-    "**Choose** a decal from the extensive PBR library (100+ decals included)",
-    "**Position** the decal using intuitive empty handles and radial controls",
-    "**Adjust** scale, rotation, and HSV properties as needed",
-    "**Bake** decals into textures using integrated UltiBake support",
-    "**Export** your textured models to Unity, Unreal, or other game engines"
+  # Multiple usage images with carousel (simple array format for now)
+  usage_images = [
+    "images/UltiStamp/PanelShow.webp"
+  ]
+  
+  # Captions for the images (in order)
+  usage_images_captions = [
+   "Panel location: 3D Viewport > N > UltiStamp"
+  ]
+  
+  # Alignment for the images (in order) - options: "top-left", "top-right", "center"
+  usage_images_alignment = [
+    "top-right"
   ]
 
-  usage_image = "images/Logo.webp"
-  usage_image_alt = "UltiStamp decal application interface"
-  usage_image_caption = "UltiStamp - Substance Painter-style decals for Blender"
-
-# Feature showcase comparisons
-[[comparisons]]
-  initial = 0.5
-  color = "purple"
-  before = "images/Logo.webp"
-  after  = "images/Logo2.webp"
-  caption = "**Plain surface** vs **UltiStamp decal enhancement**"
-  handle_shape = "circle"
-
-[[comparisons]]
-  initial = 0.6
-  color = "teal"
-  before = "images/Logo.webp"
-  after  = "images/Logo2.webp"
-  caption = "**Manual texture painting** vs **Instant decal application**"
-  handle_shape = "circle"
-
-[[comparisons]]
-  initial = 0.4
-  color = "green"
-  before = "images/Logo.webp"
-  after  = "images/Logo2.webp"
-  caption = "**Basic materials** vs **PBR decal details**"
-  handle_shape = "circle"
-
-[[comparisons]]
-  initial = 0.3
-  color = "pink"
-  before = "images/Logo.webp"
-  after  = "images/Logo2.webp"
-  caption = "**Static textures** vs **Dynamic decal placement**"
-  handle_shape = "circle"
-
-# Showcase videos
-[showcase]
+  # Video showcase in introduction
+  video_title = "Video Showcase"
   video_url = "https://www.youtube.com/embed/hWIO-FiaHsQ"
-  placeholder = "UltiStamp tutorial videos"
+
+# Feature comparisons (using carousel-style content)
+[[comparisons]]
+  images = [
+    "images/UltiStamp/Showcase1.webp",
+    "images/UltiStamp/Showcase2.webp",
+    "images/UltiStamp/Showcase3.webp",
+    "images/UltiStamp/Showcase4.webp",
+    "images/UltiStamp/Showcase5.webp",
+    "images/UltiStamp/Showcase6.webp",
+    "images/UltiStamp/Showcase8.webp",
+    "images/UltiStamp/HeightMapMasking2.webp"
+  ]
+  images_captions = [
+    "**Showcase 1** - This shows how we can easily work with the decals even in Blender's native environment using the visualizer",
+    "**Showcase 2** - Transparency decals are supported",
+    "**Showcase 3** - Adding surface imperfections with multiple decals",
+    "**Showcase 4** - Emissive decals are supported",
+    "**Showcase 5** - Various parameters for tweaking decal visuals",
+    "**Showcase 6** - UV decal scaling supported",
+    "**Showcase 7** - HSV controls and more!",
+    "**Showcase 8** - Height map masking for precise decal placement based on surface elevation"
+  ]
+  images_alt = [
+    "Showcase 1",
+    "Showcase 2",
+    "Showcase 3",
+    "Showcase 4",
+    "Showcase 5",
+    "Showcase 6",
+    "Showcase 7",
+    "Showcase 8"
+  ]
+  caption = "**UltiStamp Showcase** - Professional results with full PBR decal workflow"
+
 
 # Support / Community
 [support]
   title = "Support"
-  text = "For support or suggestions with UltiStamp, join our Discord community."
+  text = "If you have any questions, issues, or suggestions, join our Discord community."
   link_text = "Join Discord"
   link_url = "https://discord.gg/Pm7TDf2rV5"
 
@@ -115,49 +141,14 @@
   url = "changelogs/ultistamp-changelog.md"
   title = "Changelog"
 
-# Feature details
-[features]
-  [features.handles]
-    title = "Intuitive Controls"
-    description = "Easily clickable empty handles and radial menu buttons make decal placement intuitive and precise."
-  
-  [features.pbr_decals]
-    title = "Advanced PBR Decals"
-    description = "Full PBR workflow with alpha masking, normal maps, roughness, and metallic properties for realistic results."
-  
-  [features.detail_enhancement]
-    title = "Surface Detail"
-    description = "Perfect for adding scratches, dirt, logos, and other surface details to existing 3D models."
-  
-  [features.emissive]
-    title = "Emissive Decals"
-    description = "Create glowing decals for sci-fi elements, warning signs, and lighting effects."
-  
-  [features.transparent]
-    title = "Transparent Support"
-    description = "Apply decals to transparent and translucent materials with proper alpha blending."
-  
-  [features.uv_scaling]
-    title = "UV Control"
-    description = "Scale and adjust decal UVs for seamless application across different surface types."
-  
-  [features.baking]
-    title = "UltiBake Integration"
-    description = "Seamlessly bake decals into textures using the integrated UltiBake system for game engine export."
-  
-  [features.color_control]
-    title = "Color Variation"
-    description = "Adjust HSV properties to create color variations and match your project's aesthetic."
+# Citations configuration - disabled for UltiBake
+[citations_config]
+  enabled = false
 
-# Video tutorials
-[tutorials]
-  [tutorials.start_guide]
-    title = "Start Guide"
-    video_url = "https://www.youtube.com/embed/hWIO-FiaHsQ"
-    description = "Learn the basics of UltiStamp decal application"
-  
-  [tutorials.baking_guide]
-    title = "Baking Guide"
-    video_url = "https://www.youtube.com/embed/xXyf7oBT0rg"
-    description = "How to bake decals into textures with UltiBake"
-
+# Documentation configuration
+[documentation]
+  enabled = true
+  default_view = "showcase"  # "showcase" or "documentation"
+  toggle_text_showcase = "View Documentation"
+  toggle_text_documentation = "View Product Showcase"
+  toml_url = "content/ultistamp-docs.toml"

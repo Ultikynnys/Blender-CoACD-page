@@ -120,14 +120,24 @@ a {
   color: var(--primary-pink);
   text-decoration: none;
   text-shadow: none;
-  transition: color 150ms ease;
+  transition: color 150ms ease, opacity 150ms ease;
 }
-
 
 a:hover, a:focus-visible {
   color: var(--primary-pink);
   text-decoration: underline;
   text-shadow: none;
+}
+
+/* Themed links - use custom color from JS */
+a.themed-link {
+  color: var(--link-color, var(--primary-pink));
+}
+
+a.themed-link:hover, a.themed-link:focus-visible {
+  color: var(--link-color, var(--primary-pink));
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 /* ===== COMPONENTS ===== */
