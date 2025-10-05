@@ -85,6 +85,7 @@
   ]
 
   # Multiple usage images with carousel (simple array format for now)
+  usage_images_layout = "vertical"  # "vertical" (9:16) or "wide" (16:9)
   usage_images = [
     "images/Ultibake/Ultibake_Bake1.webp",
     "images/Ultibake/Ultibake_Bake2.webp",
