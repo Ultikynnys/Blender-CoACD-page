@@ -6,12 +6,9 @@
   research_link_url = "https://discord.gg/Xh7eB5Rn5b"
   research_link_enabled = true
 
-# Theme colors (Monochrome theme like Unreal)
+# Theme colors (Monochrome theme)
 [theme_colors]
-  primary_pink = "#000000"
-  primary_purple = "#000000"
-  primary_teal = "#000000"
-  primary_green = "#000000"
+  brand_primary = "#FFFFFF"
   bg_dark = "#0F0F0F"
   text_white = "#FFFFFF"
 
@@ -65,7 +62,6 @@
 # Tool category comparisons
 [[comparisons]]
   initial = 0.5
-  color = "purple"
   before = "images/Logo.webp"
   after  = "images/Logo2.webp"
   caption = "**Standard Blender tools** vs **UltiTools enhanced workflow**"
@@ -73,7 +69,6 @@
 
 [[comparisons]]
   initial = 0.6
-  color = "teal"
   before = "images/Logo.webp"
   after  = "images/Logo2.webp"
   caption = "**Manual mesh checking** vs **Automated mesh analysis**"
@@ -81,7 +76,6 @@
 
 [[comparisons]]
   initial = 0.4
-  color = "green"
   before = "images/Logo.webp"
   after  = "images/Logo2.webp"
   caption = "**Complex FBX setup** vs **Game-ready export presets**"

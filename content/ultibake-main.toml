@@ -12,19 +12,14 @@
   background_repeat = "repeat"
   background_opacity = "0.15"
   background_rotation = "45"            # Rotate pattern in degrees
-  # Color mapping for black/white patterns
-  background_color_black = "#1A0A0A"    # Very dark crimson (matches bg_dark)
-  background_color_white = "#4A1515"    # Dark crimson accent
+  # Pattern colors auto-derived from theme_colors
 
 # Theme colors (Crimson theme)
 [theme_colors]
-  primary_pink = "#DC143C"      # Crimson
-  primary_purple = "#B22222"    # Fire brick
-  primary_teal = "#8B0000"      # Dark red
-  primary_green = "#A0252A"     # Deep crimson
+  brand_primary = "#DC143C"     # Crimson - shades auto-derived
   bg_dark = "#1A0A0A"           # Very dark crimson
   text_white = "#FFFFFF"
-  hyperlink_color = "#DC143C"   # Crimson for hyperlinks
+  # hyperlink_color optional; falls back to brand_primary when omitted
 
 # Font configuration (optional - overrides default fonts)
 [fonts]
@@ -120,7 +115,6 @@
 # Feature comparisons (using carousel-style content)
 [[comparisons]]
   initial = 0.5
-  color = "pink"
   before = "images/Ultibake/BasicUsage/UltibakePre.webp"
   after  = "images/Ultibake/BasicUsage/UltibakePost.webp"
   caption = "Transform **complex scene setups** into a **unified texture set**. Handles **advanced materials**, **multi-object workflows**, **decals**, and more with ease."

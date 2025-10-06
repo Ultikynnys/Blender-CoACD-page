@@ -68,8 +68,8 @@ body {
   letter-spacing: var(--letter-spacing-normal);
 }
 
-/* Unified text color override (exclude links to allow theme colors) */
-*:not(a), .card, .card *:not(a), p, span, div, .content-container, .content-container *:not(a) {
+/* Unified text color override (exclude links and strong to allow theme colors) */
+*:not(a):not(strong), .card, .card *:not(a):not(strong), p, span, div, .content-container, .content-container *:not(a):not(strong) {
   color: var(--text-white) !important;
 }
 
@@ -393,18 +393,12 @@ strong {
 /* Before/After slider */
 .ba-slider {
   --pos: 50%; /* updated by JS */
-  --ba-color: var(--primary-purple); /* default handle color */
+  --ba-color: var(--primary-pink); /* handle color from brand_primary */
   position: relative;
   aspect-ratio: 16 / 9;
   width: 100%;
   overflow: hidden;
 }
-
-/* Choose a palette color per slider */
-.ba-slider[data-color="pink"]  { --ba-color: var(--primary-pink); }
-.ba-slider[data-color="purple"]{ --ba-color: var(--primary-purple); }
-.ba-slider[data-color="teal"]  { --ba-color: var(--primary-teal); }
-.ba-slider[data-color="green"] { --ba-color: var(--primary-green); }
 
 .ba-pane {
   position: absolute;

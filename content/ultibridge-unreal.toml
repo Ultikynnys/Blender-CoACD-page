@@ -6,12 +6,9 @@
   research_link_url = "https://docs.unrealengine.com/"
   research_link_enabled = false
 
-# Theme colors (Unreal Engine-inspired)
+# Theme colors (Monochrome theme)
 [theme_colors]
-  primary_pink = "#000000"
-  primary_purple = "#000000"
-  primary_teal = "#000000"
-  primary_green = "#000000"
+  brand_primary = "#FFFFFF"
   bg_dark = "#0F0F0F"
   text_white = "#FFFFFF"
 
@@ -68,7 +65,6 @@
 # Comparisons (Before/After sliders)
 [[comparisons]]
   initial = 0.3
-  color = "teal"
   before = "images/Logo.webp"
   after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Traditional workflow** vs **UltiBridge Unreal integration**"
@@ -76,7 +72,6 @@
 
 [[comparisons]]
   initial = 0.6
-  color = "purple"
   before = "images/Logo.webp"
   after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Manual export process** vs **automated Unreal pipeline**"
@@ -84,7 +79,6 @@
 
 [[comparisons]]
   initial = 0.4
-  color = "green"
   before = "images/Logo.webp"
   after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Material recreation** vs **automatic Unreal material mapping**"
@@ -92,7 +86,6 @@
 
 [[comparisons]]
   initial = 0.6
-  color = "pink"
   before = "images/Logo.webp"
   after  = "images/UltiBridge2_Unreal.webp"
   caption = "**Multiple steps** vs **streamlined Content Browser import**"

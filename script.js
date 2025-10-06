@@ -652,62 +652,88 @@ function mdInlineToHtmlBoldOnly(s) {
   return result;
 }
 
-// Normalize theme colors to support a simplified schema in TOML
-// Accepts either:
-//  - legacy keys: primary_pink/purple/teal/green, hyperlink_color, bg_dark, text_white
-//  - simplified keys: brand_primary, brand_secondary, brand_tertiary, palette (array), hyperlink_color
-// Returns an object containing legacy keys populated from simplified keys when missing
+// Generate color shades from a base color using color-mix
+function deriveColorShades(baseColor) {
+  if (!baseColor) return [baseColor, baseColor, baseColor, baseColor];
+  
+  // Parse hex color to RGB
+  const hex = baseColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  
+  // Calculate perceived brightness (0-255)
+  const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+  
+  // For bright colors (like white), create darker shades
+  // For dark/saturated colors, create lighter/varied shades
+  if (brightness > 200) {
+    // Bright color: create progressively darker shades
+    return [
+      baseColor,                                                    // primary_pink (original)
+      `color-mix(in srgb, ${baseColor} 75%, #000000 25%)`,        // primary_purple (darker)
+      `color-mix(in srgb, ${baseColor} 60%, #000000 40%)`,        // primary_teal (even darker)
+      `color-mix(in srgb, ${baseColor} 50%, #000000 50%)`         // primary_green (darkest)
+    ];
+  } else {
+    // Dark/saturated color: create lighter and hue-shifted variations
+    return [
+      baseColor,                                                    // primary_pink (original)
+      `color-mix(in srgb, ${baseColor} 85%, #ffffff 15%)`,        // primary_purple (lighter)
+      `color-mix(in srgb, ${baseColor} 70%, #ffffff 30%)`,        // primary_teal (more lighter)
+      `color-mix(in srgb, ${baseColor} 90%, #888888 10%)`         // primary_green (subtle variation)
+    ];
+  }
+}
+
+// Normalize theme colors - single source of truth: brand_primary
+// All color shades are automatically derived from brand_primary
 function normalizeThemeColors(raw = {}) {
   const colors = { ...(raw || {}) };
-  const palette = Array.isArray(colors.palette) ? colors.palette.filter(Boolean) : [];
 
-  // Derive legacy palette from simplified keys if needed
-  const p0 = colors.primary_pink || colors.brand_primary || palette[0];
-  const p1 = colors.primary_purple || colors.brand_secondary || palette[1] || p0;
-  const p2 = colors.primary_teal || colors.brand_tertiary || palette[2] || p0;
-  const p3 = colors.primary_green || palette[3] || p0;
+  // Always derive shades from brand_primary if it exists
+  if (colors.brand_primary) {
+    const shades = deriveColorShades(colors.brand_primary);
+    colors.primary_pink = shades[0];
+    colors.primary_purple = shades[1];
+    colors.primary_teal = shades[2];
+    colors.primary_green = shades[3];
+  } else {
+    // Fallback to defaults if no brand_primary provided
+    colors.primary_pink = colors.primary_pink || '#D94E81';
+    colors.primary_purple = colors.primary_purple || '#8A66D9';
+    colors.primary_teal = colors.primary_teal || '#7EBFA1';
+    colors.primary_green = colors.primary_green || '#94BF54';
+  }
 
-  if (!colors.primary_pink && p0) colors.primary_pink = p0;
-  if (!colors.primary_purple && p1) colors.primary_purple = p1;
-  if (!colors.primary_teal && p2) colors.primary_teal = p2;
-  if (!colors.primary_green && p3) colors.primary_green = p3;
-
-  // Derive hyperlink color from brand/primary if not given
+  // Derive hyperlink color from brand_primary if not given
   if (!colors.hyperlink_color) {
-    colors.hyperlink_color = colors.brand_primary || colors.primary_pink || palette[0] || colors.hyperlink_color || '#00DCDC';
+    colors.hyperlink_color = colors.brand_primary || colors.primary_pink || '#00DCDC';
   }
 
   return colors;
 }
 
-// Assign a theme color to any <strong> elements inside a root node
-function pickRandomThemeColor(cfg) {
+// Get a lighter shade of brand_primary for bold text
+function getLighterBrandColor(cfg) {
   const raw = cfg?.theme_colors;
-  if (raw) {
-    const colors = normalizeThemeColors(raw);
-    const palette = [];
-    if (Array.isArray(colors.palette) && colors.palette.length) {
-      palette.push(...colors.palette.filter(Boolean));
-    } else {
-      palette.push(
-        colors.primary_pink,
-        colors.primary_purple,
-        colors.primary_teal,
-        colors.primary_green
-      );
-    }
-    const valid = palette.filter(Boolean);
-    if (valid.length) return utils.randomChoice(valid);
+  if (raw?.brand_primary) {
+    // Create a lighter version of brand_primary
+    return `color-mix(in srgb, ${raw.brand_primary} 50%, #ffffff 50%)`;
   }
-  return utils.randomChoice(THEME_CONFIG.colors.palette);
+  // Fallback to primary_pink if no brand_primary
+  const colors = normalizeThemeColors(raw || {});
+  return colors.primary_pink || '#D94E81';
 }
 
 function colorizeStrongIn(root, cfg) {
   if (!root) return;
+  const strongColor = getLighterBrandColor(cfg);
+  
   root.querySelectorAll('strong').forEach((el) => {
     if (!el.classList.contains('themed-strong')) {
       el.classList.add('themed-strong');
-      el.style.setProperty('--strong-color', pickRandomThemeColor(cfg));
+      el.style.setProperty('--strong-color', strongColor);
     }
     // Do not apply outline stroke to strong text to avoid overlapping glyphs
     // in display fonts that lack a true bold face (e.g., Digitalt).
@@ -884,11 +910,24 @@ function randomizeThemeElements() {
 }
 
 // Background management utilities
-function buildBackgroundLayers(site = {}) {
+function buildBackgroundLayers(site = {}, themeColors = {}) {
   if (!site.background_image) return null;
   const baseImage = `url('${site.background_image}')`;
-  const blackColor = site.background_color_black || null;
-  const whiteColor = site.background_color_white || null;
+  
+  // Derive pattern colors from theme if not explicitly provided
+  let blackColor = site.background_color_black;
+  let whiteColor = site.background_color_white;
+  
+  // Auto-derive from theme colors if not specified
+  if (!blackColor && !whiteColor && themeColors) {
+    const bgDark = themeColors.bg_dark || '#0A0A0A';
+    const brandPrimary = themeColors.brand_primary || themeColors.primary_pink || '#FFFFFF';
+    
+    // Use bg_dark for black, and a darkened version of brand_primary for white
+    blackColor = bgDark;
+    whiteColor = `color-mix(in srgb, ${brandPrimary} 20%, ${bgDark} 80%)`;
+  }
+  
   if (!blackColor && !whiteColor) {
     return { backgroundImage: baseImage, blendMode: '' };
   }
@@ -908,7 +947,7 @@ function createBackgroundStyle(cfg) {
   const size = site.background_size || 'auto';
   const position = site.background_position || 'center';
   const repeat = site.background_repeat || 'repeat';
-  const layers = buildBackgroundLayers(site) || { backgroundImage: `url('${site.background_image}')`, blendMode: '' };
+  const layers = buildBackgroundLayers(site, cfg?.theme_colors) || { backgroundImage: `url('${site.background_image}')`, blendMode: '' };
   const blendModeRule = layers.blendMode ? `background-blend-mode: ${layers.blendMode};` : '';
 
   return `
@@ -2154,14 +2193,13 @@ function createComparisonElement(comparison, cfg) {
     card.className = 'card card--compact';
 
     const initial = typeof comparison.initial === 'number' ? comparison.initial : 0.5;
-    const color = comparison.color || 'purple';
     const handleShape = comparison.handle_shape || 'pentagon';
     const handleClass = handleShape ? `shape-${handleShape}` : '';
     const sharedCap = getImageCaptionText({ caption: comparison.caption, alt: comparison.alt, title: comparison.title });
     const safeAlt = sharedCap ? escapeHtml(String(sharedCap)) : '';
 
     card.innerHTML = `
-      <div class="ba-slider interactive-border" data-initial="${initial}" data-color="${color}">
+      <div class="ba-slider interactive-border" data-initial="${initial}">
         <div class="ba-pane after">${comparison.after ? `<img src="${comparison.after}" alt="${safeAlt}">` : '<span>After</span>'}</div>
         <div class="ba-pane before">${comparison.before ? `<img src="${comparison.before}" alt="${safeAlt}">` : '<span>Before</span>'}</div>
         <button class="ba-handle ${handleClass}" role="slider" aria-label="Drag to compare" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></button>

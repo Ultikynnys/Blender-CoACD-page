@@ -10,9 +10,7 @@
   background_repeat = "repeat"
   background_opacity = "0.15"
   background_rotation = "45"            # Rotate pattern in degrees
-  # Color mapping for black/white patterns
-  background_color_black = "#1A0A0A"    # Very dark cyan (matches bg_dark)
-  background_color_white = "#000000"    # Dark cyan accent
+  # Pattern colors auto-derived from theme_colors
 
 # Theme colors (simplified)
 [theme_colors]

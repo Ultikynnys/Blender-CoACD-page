@@ -8,10 +8,7 @@
 
 # Theme colors (Default theme)
 [theme_colors]
-  primary_pink = "#D94E81"
-  primary_purple = "#8A66D9"
-  primary_teal = "#7EBFA1"
-  primary_green = "#94BF54"
+  brand_primary = "#D94E81"     # Pink - shades auto-derived
   bg_dark = "#232626"
   text_white = "#ffffff"
 
@@ -71,7 +68,6 @@
 # Feature comparisons (placeholder images)
 [[comparisons]]
   initial = 0.5
-  color = "purple"
   before = "images/CompareBase1.webp"
   after  = "images/CompareColl1.webp"
   caption = "Base animation vs. enhanced with AnimPlus tools"
@@ -79,7 +75,6 @@
 
 [[comparisons]]
   initial = 0.5
-  color = "teal"
   before = "images/CompareBase2.webp"
   after  = "images/CompareColl2.webp"
   caption = "Faster iteration and cleanup"

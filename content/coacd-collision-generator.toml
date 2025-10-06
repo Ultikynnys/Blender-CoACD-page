@@ -5,12 +5,9 @@
   research_link_text = "Research Paper"
   research_link_url = "https://colin97.github.io/CoACD/"
 
-# Theme colors (Default CoACD theme - colorful)
+# Theme colors (Default CoACD theme)
 [theme_colors]
-  primary_pink = "#D94E81"
-  primary_purple = "#8A66D9"
-  primary_teal = "#7EBFA1"
-  primary_green = "#94BF54"
+  brand_primary = "#728C69"     # Green - shades auto-derived
   bg_dark = "#232626"
   text_white = "#ffffff"
 
@@ -96,7 +93,6 @@
 
 [[comparisons]]
   initial = 0.5
-  color = "purple"
   before = "images/CompareBase1.webp"
   after  = "images/CompareColl1.webp"
   caption = "Before/After with CoACD decomposition"
@@ -104,7 +100,6 @@
 
 [[comparisons]]
   initial = 0.5
-  color = "green"
   before = "images/CompareBase2.webp"
   after  = "images/CompareColl2.webp"
   caption = "Collision pieces with Convex Mirror Post-Processing"
