@@ -6,10 +6,6 @@
   /* Fallback colors until TOML loads */
   --bg-dark: #232626;
   --text-white: #ffffff;
-  --primary-pink: #D94E81;
-  --primary-purple: #8A66D9;
-  --primary-teal: #7EBFA1;
-  --primary-green: #94BF54;
   --scrollbar-size: 8px; /* unified scrollbar thickness */
   --radius-md: 12px; /* unified medium radius */
   --surface-04: rgba(255, 255, 255, 0.04);
@@ -88,7 +84,7 @@ body {
 /* ===== TYPOGRAPHY ===== */
 /* Headings */
 h2 {
-  color: var(--primary-pink);
+  color: var(--brand-color, var(--text-white));
   font-family: var(--font-family-heading);
   font-size: var(--font-size-heading);
   font-weight: var(--font-weight-bold);
@@ -111,7 +107,7 @@ p {
 
 /* Links */
 a {
-  color: var(--primary-pink);
+  color: var(--link-color, var(--brand-color, var(--text-white)));
   text-decoration: none;
   text-shadow: none;
   font-weight: 700;
@@ -119,18 +115,18 @@ a {
 }
 
 a:hover, a:focus-visible {
-  color: var(--primary-pink);
+  color: var(--link-color, var(--brand-color, var(--text-white)));
   text-decoration: underline;
   text-shadow: none;
 }
 
 /* Themed links - use custom color from JS */
 a.themed-link {
-  color: var(--link-color, var(--primary-pink));
+  color: var(--link-color, var(--brand-color, var(--text-white)));
 }
 
 a.themed-link:hover, a.themed-link:focus-visible {
-  color: var(--link-color, var(--primary-pink));
+  color: var(--link-color, var(--brand-color, var(--text-white)));
   opacity: 0.8;
   text-decoration: underline;
 }
@@ -166,7 +162,7 @@ a.themed-link:hover, a.themed-link:focus-visible {
 }
 
 .btn.themed-btn {
-  --btn-color: var(--primary-purple);
+  --btn-color: var(--brand-color, #8A66D9);
   background: linear-gradient(135deg,
     color-mix(in srgb, var(--btn-color) 26%, transparent),
     color-mix(in srgb, var(--btn-color) 6%, transparent));
@@ -191,13 +187,6 @@ a.themed-link:hover, a.themed-link:focus-visible {
 .btn:hover {
   transform: translateY(-1px);
 }
-
-
-/* Legacy button theme classes (for backward compatibility) */
-.btn-theme-pink   { --btn-color: var(--primary-pink); }
-.btn-theme-purple { --btn-color: var(--primary-purple); }
-.btn-theme-teal   { --btn-color: var(--primary-teal); }
-.btn-theme-green  { --btn-color: var(--primary-green); }
 
 /* Card styling */
 .card {
@@ -261,6 +250,7 @@ a.themed-link:hover, a.themed-link:focus-visible {
   filter: blur(0.15px);
   box-shadow: 0 6px 40px rgba(0,0,0,0.18);
   border-radius: 6px;
+  --shape-color: #ffffff;
   background: linear-gradient(
     145deg,
     color-mix(in srgb, var(--shape-color) 65%, white 35%),
@@ -268,11 +258,7 @@ a.themed-link:hover, a.themed-link:focus-visible {
   );
 }
 
-/* Use unified theme classes for shapes */
-.bg-shapes .pink   { --shape-color: var(--primary-pink); }
-.bg-shapes .purple { --shape-color: var(--primary-purple); }
-.bg-shapes .teal   { --shape-color: var(--primary-teal); }
-.bg-shapes .green  { --shape-color: var(--primary-green); }
+/* Color classes removed: shapes are always white by default */
 
 
 /* Shape-specific clip paths */
@@ -393,7 +379,7 @@ strong {
 /* Before/After slider */
 .ba-slider {
   --pos: 50%; /* updated by JS */
-  --ba-color: var(--primary-pink); /* handle color from brand_primary */
+  --ba-color: var(--brand-color); /* handle color from brand_primary */
   position: relative;
   aspect-ratio: 16 / 9;
   width: 100%;
@@ -439,18 +425,21 @@ strong {
   transform: translate(-50%, -50%);
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-  border: 2px solid #333333;
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.8),
-    0 3px 15px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  background: var(--strong-color);
+  border: none;
+  background-clip: border-box;
+  outline: none;
+  filter: none;
+  box-shadow: none;
   cursor: ew-resize;
   /* Default pentagon shape pointing up */
   clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
-  z-index: 3; /* above line and panes */
+  -webkit-clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
+  z-index: 10; /* above line and panes */
   /* Remove transition to prevent lag - only transition non-position properties */
   transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  will-change: filter;
 }
 
 /* Handle shape variants */
@@ -465,29 +454,6 @@ strong {
 
 .ba-handle.shape-hexagon {
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-}
-
-.ba-handle.shape-pentagon {
-  clip-path: polygon(50% 0%, 95% 35%, 78% 100%, 22% 100%, 5% 35%);
-}
-
-.ba-handle:hover {
-  background: linear-gradient(135deg, #ffffff 0%, #e8e8e8 100%);
-  border-color: #555555;
-  box-shadow: 
-    0 0 0 2px rgba(255, 255, 255, 0.9),
-    0 4px 18px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-
-.ba-handle:active,
-.ba-slider.dragging .ba-handle {
-  background: linear-gradient(135deg, #f0f0f0 0%, #d8d8d8 100%);
-  border-color: #666666;
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.7),
-    0 1px 8px rgba(0, 0, 0, 0.8),
-    inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .ba-handle:focus-visible,
@@ -751,7 +717,7 @@ strong {
 .changelog-toggle-icon {
   font-size: 0.8rem;
   transition: transform 0.2s ease;
-  color: var(--primary-purple); /* fallback - will be overridden by inline styles */
+  color: var(--brand-color); /* fallback - will be overridden by inline styles */
 }
 
 .changelog-version-content {
@@ -774,7 +740,7 @@ strong {
 
 .changelog-change-item:before {
   content: "•";
-  color: var(--bullet-color, var(--primary-purple));
+  color: var(--bullet-color, var(--brand-color));
   position: absolute;
   left: 0;
   font-weight: bold;
@@ -786,7 +752,7 @@ strong {
 
 /* Version type styling - Base styles (colors are set dynamically via inline styles) */
 .changelog-version-header {
-  border-left: 4px solid var(--primary-purple); /* fallback */
+  border-left: 4px solid var(--brand-color); /* fallback */
 }
 
 /* DRY: Unified themed scrollbar styles for changelog, code blocks, and tables */
@@ -795,7 +761,7 @@ strong {
 .documentation-page pre,
 #doc-page-rich-content table,
 .documentation-page table {
-  scrollbar-color: var(--primary-purple) rgba(255, 255, 255, 0.1);
+  scrollbar-color: var(--brand-color) rgba(255, 255, 255, 0.1);
   scrollbar-width: thin;
 }
 
@@ -822,7 +788,7 @@ strong {
 .documentation-page pre::-webkit-scrollbar-thumb,
 #doc-page-rich-content table::-webkit-scrollbar-thumb,
 .documentation-page table::-webkit-scrollbar-thumb {
-  background: var(--primary-purple);
+  background: var(--brand-color);
   border-radius: calc(var(--scrollbar-size) / 2);
 }
 
@@ -831,7 +797,7 @@ strong {
 .documentation-page pre::-webkit-scrollbar-thumb:hover,
 #doc-page-rich-content table::-webkit-scrollbar-thumb:hover,
 .documentation-page table::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-pink);
+  background: var(--brand-color);
 }
 
 .changelog-scroll-container::-webkit-scrollbar-corner,
@@ -1321,7 +1287,7 @@ strong {
 .documentation-page .token.keyword,
 #doc-page-rich-content .token.atrule,
 .documentation-page .token.atrule {
-  color: var(--primary-purple) !important;
+  color: var(--brand-color) !important;
 }
 
 /* Additional mappings for completeness */
@@ -1333,7 +1299,7 @@ strong {
 .documentation-page .token.property,
 #doc-page-rich-content .token.attr-name,
 .documentation-page .token.attr-name {
-  color: var(--primary-purple) !important;
+  color: var(--brand-color) !important;
 }
 
 #doc-page-rich-content .token.boolean,
@@ -1342,14 +1308,14 @@ strong {
 .documentation-page .token.number,
 #doc-page-rich-content .token.constant,
 .documentation-page .token.constant {
-  color: var(--primary-pink) !important;
+  color: var(--brand-color) !important;
 }
 
 #doc-page-rich-content .token.string,
 .documentation-page .token.string,
 #doc-page-rich-content .token.char,
 .documentation-page .token.char {
-  color: var(--primary-green) !important;
+  color: var(--brand-color) !important;
 }
 
 #doc-page-rich-content .token.function,
@@ -1358,21 +1324,21 @@ strong {
 .documentation-page .token.class-name,
 #doc-page-rich-content .token.builtin,
 .documentation-page .token.builtin {
-  color: var(--primary-teal) !important;
+  color: var(--brand-color) !important;
   font-weight: 600;
 }
 
 /* Treat dotted-call property before '(' as a function (modern browsers) */
 #doc-page-rich-content .token.property:has(+ .token.punctuation),
 .documentation-page .token.property:has(+ .token.punctuation) {
-  color: var(--primary-teal) !important;
+  color: var(--brand-color) !important;
   font-weight: 600;
 }
 
 /* Fallback: class added via JS after Prism highlighting */
 #doc-page-rich-content .token-func-call,
 .documentation-page .token-func-call {
-  color: var(--primary-teal) !important;
+  color: var(--brand-color) !important;
   font-weight: 600 !important;
 }
 
@@ -1387,5 +1353,5 @@ strong {
 .documentation-page pre ::selection,
 #doc-page-rich-content code ::selection,
 .documentation-page code ::selection {
-  background: color-mix(in srgb, var(--primary-purple) 35%, transparent) !important;
+  background: color-mix(in srgb, var(--brand-color) 35%, transparent) !important;
 }

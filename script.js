@@ -1,22 +1,7 @@
 // Unified theme configuration
 const THEME_CONFIG = {
-  colors: {
-    palette: [
-      'var(--primary-pink)',
-      'var(--primary-purple)', 
-      'var(--primary-teal)',
-      'var(--primary-green)'
-    ],
-    buttonClasses: [
-      'btn-theme-pink',
-      'btn-theme-purple', 
-      'btn-theme-teal',
-      'btn-theme-green'
-    ]
-  },
   shapes: {
-    types: ['hex', 'pent', 'tri', 'circle', 'quad', 'hept', 'oct'],
-    colors: ['pink', 'purple', 'teal', 'green']
+    types: ['hex', 'pent', 'tri', 'circle', 'quad', 'hept', 'oct']
   }
 };
 
@@ -652,83 +637,70 @@ function mdInlineToHtmlBoldOnly(s) {
   return result;
 }
 
-// Generate color shades from a base color using color-mix
-function deriveColorShades(baseColor) {
-  if (!baseColor) return [baseColor, baseColor, baseColor, baseColor];
-  
-  // Parse hex color to RGB
-  const hex = baseColor.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  
-  // Calculate perceived brightness (0-255)
-  const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-  
-  // For bright colors (like white), create darker shades
-  // For dark/saturated colors, create lighter/varied shades
-  if (brightness > 200) {
-    // Bright color: create progressively darker shades
-    return [
-      baseColor,                                                    // primary_pink (original)
-      `color-mix(in srgb, ${baseColor} 75%, #000000 25%)`,        // primary_purple (darker)
-      `color-mix(in srgb, ${baseColor} 60%, #000000 40%)`,        // primary_teal (even darker)
-      `color-mix(in srgb, ${baseColor} 50%, #000000 50%)`         // primary_green (darkest)
-    ];
-  } else {
-    // Dark/saturated color: create lighter and hue-shifted variations
-    return [
-      baseColor,                                                    // primary_pink (original)
-      `color-mix(in srgb, ${baseColor} 85%, #ffffff 15%)`,        // primary_purple (lighter)
-      `color-mix(in srgb, ${baseColor} 70%, #ffffff 30%)`,        // primary_teal (more lighter)
-      `color-mix(in srgb, ${baseColor} 90%, #888888 10%)`         // primary_green (subtle variation)
-    ];
-  }
-}
-
-// Normalize theme colors - single source of truth: brand_primary
-// All color shades are automatically derived from brand_primary
+// Normalize theme colors (no shade derivation)
 function normalizeThemeColors(raw = {}) {
   const colors = { ...(raw || {}) };
 
-  // Always derive shades from brand_primary if it exists
-  if (colors.brand_primary) {
-    const shades = deriveColorShades(colors.brand_primary);
-    colors.primary_pink = shades[0];
-    colors.primary_purple = shades[1];
-    colors.primary_teal = shades[2];
-    colors.primary_green = shades[3];
-  } else {
-    // Fallback to defaults if no brand_primary provided
-    colors.primary_pink = colors.primary_pink || '#D94E81';
-    colors.primary_purple = colors.primary_purple || '#8A66D9';
-    colors.primary_teal = colors.primary_teal || '#7EBFA1';
-    colors.primary_green = colors.primary_green || '#94BF54';
-  }
-
   // Derive hyperlink color from brand_primary if not given
   if (!colors.hyperlink_color) {
-    colors.hyperlink_color = colors.brand_primary || colors.primary_pink || '#00DCDC';
+    colors.hyperlink_color = colors.brand_primary || '#00DCDC';
   }
 
   return colors;
 }
 
-// Get a lighter shade of brand_primary for bold text
+// Color helpers (hex only)
+function hexToRgb(hex) {
+  if (typeof hex !== 'string') return null;
+  const m = hex.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!m) return null;
+  let h = m[1];
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return { r, g, b };
+}
+function rgbToHex(r, g, b) {
+  const to2 = (v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+  return `#${to2(r)}${to2(g)}${to2(b)}`;
+}
+function mixHex(hex1, hex2, t) {
+  const c1 = hexToRgb(hex1);
+  const c2 = hexToRgb(hex2);
+  if (!c1 || !c2) return hex1 || hex2 || '#666666';
+  const r = c1.r * t + c2.r * (1 - t);
+  const g = c1.g * t + c2.g * (1 - t);
+  const b = c1.b * t + c2.b * (1 - t);
+  return rgbToHex(r, g, b);
+}
+
+// Get a contrasting strong color (hex) derived from brand_primary
 function getLighterBrandColor(cfg) {
   const raw = cfg?.theme_colors;
-  if (raw?.brand_primary) {
-    // Create a lighter version of brand_primary
-    return `color-mix(in srgb, ${raw.brand_primary} 50%, #ffffff 50%)`;
-  }
-  // Fallback to primary_pink if no brand_primary
   const colors = normalizeThemeColors(raw || {});
-  return colors.primary_pink || '#D94E81';
+  const brand = (raw?.brand_primary || colors.brand_primary || '').trim();
+  const rgb = hexToRgb(brand);
+  if (!rgb) return '#666666';
+  const brightness = rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114; // 0..255
+  // Light brands (e.g., white): darken for contrast. Dark brands: lighten.
+  if (brightness > 180) {
+    return mixHex(brand, '#000000', 0.4); // 40% brand + 60% black
+  } else {
+    return mixHex(brand, '#FFFFFF', 0.6); // 60% brand + 40% white
+  }
 }
 
 function colorizeStrongIn(root, cfg) {
   if (!root) return;
   const strongColor = getLighterBrandColor(cfg);
+  // Expose the strong color globally so non-text UI (e.g., BA handle) can match it
+  try {
+    const docRoot = document.documentElement;
+    if (docRoot && strongColor) {
+      docRoot.style.setProperty('--strong-color', strongColor, 'important');
+    }
+  } catch {}
   
   root.querySelectorAll('strong').forEach((el) => {
     if (!el.classList.contains('themed-strong')) {
@@ -745,7 +717,7 @@ function colorizeStrongIn(root, cfg) {
       el.classList.add('themed-link');
       // Use hyperlink_color or fall back to brand/primary color
       const t = cfg?.theme_colors || {};
-      const linkColor = t.hyperlink_color || t.brand_primary || t.primary_pink || '#00DCDC';
+      const linkColor = t.hyperlink_color || t.brand_primary || '#00DCDC';
       el.style.setProperty('--link-color', linkColor);
       el.style.color = linkColor;
     }
@@ -890,24 +862,7 @@ function initBeforeAfterSliders() {
   document.querySelectorAll('.ba-slider').forEach(initSlider);
 }
 
-// Unified theme randomization
-function randomizeThemeElements() {
-  // Randomize heading colors
-  document.querySelectorAll('h2').forEach((heading) => {
-    const color = utils.randomChoice(THEME_CONFIG.colors.palette);
-    heading.style.color = color;
-  });
-  
-  // Randomize button themes (no outline mode)
-  document.querySelectorAll('.themed-btn').forEach(button => {
-    THEME_CONFIG.colors.buttonClasses.forEach(className => {
-      button.classList.remove(className);
-    });
-    // Ensure only filled theme classes are used
-    const randomTheme = utils.randomChoice(THEME_CONFIG.colors.buttonClasses);
-    button.classList.add(randomTheme);
-  });
-}
+// Removed random theme element styling to keep code lean and deterministic
 
 // Background management utilities
 function buildBackgroundLayers(site = {}, themeColors = {}) {
@@ -921,7 +876,7 @@ function buildBackgroundLayers(site = {}, themeColors = {}) {
   // Auto-derive from theme colors if not specified
   if (!blackColor && !whiteColor && themeColors) {
     const bgDark = themeColors.bg_dark || '#0A0A0A';
-    const brandPrimary = themeColors.brand_primary || themeColors.primary_pink || '#FFFFFF';
+    const brandPrimary = themeColors.brand_primary || '#FFFFFF';
     
     // Use bg_dark for black, and a darkened version of brand_primary for white
     blackColor = bgDark;
@@ -1016,9 +971,8 @@ function generateBackgroundShapes(cfg) {
   for (let i = 0; i < shapeCount; i++) {
     const shape = document.createElement('span');
     const shapeType = utils.randomChoice(THEME_CONFIG.shapes.types);
-    const shapeColor = utils.randomChoice(THEME_CONFIG.shapes.colors);
     
-    shape.className = `shape ${shapeType} ${shapeColor}`;
+    shape.className = `shape ${shapeType}`;
     
     const size = Math.round(sizeRange.min + Math.random() * (sizeRange.max - sizeRange.min));
     const top = Math.random() * 100;
@@ -1531,8 +1485,8 @@ function getChangelogVariantStyles(title = '') {
     versionClass: 'changelog-version-default',
     badgeClass: 'bg-secondary',
     titleColor: 'var(--text-white)',
-    borderColor: 'var(--primary-purple)',
-    iconColor: 'var(--primary-purple)'
+    borderColor: '#8A66D9',
+    iconColor: '#8A66D9'
   };
 
   if (!title) return defaults;
@@ -1766,12 +1720,27 @@ function applyThemeColors(cfg) {
     const colors = normalizeThemeColors(cfg.theme_colors);
     const specialKeys = new Set(['brand_primary','brand_secondary','brand_tertiary','palette']);
     
+    // Set unified brand and link colors used by CSS
+    if (colors.brand_primary) {
+      root.style.setProperty('--brand-color', colors.brand_primary, 'important');
+    }
+    const linkColor = colors.hyperlink_color || colors.brand_primary;
+    if (linkColor) {
+      root.style.setProperty('--link-color', linkColor, 'important');
+    }
+    // Set strong color early so components (e.g., BA handle) have it even before colorizeStrongIn runs
+    const strongColorEarly = getLighterBrandColor({ theme_colors: colors });
+    if (strongColorEarly) {
+      root.style.setProperty('--strong-color', strongColorEarly, 'important');
+    }
+
     // Apply each color with !important to override CSS defaults
     Object.entries(colors).forEach(([key, value]) => {
-      if (value && !specialKeys.has(key)) {
-        const cssVar = `--${key.replace(/_/g, '-')}`;
-        root.style.setProperty(cssVar, value, 'important');
-      }
+      if (!value) return;
+      if (specialKeys.has(key)) return;
+      if (/^primary_/i.test(key)) return; // skip deprecated keys
+      const cssVar = `--${key.replace(/_/g, '-')}`;
+      root.style.setProperty(cssVar, value, 'important');
     });
   } else {
     // No theme colors block
@@ -2869,6 +2838,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   // Initialize interactive/visual features after content is in the DOM
   initBeforeAfterSliders();
-  randomizeThemeElements();
   generateBackgroundShapes(cfg);
 });
