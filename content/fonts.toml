@@ -1,0 +1,19 @@
+# Shared font configuration
+# This file contains the default font settings used across all content pages.
+# Reference this file in your content TOML using: fonts_config = "content/fonts.toml"
+
+[fonts]
+  font_family_primary = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_secondary = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_heading = "'Inter', 'Segoe UI', system-ui, sans-serif"
+  font_family_mono = "'JetBrains Mono', 'Fira Code', 'Consolas', monospace"
+  font_size_base = "1.1rem"
+  font_size_heading = "2.5rem"
+  font_size_small = "0.9rem"
+  font_weight_normal = "400"
+  font_weight_medium = "500"
+  font_weight_bold = "700"
+  line_height_base = "1.6"
+  line_height_heading = "1.2"
+  letter_spacing_normal = "0"
+  letter_spacing_wide = "0.025em"

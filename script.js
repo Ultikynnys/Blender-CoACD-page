@@ -1778,11 +1778,24 @@ function applyThemeColors(cfg) {
   }
 }
 
-function applyFontConfiguration(cfg) {
+async function applyFontConfiguration(cfg) {
   // Apply font settings from TOML to CSS custom properties
-  if (cfg?.fonts) {
+  let fonts = cfg?.fonts;
+  
+  // If fonts_config is specified, load fonts from external file
+  if (cfg?.fonts_config && !fonts) {
+    try {
+      dbg('applyFontConfiguration: loading external font config from', cfg.fonts_config);
+      const fontCfg = await loadTomlContent(cfg.fonts_config);
+      fonts = fontCfg?.fonts;
+      dbg('applyFontConfiguration: loaded external fonts', fonts ? Object.keys(fonts) : 'none');
+    } catch (e) {
+      dbgw('applyFontConfiguration: failed to load external font config:', e);
+    }
+  }
+  
+  if (fonts) {
     const root = document.documentElement;
-    const fonts = cfg.fonts;
     
     // Apply each font setting with !important to override CSS defaults
     Object.entries(fonts).forEach(([key, value]) => {
@@ -1796,10 +1809,10 @@ function applyFontConfiguration(cfg) {
 
 // Outline text styles removed (no runtime toggling)
 
-function renderContent(cfg) {
+async function renderContent(cfg) {
   // Apply theme colors and fonts first
   applyThemeColors(cfg);
-  applyFontConfiguration(cfg);
+  await applyFontConfiguration(cfg);
   
   // Header: banner + research paper link
   const siteLogo = document.querySelector('.site-logo');
@@ -2848,7 +2861,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     cfg = await loadTomlContent(tomlUrl);
     dbg('DOMContentLoaded: cfg keys', Object.keys(cfg || {}));
     dbg('DOMContentLoaded: documentation pages (array?)', Array.isArray(cfg?.documentation?.pages), cfg?.documentation?.pages?.length);
-    renderContent(cfg);
+    await renderContent(cfg);
     await initDocumentation(cfg);
   } catch (err) {
     console.error('Content load failed:', err);

@@ -12,6 +12,9 @@
   bg_dark = "#232626"
   text_white = "#ffffff"
 
+# Font configuration (references shared font config)
+fonts_config = "content/fonts.toml"
+
 # Open Graph / SEO
 [meta]
   og_type = "website"
