@@ -25,9 +25,6 @@
   bg_dark = "#1A0A0A"           # Very dark crimson
   text_white = "#FFFFFF"
   hyperlink_color = "#DC143C"   # Crimson for hyperlinks
-  outline_variant = "crimson-outline"
-  outline_fill_color = "#FFFFFF"
-  outline_stroke_color = "#FFFFFF"
 
 # Font configuration (optional - overrides default fonts)
 [fonts]

@@ -14,13 +14,6 @@
   primary_green = "#000000"
   bg_dark = "#0F0F0F"
   text_white = "#FFFFFF"
-  outline_variant = "black-outline"
-  outline_fill_color = "#FFFFFF"
-  outline_stroke_color = "#FFFFFF"
-  outline_glow_inner = "1px"
-  outline_glow_outer = "1px"
-  outline_glow_inner_alpha = 0.0
-  outline_glow_outer_alpha = 0.0
 
 # Open Graph / SEO (optional)
 [meta]

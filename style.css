@@ -73,13 +73,7 @@ body {
   color: var(--text-white) !important;
 }
 
-.outline-text,
-.outline-text * {
-  color: var(--outline-fill, #ffffff) !important;
-  font-weight: var(--outline-weight, 700) !important;
-  -webkit-text-stroke: 0.5px var(--outline-stroke, #ffffff);
-  letter-spacing: var(--outline-letter-spacing, 0);
-}
+
 
 .content-container {
   max-width: var(--max-width);
@@ -141,6 +135,13 @@ a.themed-link:hover, a.themed-link:focus-visible {
   text-decoration: underline;
 }
 
+/* ===== DRY UTILITIES ===== */
+/* Shared flex layouts */
+
+
+/* Shared transitions */
+
+
 /* ===== COMPONENTS ===== */
 /* Button styling */
 .btn {
@@ -173,13 +174,7 @@ a.themed-link:hover, a.themed-link:focus-visible {
   box-shadow: 0 0 44px color-mix(in srgb, var(--btn-color) 32%, transparent);
 }
 
-.btn-theme-outline {
-  --btn-color: var(--outline-fill, #ffffff);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04));
-  border-color: color-mix(in srgb, var(--outline-stroke, #ffffff) 55%, transparent) !important;
-  color: var(--outline-fill, #ffffff) !important;
-  box-shadow: 0 0 36px rgba(255, 255, 255, 0.35);
-}
+
 
 .btn.themed-btn:hover,
 .btn.themed-btn:focus-visible {
@@ -188,18 +183,15 @@ a.themed-link:hover, a.themed-link:focus-visible {
     color-mix(in srgb, var(--btn-color) 12%, transparent));
   border-color: color-mix(in srgb, var(--btn-color) 60%, transparent);
   box-shadow: 0 0 54px color-mix(in srgb, var(--btn-color) 45%, transparent);
-  transform: translateY(-1px);
   text-decoration: none;
 }
+
+
 
 .btn:hover {
   transform: translateY(-1px);
 }
 
-.btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 2px;
-}
 
 /* Legacy button theme classes (for backward compatibility) */
 .btn-theme-pink   { --btn-color: var(--primary-pink); }
@@ -238,9 +230,6 @@ a.themed-link:hover, a.themed-link:focus-visible {
   margin: 0 auto;
   padding: 0.75rem 1rem;
   padding-top: calc(0.75rem + env(safe-area-inset-top));
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .site-logo {
@@ -284,9 +273,7 @@ a.themed-link:hover, a.themed-link:focus-visible {
 .bg-shapes .purple { --shape-color: var(--primary-purple); }
 .bg-shapes .teal   { --shape-color: var(--primary-teal); }
 .bg-shapes .green  { --shape-color: var(--primary-green); }
-.bg-shapes .outline {
-  --shape-color: color-mix(in srgb, var(--outline-stroke, #ffffff) 70%, black 30%);
-}
+
 
 /* Shape-specific clip paths */
 .bg-shapes .hex { clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%); }
@@ -403,12 +390,6 @@ strong {
   text-align: center;
 }
 
-.comparison-caption {
-  margin-top: 0.6rem;
-  font-size: 0.95rem;
-  text-align: left;
-}
-
 /* Before/After slider */
 .ba-slider {
   --pos: 50%; /* updated by JS */
@@ -515,9 +496,14 @@ strong {
     inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+.ba-handle:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
 .ba-handle:focus-visible {
   outline: 3px solid rgba(255,255,255,0.85);
-  outline-offset: 2px;
 }
 
 .ba-slider::before {
@@ -541,19 +527,26 @@ strong {
 
 
 
-/* Non-transparent embed container for actual video */
-.video-embed {
-  width: 100%;
+/* Unified video container styles */
+:is(.video-embed, .video-frame) {
   aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: var(--radius-md);
   overflow: hidden;
-  padding: 0;
-  border: none;
+  border-radius: var(--radius-md);
+  background: #000;
   display: block;
 }
-
-.video-embed iframe {
+.video-embed {
+  width: 100%;
+  padding: 0;
+  border: none;
+}
+.video-frame {
+  position: relative;
+  width: min(100%, 960px);
+}
+:is(.video-embed iframe, .video-frame iframe) {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   border: 0;
@@ -580,10 +573,6 @@ strong {
     padding: 0.5rem;
   }
   
-  .comparison-caption {
-    font-size: 0.85rem;
-  }
-  
   .section__title {
     margin: 1rem 0 0.5rem;
   }
@@ -605,28 +594,23 @@ strong {
   background: rgba(0, 0, 0, 0.1);
 }
 
-/* Carousel item images - default (vertical in intro, wide elsewhere) */
+/* Carousel item images - reserve aspect ratio to prevent layout shift during loading */
+/* Vertical layout (9:16) for intro usage media */
 .intro__usage-media .media-carousel .carousel-item {
   aspect-ratio: 9 / 16;
   background: rgba(0, 0, 0, 0.2);
 }
 
-.intro__usage-media .media-carousel .carousel-item img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-/* Wide layout carousel items */
+/* Wide layout (16:9) for comparisons, wide intro, and documentation pages */
 .intro__usage-media-wide .media-carousel .carousel-item,
-.comparisons .media-carousel .carousel-item {
+.comparisons .media-carousel .carousel-item,
+.documentation-page .media-carousel .carousel-item {
   aspect-ratio: 16 / 9;
   background: rgba(0, 0, 0, 0.2);
 }
 
-.intro__usage-media-wide .media-carousel .carousel-item img,
-.comparisons .media-carousel .carousel-item img {
+/* Unified image sizing for all carousel items */
+.media-carousel .carousel-item img {
   width: 100%;
   height: 100%;
   display: block;
@@ -698,19 +682,7 @@ strong {
 }
 
 /* Responsive video embed */
-.video-frame {
-  position: relative;
-  width: min(100%, 960px);
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
-.video-frame iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
+/* unified above in :is(.video-embed, .video-frame) */
 
 /* Single image card within comparisons */
 .image-card { margin: 0; }
@@ -746,12 +718,8 @@ strong {
 }
 
 .changelog-version-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
   user-select: none;
 }
 
@@ -760,17 +728,9 @@ strong {
 }
 
 .changelog-version-title-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
   flex: 1;
 }
 
-.changelog-version-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
 
 .changelog-version-date {
   font-size: var(--font-size-small);
@@ -971,17 +931,40 @@ strong {
 }
 
 /* ===== DOCUMENTATION STYLES ===== */
-/* Header buttons container */
-.header-buttons {
+/* Apply shared utility classes */
+.site-header-content,
+.changelog-version-header,
+.header-buttons,
+.changelog-version-title-container,
+.changelog-version-meta {
   display: flex;
-  gap: 0.75rem;
   align-items: center;
 }
 
-/* View toggle button */
-.view-toggle-btn {
+.site-header-content,
+.changelog-version-header {
+  justify-content: space-between;
+}
+
+.header-buttons,
+.changelog-version-title-container,
+.changelog-version-meta {
+  gap: 0.75rem;
+}
+
+.changelog-version-header,
+.view-toggle-btn,
+.documentation-toc-item {
   transition: all 0.3s ease;
 }
+
+.documentation-toc-grid,
+.documentation-toc-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* View toggle button */
 
 .view-toggle-btn:hover {
   transform: translateY(-1px);
@@ -994,8 +977,6 @@ strong {
 
 /* Documentation Table of Contents */
 .documentation-toc-grid {
-  display: flex;
-  flex-direction: column;
   gap: 1rem;
   margin-top: 1.5rem;
 }
@@ -1010,7 +991,6 @@ strong {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-10);
   cursor: pointer;
-  transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
 }
@@ -1037,8 +1017,6 @@ strong {
 }
 
 .documentation-toc-content {
-  display: flex;
-  flex-direction: column;
   gap: 0.5rem;
 }
 
@@ -1111,11 +1089,6 @@ strong {
   
   .documentation-toc-item {
     padding: 0.75rem;
-  }
-  
-  .documentation-toc-icon {
-    font-size: 1.25rem;
-    margin-right: 0.5rem;
   }
   
   .documentation-toc-title {
@@ -1207,18 +1180,13 @@ strong {
   border: 1px solid var(--code-border);
   border-radius: var(--radius-md);
   background: var(--surface-04);
-  scrollbar-gutter: stable; /* keep layout from shifting when scrollbar appears */
+  scrollbar-gutter: stable;
   font-size: calc(1em * var(--table-scale, 1));
-  box-sizing: border-box; /* include border in width to avoid right-edge cutoff */
-}
-
-/* Use default display values for thead/tbody to keep a single table formatting context */
-
-:is(#doc-page-rich-content, .documentation-page) table {
-  border-collapse: collapse; /* aligns column borders and row heights */
+  box-sizing: border-box;
+  border-collapse: collapse;
   border-spacing: 0;
-  table-layout: fixed;      /* consistent column widths */
-  min-width: calc(640px * var(--table-scale, 1)); /* scales with table scale */
+  table-layout: fixed;
+  min-width: calc(640px * var(--table-scale, 1));
 }
 
 /* Cell sizing: include borders in width to keep columns aligned */
@@ -1231,31 +1199,29 @@ strong {
 
 /* Firefox table scrollbar styles unified with DRY group */
 
-/* Header cells */
-:is(#doc-page-rich-content, .documentation-page) thead th {
-  background: rgba(255, 255, 255, 0.06);
-  font-weight: 700;
-  text-align: left;
-  padding: calc(0.75rem * var(--table-scale, 1)) calc(0.9rem * var(--table-scale, 1));
-  border-bottom: 1px solid var(--code-border);
-  white-space: normal; /* Allow headers to wrap */
-  word-break: normal; /* Don't break words in headers */
-  overflow-wrap: break-word; /* Only break if absolutely necessary */
-}
-
-/* Body cells */
+/* DRY: Unified cell padding and alignment */
+:is(#doc-page-rich-content, .documentation-page) thead th,
 :is(#doc-page-rich-content, .documentation-page) tbody td {
   padding: calc(0.75rem * var(--table-scale, 1)) calc(0.9rem * var(--table-scale, 1));
-  vertical-align: middle; /* middle-left alignment */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Unified alignment: all text middle-left inside API tables */
-:is(#doc-page-rich-content, .documentation-page) table.api-table th,
-:is(#doc-page-rich-content, .documentation-page) table.api-table td {
   text-align: left;
   vertical-align: middle;
 }
+
+/* Header-specific styles */
+:is(#doc-page-rich-content, .documentation-page) thead th {
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 700;
+  border-bottom: 1px solid var(--code-border);
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+/* Body cell-specific styles */
+:is(#doc-page-rich-content, .documentation-page) tbody td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 
 /* Guarantee rows/cells expand to fit content */
 :is(#doc-page-rich-content, .documentation-page) table.api-table tr,

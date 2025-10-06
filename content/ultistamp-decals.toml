@@ -14,18 +14,14 @@
   background_color_black = "#1A0A0A"    # Very dark cyan (matches bg_dark)
   background_color_white = "#000000"    # Dark cyan accent
 
-# Theme colors (Azure Blue theme)
+# Theme colors (simplified)
 [theme_colors]
-  primary_pink = "#007FFF"      # Azure Blue
-  primary_purple = "#000000"    # Black
-  primary_teal = "#000000"      # Dark blue
-  primary_green = "#000000"     # Deep blue
+  # Minimal brand definition
+  brand_primary = "#007FFF"     # Azure Blue
   bg_dark = "#0A0A1A"           # Very dark blue
   text_white = "#FFFFFF"
-  hyperlink_color = "#007FFF"   # Hyperlink color (defaults to primary_pink if not set)
-  outline_variant = "cyan-outline"
-  outline_fill_color = "#FFFFFF"
-  outline_stroke_color = "#FFFFFF"
+  # hyperlink_color optional; falls back to brand_primary when omitted
+
 
 # Font configuration (optional - overrides default fonts)
 [fonts]

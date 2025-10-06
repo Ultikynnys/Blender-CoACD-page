@@ -93,7 +93,8 @@ function createMediaCarousel(items, cfg, options = {}) {
   const {
     className = 'media-carousel',
     type = 'image', // 'image' or 'video'
-    borderClass = 'media-border'
+    borderClass = 'media-border',
+    objectFit = 'cover' // allow callers to override object-fit for images
   } = options;
   
   const carouselId = `${type}-carousel-${Date.now()}`;
@@ -112,7 +113,7 @@ function createMediaCarousel(items, cfg, options = {}) {
     
     const content = isVideo 
       ? `<div class="video-frame ${borderClass}"><iframe src="${src}" title="${title}" allowfullscreen loading="lazy"></iframe></div>`
-      : `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: cover; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;">`;
+      : `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: ${objectFit}; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;">`;
     
     return `<div class="carousel-item ${index === 0 ? 'active' : ''}" style="user-select: none;">${content}</div>`;
   }).join('');
@@ -154,7 +155,8 @@ function createMediaCarousel(items, cfg, options = {}) {
 
   // Add caption functionality
   const captionEl = document.createElement('div');
-  captionEl.className = type === 'video' ? 'intro__usage-caption' : 'usage-carousel-caption intro__usage-caption';
+  const defaultCaptionClass = type === 'video' ? 'intro__usage-caption' : 'usage-carousel-caption intro__usage-caption';
+  captionEl.className = options.captionClass || defaultCaptionClass;
   
   const updateCaption = (index) => {
     const text = getImageCaptionText(items[index]) || '';
@@ -612,18 +614,7 @@ function makeImageZoomable(img, caption = '') {
   });
 }
 
-// Theme utilities
-function isOutlineThemeActive() {
-  return document.body.classList.contains('theme-outline');
-}
-
-function toggleOutlineClass(el, active) {
-  if (!el) return;
-  if (active) el.classList.add('outline-text');
-  else el.classList.remove('outline-text');
-}
-
-
+// Theme utilities (outline mode removed)
 // Minimal inline markdown to HTML (bold only) with escaping
 function escapeHtml(s) {
   return String(s)
@@ -661,21 +652,52 @@ function mdInlineToHtmlBoldOnly(s) {
   return result;
 }
 
+// Normalize theme colors to support a simplified schema in TOML
+// Accepts either:
+//  - legacy keys: primary_pink/purple/teal/green, hyperlink_color, bg_dark, text_white
+//  - simplified keys: brand_primary, brand_secondary, brand_tertiary, palette (array), hyperlink_color
+// Returns an object containing legacy keys populated from simplified keys when missing
+function normalizeThemeColors(raw = {}) {
+  const colors = { ...(raw || {}) };
+  const palette = Array.isArray(colors.palette) ? colors.palette.filter(Boolean) : [];
+
+  // Derive legacy palette from simplified keys if needed
+  const p0 = colors.primary_pink || colors.brand_primary || palette[0];
+  const p1 = colors.primary_purple || colors.brand_secondary || palette[1] || p0;
+  const p2 = colors.primary_teal || colors.brand_tertiary || palette[2] || p0;
+  const p3 = colors.primary_green || palette[3] || p0;
+
+  if (!colors.primary_pink && p0) colors.primary_pink = p0;
+  if (!colors.primary_purple && p1) colors.primary_purple = p1;
+  if (!colors.primary_teal && p2) colors.primary_teal = p2;
+  if (!colors.primary_green && p3) colors.primary_green = p3;
+
+  // Derive hyperlink color from brand/primary if not given
+  if (!colors.hyperlink_color) {
+    colors.hyperlink_color = colors.brand_primary || colors.primary_pink || palette[0] || colors.hyperlink_color || '#00DCDC';
+  }
+
+  return colors;
+}
+
 // Assign a theme color to any <strong> elements inside a root node
 function pickRandomThemeColor(cfg) {
-  if (cfg?.theme_colors?.outline_variant) {
-    return cfg?.theme_colors?.outline_fill_color || '#ffffff';
-  }
-  // Use TOML theme colors if available, otherwise fall back to defaults
-  if (cfg?.theme_colors) {
-    const colors = cfg.theme_colors;
-    const palette = [
-      colors.primary_pink,
-      colors.primary_purple,
-      colors.primary_teal,
-      colors.primary_green
-    ].filter(Boolean);
-    return palette.length > 0 ? utils.randomChoice(palette) : utils.randomChoice(THEME_CONFIG.colors.palette);
+  const raw = cfg?.theme_colors;
+  if (raw) {
+    const colors = normalizeThemeColors(raw);
+    const palette = [];
+    if (Array.isArray(colors.palette) && colors.palette.length) {
+      palette.push(...colors.palette.filter(Boolean));
+    } else {
+      palette.push(
+        colors.primary_pink,
+        colors.primary_purple,
+        colors.primary_teal,
+        colors.primary_green
+      );
+    }
+    const valid = palette.filter(Boolean);
+    if (valid.length) return utils.randomChoice(valid);
   }
   return utils.randomChoice(THEME_CONFIG.colors.palette);
 }
@@ -695,8 +717,9 @@ function colorizeStrongIn(root, cfg) {
   root.querySelectorAll('a').forEach((el) => {
     if (!el.classList.contains('themed-link')) {
       el.classList.add('themed-link');
-      // Use hyperlink_color from theme_colors, fallback to primary_pink
-      const linkColor = cfg?.theme_colors?.hyperlink_color || cfg?.theme_colors?.primary_pink || '#00DCDC';
+      // Use hyperlink_color or fall back to brand/primary color
+      const t = cfg?.theme_colors || {};
+      const linkColor = t.hyperlink_color || t.brand_primary || t.primary_pink || '#00DCDC';
       el.style.setProperty('--link-color', linkColor);
       el.style.color = linkColor;
     }
@@ -843,33 +866,20 @@ function initBeforeAfterSliders() {
 
 // Unified theme randomization
 function randomizeThemeElements() {
-  const outline = isOutlineThemeActive();
-  const outlineFill = document.documentElement.style.getPropertyValue('--outline-fill') || '#ffffff';
-  const outlineStroke = document.documentElement.style.getPropertyValue('--outline-stroke') || outlineFill;
-  
   // Randomize heading colors
   document.querySelectorAll('h2').forEach((heading) => {
-    const color = outline ? outlineFill : utils.randomChoice(THEME_CONFIG.colors.palette);
+    const color = utils.randomChoice(THEME_CONFIG.colors.palette);
     heading.style.color = color;
-    toggleOutlineClass(heading, outline);
   });
   
-  // Randomize button themes
+  // Randomize button themes (no outline mode)
   document.querySelectorAll('.themed-btn').forEach(button => {
-    // Remove all theme classes
     THEME_CONFIG.colors.buttonClasses.forEach(className => {
       button.classList.remove(className);
     });
-    
-    if (outline) {
-      button.classList.add('btn-theme-outline');
-      toggleOutlineClass(button, true);
-    } else {
-      button.classList.remove('btn-theme-outline');
-      toggleOutlineClass(button, false);
-      const randomTheme = utils.randomChoice(THEME_CONFIG.colors.buttonClasses);
-      button.classList.add(randomTheme);
-    }
+    // Ensure only filled theme classes are used
+    const randomTheme = utils.randomChoice(THEME_CONFIG.colors.buttonClasses);
+    button.classList.add(randomTheme);
   });
 }
 
@@ -961,14 +971,13 @@ function generateBackgroundShapes(cfg) {
   const viewportWidth = utils.getViewportWidth();
   const shapeCount = viewportWidth < 600 ? 48 : 96;
   const sizeRange = viewportWidth < 600 ? { min: 18, max: 50 } : { min: 22, max: 60 };
-  const outline = isOutlineThemeActive();
   
   // Create shapes efficiently
   const fragment = document.createDocumentFragment();
   for (let i = 0; i < shapeCount; i++) {
     const shape = document.createElement('span');
     const shapeType = utils.randomChoice(THEME_CONFIG.shapes.types);
-    const shapeColor = outline ? 'outline' : utils.randomChoice(THEME_CONFIG.shapes.colors);
+    const shapeColor = utils.randomChoice(THEME_CONFIG.shapes.colors);
     
     shape.className = `shape ${shapeType} ${shapeColor}`;
     
@@ -1416,34 +1425,7 @@ function getImageCaptionText(img) {
   return cap || alt || title;
 }
 
-// Parse item images using generic parser
-function parseItemImages(item) {
-  if (!item) return [];
-  
-  // Use generic parser for consistent handling
-  const images = parseMediaItems(item, {
-    itemsKey: 'images',
-    urlKey: 'image',
-    captionsKey: 'images_captions', 
-    altKey: 'images_alt'
-  });
-  
-  // Handle single image with image_alt (singular)
-  if (images.length === 0 && item.image) {
-    images.push({
-      src: item.image,
-      url: item.image,
-      alt: item.image_alt || item.alt || '',
-      caption: item.caption || ''
-    });
-  }
-  
-  // Add default alt text for items without it
-  return images.map((img, idx) => ({
-    ...img,
-    alt: img.alt || `Feature image ${idx + 1}`
-  }));
-}
+// (Removed) parseItemImages - no longer needed after unifying comparison rendering
 
 // Use generic carousel for images
 function createImageCarousel(images, cfg, className = 'image-carousel', options = {}) {
@@ -1455,7 +1437,8 @@ function createImageCarousel(images, cfg, className = 'image-carousel', options 
   const carousel = createMediaCarousel(images, cfg, { 
     className, 
     type: 'image',
-    borderClass: 'media-border'
+    borderClass: 'media-border',
+    ...options
   });
   
   return carousel;
@@ -1741,12 +1724,8 @@ function applyThemeColors(cfg) {
   // Apply theme colors from TOML to CSS custom properties
   if (cfg?.theme_colors) {
     const root = document.documentElement;
-    const colors = cfg.theme_colors;
-    const specialKeys = new Set([
-      'outline_variant',
-      'outline_fill_color',
-      'outline_stroke_color'
-    ]);
+    const colors = normalizeThemeColors(cfg.theme_colors);
+    const specialKeys = new Set(['brand_primary','brand_secondary','brand_tertiary','palette']);
     
     // Apply each color with !important to override CSS defaults
     Object.entries(colors).forEach(([key, value]) => {
@@ -1755,22 +1734,8 @@ function applyThemeColors(cfg) {
         root.style.setProperty(cssVar, value, 'important');
       }
     });
-
-    document.body.classList.remove('theme-outline');
-    if (colors.outline_variant) {
-      document.body.classList.add('theme-outline');
-      const fillColor = colors.outline_fill_color || '#ffffff';
-      const strokeColor = colors.outline_stroke_color || '#ffffff';
-      document.documentElement.style.setProperty('--outline-fill', fillColor);
-      document.documentElement.style.setProperty('--outline-stroke', strokeColor);
-    } else {
-      document.documentElement.style.removeProperty('--outline-fill');
-      document.documentElement.style.removeProperty('--outline-stroke');
-    }
   } else {
-    document.body.classList.remove('theme-outline');
-    document.documentElement.style.removeProperty('--outline-fill');
-    document.documentElement.style.removeProperty('--outline-stroke');
+    // No theme colors block
   }
 }
 
@@ -1790,19 +1755,7 @@ function applyFontConfiguration(cfg) {
   }
 }
 
-function applyOutlineTextStyles() {
-  const outline = isOutlineThemeActive();
-  const fill = document.documentElement.style.getPropertyValue('--outline-fill') || '#ffffff';
-  
-  // Apply outline styles to specific elements
-  const selectors = ['.intro__params-title', '.intro__usage-title', '.comparison-caption'];
-  selectors.forEach((selector) => {
-    document.querySelectorAll(selector).forEach((el) => {
-      toggleOutlineClass(el, outline);
-      el.style.color = outline ? fill : '';
-    });
-  });
-}
+// Outline text styles removed (no runtime toggling)
 
 function renderContent(cfg) {
   // Apply theme colors and fonts first
@@ -1853,182 +1806,8 @@ function renderContent(cfg) {
   const introContent = document.getElementById('intro-content');
   if (introTitle && cfg?.introduction?.title) introTitle.textContent = cfg.introduction.title;
   if (introContent) {
-    introContent.innerHTML = '';
-    const paras = cfg?.introduction?.paragraphs || [];
-    paras.forEach(t => {
-      const p = document.createElement('p');
-      p.innerHTML = mdInlineToHtmlBoldOnly(String(t));
-      colorizeStrongIn(p, cfg);
-      introContent.appendChild(p);
-    });
-
-    // Build Parameters section nodes (do not append yet)
-    const paramsTitle = cfg?.introduction?.parameters_title || cfg?.introduction?.parametersTitle || 'Parameters';
-    let parameters = Array.isArray(cfg?.introduction?.parameters)
-      ? cfg.introduction.parameters
-      : [];
-    // Back-compat: if no 'parameters' provided, fall back to 'usage_parameters'
-    if ((!parameters || parameters.length === 0) && Array.isArray(cfg?.introduction?.usage_parameters)) {
-      parameters = cfg.introduction.usage_parameters;
-    } else if ((!parameters || parameters.length === 0) && Array.isArray(cfg?.introduction?.usageParameters)) {
-      parameters = cfg.introduction.usageParameters;
-    }
-    const hasParams = Array.isArray(parameters) && parameters.length > 0;
-    const paramNodes = [];
-    if (hasParams) {
-      const h3p = document.createElement('h3');
-      h3p.className = 'intro__params-title';
-      h3p.textContent = paramsTitle;
-      paramNodes.push(h3p);
-
-      const ulp = document.createElement('ul');
-      ulp.className = 'intro__params-list';
-      parameters.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-        colorizeStrongIn(li, cfg);
-        ulp.appendChild(li);
-      });
-      paramNodes.push(ulp);
-    }
-
-    // Build Usage section nodes (do not append yet)
-    const usageTitle = cfg?.introduction?.usage_title || cfg?.introduction?.usageTitle || 'Usage';
-    let usageItems = Array.isArray(cfg?.introduction?.usage_steps)
-      ? cfg.introduction.usage_steps
-      : [];
-    // Back-compat: if no steps provided and no parameters detected, show legacy usage_parameters as the usage list
-    if ((!usageItems || usageItems.length === 0) && (!parameters || parameters.length === 0)) {
-      const legacy = Array.isArray(cfg?.introduction?.usage_parameters)
-        ? cfg.introduction.usage_parameters
-        : (cfg?.introduction?.usageParameters || []);
-      usageItems = legacy;
-    }
-    const usageNodes = [];
-    if (usageTitle && usageItems.length > 0) {
-      const h3 = document.createElement('h3');
-      h3.className = 'intro__usage-title';
-      h3.textContent = usageTitle;
-      usageNodes.push(h3);
-    }
-    if (Array.isArray(usageItems) && usageItems.length) {
-      const ul = document.createElement('ul');
-      ul.className = 'intro__usage-list';
-      usageItems.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-        colorizeStrongIn(li, cfg);
-        ul.appendChild(li);
-      });
-      usageNodes.push(ul);
-    }
-
-    // Usage images (support both single and multiple)
-    const usageImages = parseUsageImages(cfg?.introduction);
-    
-    // If images exist, place Parameters + Usage in left column, images in right column
-    if (usageImages.length > 0) {
-      const grid = document.createElement('div');
-      grid.className = 'intro__usage-grid';
-
-      const mainCol = document.createElement('div');
-      mainCol.className = 'intro__usage-main';
-      // Usage first
-      usageNodes.forEach(node => mainCol.appendChild(node));
-      // Then Parameters
-      paramNodes.forEach(node => mainCol.appendChild(node));
-      grid.appendChild(mainCol);
-
-      const mediaCol = document.createElement('div');
-      mediaCol.className = 'intro__usage-media';
-      
-      if (usageImages.length === 1) {
-        const figure = document.createElement('figure');
-        const img = document.createElement('img');
-        const single = usageImages[0];
-        img.src = single.src;
-        img.alt = single.alt || '';
-        img.loading = 'lazy';
-        img.className = 'media-border';
-        figure.appendChild(img);
-        const capText = getImageCaptionText(single);
-        makeImageZoomable(img, capText);
-        if (capText) {
-          const figcap = document.createElement('figcaption');
-          figcap.className = 'intro__usage-caption';
-          figcap.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
-          colorizeStrongIn(figcap, cfg);
-          figure.appendChild(figcap);
-        }
-        mediaCol.appendChild(figure);
-      } else {
-        // Multiple images - create carousel
-        const carousel = createImageCarousel(usageImages, cfg, 'usage-image-carousel');
-        mediaCol.appendChild(carousel);
-      }
-      
-      grid.appendChild(mediaCol);
-      introContent.appendChild(grid);
-    } else {
-      // No images: append sequentially into intro content (Usage first)
-      usageNodes.forEach(node => introContent.appendChild(node));
-      paramNodes.forEach(node => introContent.appendChild(node));
-    }
-
-    // Quick Start section
-    const quickstartTitle = cfg?.introduction?.quickstart_title || '';
-    const quickstartImages = parseMediaItems(cfg?.introduction, {
-      itemsKey: 'quickstart_images',
-      captionsKey: 'quickstart_images_captions',
-      altKey: 'quickstart_images_alt',
-      alignmentKey: 'quickstart_images_alignment'
-    });
-
-    if (quickstartTitle && quickstartImages.length > 0) {
-      const quickstartSection = document.createElement('div');
-      quickstartSection.className = 'intro__quickstart';
-      
-      const h3 = document.createElement('h3');
-      h3.className = 'intro__usage-title';
-      h3.textContent = quickstartTitle;
-      quickstartSection.appendChild(h3);
-      
-      const carousel = createImageCarousel(quickstartImages, cfg, 'quickstart-carousel');
-      quickstartSection.appendChild(carousel);
-      
-      introContent.appendChild(quickstartSection);
-    }
-
-    // Video showcase in introduction
-    const videoTitle = cfg?.introduction?.video_title || '';
-    const videoUrl = cfg?.introduction?.video_url || '';
-    
-    if (videoUrl) {
-      const videoSection = document.createElement('div');
-      videoSection.className = 'intro__video';
-      
-      if (videoTitle) {
-        const h3 = document.createElement('h3');
-        h3.className = 'intro__usage-title';
-        h3.textContent = videoTitle;
-        videoSection.appendChild(h3);
-      }
-      
-      const videoContainer = document.createElement('div');
-      videoContainer.className = 'video-embed';
-      const videoFrame = document.createElement('div');
-      videoFrame.className = 'video-frame interactive-border';
-      const iframe = document.createElement('iframe');
-      iframe.src = videoUrl;
-      iframe.title = videoTitle || 'Video showcase';
-      iframe.allowFullscreen = true;
-      iframe.loading = 'lazy';
-      videoFrame.appendChild(iframe);
-      videoContainer.appendChild(videoFrame);
-      videoSection.appendChild(videoContainer);
-      
-      introContent.appendChild(videoSection);
-    }
+    // DRY: reuse the same renderer used by documentation pages
+    renderIntroductionSection(cfg?.introduction || {}, cfg, 'intro-content', { includeVideo: true });
   }
 
   // Titles overrides
@@ -2048,82 +1827,16 @@ function renderContent(cfg) {
     }
   }
 
-  // Comparisons grid
+  // Comparisons grid (DRY: reuse createComparisonElement)
   const grid = document.getElementById('comparisons-grid');
   if (grid) {
     grid.innerHTML = '';
     const items = Array.isArray(cfg?.comparisons) ? cfg.comparisons : [];
     items.forEach(item => {
-      const caption = item.caption || '';
-      const captionHtml = caption ? mdInlineToHtmlBoldOnly(String(caption)) : '';
-      const before = item.before || '';
-      const after = item.after || '';
-      const hasSliderMedia = Boolean(before || after);
-      const imgs = hasSliderMedia ? [] : parseItemImages(item);
-      const hasCarouselMedia = imgs.length > 1;
-      const hasSingleImage = imgs.length === 1;
-      const hasContent = hasSliderMedia || hasCarouselMedia || hasSingleImage;
-      if (!hasContent) return;
-
-      const card = document.createElement('div');
-      card.className = 'card card--compact';
-
-      // Mode 1: Before/After slider if before/after provided
-      if (hasSliderMedia) {
-        const initial = typeof item.initial === 'number' ? item.initial : 0.5;
-        const color = item.color || 'purple';
-        const handleShape = item.handle_shape || 'pentagon';
-        const handleClass = handleShape ? `shape-${handleShape}` : '';
-        // Shared text used for both alt attribute and the visible caption below
-        const sharedCap = getImageCaptionText({ caption, alt: item.alt, title: item.title });
-        const safeAlt = sharedCap ? escapeHtml(String(sharedCap)) : '';
-        card.innerHTML = `
-          <div class="ba-slider interactive-border" data-initial="${initial}" data-color="${color}">
-            <div class="ba-pane after">${after ? `<img src="${after}" alt="${safeAlt}">` : '<span>After</span>'}</div>
-            <div class="ba-pane before">${before ? `<img src="${before}" alt="${safeAlt}">` : '<span>Before</span>'}</div>
-            <button class="ba-handle ${handleClass}" role="slider" aria-label="Drag to compare" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0"></button>
-          </div>
-        `;
-        // Shared, static caption below the slider
-        if (sharedCap) {
-          const p = document.createElement('p');
-          p.className = 'intro__usage-caption';
-          p.innerHTML = mdInlineToHtmlBoldOnly(String(sharedCap));
-          card.appendChild(p);
-        }
-      } else {
-        // Mode 2/3: Single image or carousel
-        if (hasCarouselMedia) {
-          // Dynamic captions for comparison carousels (updates as slides change)
-          // But use shared alt text for accessibility consistency
-          const sharedAlt = (imgs.map(im => getImageCaptionText(im)).find(Boolean)) || (caption ? String(caption) : '');
-          const carousel = createImageCarousel(imgs, cfg, 'image-carousel', { sharedAlt });
-          card.appendChild(carousel);
-          // Do not add a separate card-level caption to avoid duplication
-        } else if (hasSingleImage) {
-          const fig = document.createElement('figure');
-          fig.className = 'image-card';
-          const img = document.createElement('img');
-          img.src = imgs[0].src;
-          // Use comparison-level caption first, then fall back to image caption/alt
-          const capText = caption || getImageCaptionText(imgs[0]);
-          img.alt = imgs[0].alt || capText || '';
-          img.loading = 'lazy';
-          img.className = 'media-border';
-          fig.appendChild(img);
-          makeImageZoomable(img, capText);
-          if (capText) {
-            const cap = document.createElement('figcaption');
-            cap.className = 'intro__usage-caption';
-            cap.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
-            fig.appendChild(cap);
-          }
-          card.appendChild(fig);
-        }
-      }
-
-      colorizeStrongIn(card, cfg);
-      grid.appendChild(card);
+      const el = createComparisonElement(item, cfg);
+      if (!el) return;
+      colorizeStrongIn(el, cfg);
+      grid.appendChild(el);
     });
   }
 
@@ -2142,26 +1855,9 @@ function renderContent(cfg) {
       if (showcaseSection) showcaseSection.style.display = 'block';
     } else if (videos.length === 1) {
       showcase.classList.add('video-embed');
-      const single = videos[0];
-      const fig = document.createElement('figure');
-      fig.className = 'image-card';
-      const frame = document.createElement('div');
-      frame.className = 'video-frame media-border';
-      const iframe = document.createElement('iframe');
-      iframe.src = single.url;
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.loading = 'lazy';
-      frame.appendChild(iframe);
-      fig.appendChild(frame);
-      const capText = getImageCaptionText(single);
-      if (capText) {
-        const fc = document.createElement('figcaption');
-        fc.className = 'intro__usage-caption';
-        fc.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
-        fig.appendChild(fc);
-      }
-      showcase.appendChild(fig);
-      colorizeStrongIn(showcase, cfg);
+      // Use unified carousel even for a single video for consistency
+      const carousel = createVideoCarousel(videos, cfg, 'video-carousel');
+      showcase.appendChild(carousel);
       if (showcaseSection) showcaseSection.style.display = 'block';
     } else {
       // No videos - hide the entire showcase section
@@ -2190,7 +1886,6 @@ function renderContent(cfg) {
   renderCitationsSection(cfg);
   // Final pass: colorize any remaining bold across the page
   colorizeStrongIn(document.body, cfg);
-  applyOutlineTextStyles();
 }
 
 // Documentation functionality
@@ -2208,8 +1903,8 @@ function getDocumentationPagesArray(cfg) {
   return [];
 }
 
-// Helper function to render introduction section (extracted from main renderContent)
-function renderIntroductionSection(introConfig, cfg, containerId) {
+// Helper function to render introduction section (used by both main and documentation views)
+function renderIntroductionSection(introConfig, cfg, containerId, options = {}) {
   const introContent = document.getElementById(containerId);
   if (!introContent || !introConfig) return;
   
@@ -2285,43 +1980,14 @@ function renderIntroductionSection(introConfig, cfg, containerId) {
       mediaContainer.className = 'intro__usage-media-wide';
       
       if (usageImages.length === 1) {
-        // Single wide image - wrap in carousel-like structure for consistent styling
-        const carouselWrapper = document.createElement('div');
-        carouselWrapper.className = 'media-carousel usage-carousel--wide';
-        
-        const carouselInner = document.createElement('div');
-        carouselInner.className = 'carousel-inner';
-        
-        const carouselItem = document.createElement('div');
-        carouselItem.className = 'carousel-item active';
-        
-        const img = document.createElement('img');
-        img.src = usageImages[0].src;
-        img.alt = usageImages[0].alt || usageImages[0].caption || 'Usage image';
-        img.className = 'd-block w-100';
-        img.style.cssText = 'object-fit: contain; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;';
-        img.loading = 'lazy';
-        
-        carouselItem.appendChild(img);
-        carouselInner.appendChild(carouselItem);
-        carouselWrapper.appendChild(carouselInner);
-        
-        // Add caption
-        const capText = getImageCaptionText(usageImages[0]);
-        if (capText) {
-          const captionEl = document.createElement('div');
-          captionEl.className = 'usage-carousel-caption intro__usage-caption';
-          captionEl.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
-          colorizeStrongIn(captionEl, cfg);
-          carouselWrapper.appendChild(captionEl);
-        }
-        
-        // Make image zoomable
-        setTimeout(() => {
-          makeImageZoomable(img, capText);
-        }, 100);
-        
-        mediaContainer.appendChild(carouselWrapper);
+        // Use unified carousel even for single image to keep behavior consistent
+        const carousel = createMediaCarousel(usageImages, cfg, {
+          className: 'usage-carousel usage-carousel--wide',
+          type: 'image',
+          borderClass: 'media-border',
+          objectFit: 'contain'
+        });
+        if (carousel) mediaContainer.appendChild(carousel);
       } else {
         // Multiple images - create carousel
         const carousel = createMediaCarousel(usageImages, cfg, {
@@ -2348,26 +2014,13 @@ function renderIntroductionSection(introConfig, cfg, containerId) {
       mediaCol.className = 'intro__usage-media';
       
       if (usageImages.length === 1) {
-        // Single image
-        const single = usageImages[0];
-        const fig = document.createElement('figure');
-        fig.className = 'intro__usage-figure';
-        const img = document.createElement('img');
-        img.src = single.src;
-        img.alt = single.alt || single.caption || 'Usage image';
-        img.className = 'intro__usage-image media-border';
-        if (single.alignment) {
-          img.classList.add(`object-position-${single.alignment}`);
-        }
-        fig.appendChild(img);
-        const capText = getImageCaptionText(single);
-        if (capText) {
-          const fc = document.createElement('figcaption');
-          fc.className = 'intro__usage-caption';
-          fc.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
-          fig.appendChild(fc);
-        }
-        mediaCol.appendChild(fig);
+        // Use unified carousel for single image in vertical layout as well
+        const carousel = createMediaCarousel(usageImages, cfg, {
+          className: 'usage-carousel',
+          type: 'image',
+          borderClass: 'media-border'
+        });
+        if (carousel) mediaCol.appendChild(carousel);
       } else {
         // Multiple images - create carousel
         const carousel = createMediaCarousel(usageImages, cfg, {
@@ -2410,7 +2063,36 @@ function renderIntroductionSection(introConfig, cfg, containerId) {
     
     introContent.appendChild(quickstartSection);
   }
-  
+  // Optional: introduction-level video (parity with main view)
+  const includeVideo = options.includeVideo !== false;
+  if (includeVideo) {
+    const videoTitle = introConfig.video_title || '';
+    const videoUrl = introConfig.video_url || '';
+    if (videoUrl) {
+      const videoSection = document.createElement('div');
+      videoSection.className = 'intro__video';
+      if (videoTitle) {
+        const h3 = document.createElement('h3');
+        h3.className = 'intro__usage-title';
+        h3.textContent = videoTitle;
+        videoSection.appendChild(h3);
+      }
+      const videoContainer = document.createElement('div');
+      videoContainer.className = 'video-embed';
+      const videoFrame = document.createElement('div');
+      videoFrame.className = 'video-frame interactive-border';
+      const iframe = document.createElement('iframe');
+      iframe.src = videoUrl;
+      iframe.title = videoTitle || 'Video showcase';
+      iframe.allowFullscreen = true;
+      iframe.loading = 'lazy';
+      videoFrame.appendChild(iframe);
+      videoContainer.appendChild(videoFrame);
+      videoSection.appendChild(videoContainer);
+      introContent.appendChild(videoSection);
+    }
+  }
+
   // Colorize any remaining bold text
   colorizeStrongIn(introContent, cfg);
 }
@@ -2421,30 +2103,35 @@ function createComparisonElement(comparison, cfg) {
   
   // Handle different comparison types
   if (comparison.image) {
-    // Single image card
+    // Single image card (unified markup with main page)
     const card = document.createElement('div');
-    card.className = 'comparison-card single-image-card';
-    
+    card.className = 'card card--compact';
+
+    const fig = document.createElement('figure');
+    fig.className = 'image-card';
+
     const img = document.createElement('img');
     img.src = comparison.image;
     img.alt = comparison.image_alt || comparison.caption || 'Comparison image';
-    img.className = 'comparison-single-image media-border';
-    card.appendChild(img);
+    img.className = 'media-border';
+    img.loading = 'lazy';
+    fig.appendChild(img);
     makeImageZoomable(img, comparison.caption || '');
-    
+
     if (comparison.caption) {
-      const caption = document.createElement('p');
-      caption.className = 'comparison-caption';
-      caption.innerHTML = mdInlineToHtmlBoldOnly(String(comparison.caption));
-      colorizeStrongIn(caption, cfg);
-      card.appendChild(caption);
+      const cap = document.createElement('figcaption');
+      cap.className = 'intro__usage-caption';
+      cap.innerHTML = mdInlineToHtmlBoldOnly(String(comparison.caption));
+      colorizeStrongIn(cap, cfg);
+      fig.appendChild(cap);
     }
-    
+
+    card.appendChild(fig);
     return card;
   } else if (comparison.images && Array.isArray(comparison.images)) {
-    // Carousel card
+    // Carousel card (unified markup with main page)
     const card = document.createElement('div');
-    card.className = 'comparison-card carousel-card';
+    card.className = 'card card--compact';
     
     const images = comparison.images.map((src, i) => ({
       src,
@@ -2459,14 +2146,6 @@ function createComparisonElement(comparison, cfg) {
     });
     
     if (carousel) card.appendChild(carousel);
-    
-    if (comparison.caption) {
-      const caption = document.createElement('p');
-      caption.className = 'comparison-caption';
-      caption.innerHTML = mdInlineToHtmlBoldOnly(String(comparison.caption));
-      colorizeStrongIn(caption, cfg);
-      card.appendChild(caption);
-    }
     
     return card;
   } else if (comparison.before && comparison.after) {
@@ -2793,20 +2472,21 @@ function renderDocumentationPage(pageId) {
           card.appendChild(carousel);
         }
         
-        // Check for video URL
+        // Check for video URL (single video)
         const videoUrlKey = `${sectionKey}_video_url`;
         const videoUrl = introConfig[videoUrlKey] || '';
         if (videoUrl) {
-          const videoContainer = document.createElement('div');
-          videoContainer.className = 'video-frame interactive-border';
-          videoContainer.style.marginTop = '1rem';
-          const iframe = document.createElement('iframe');
-          iframe.src = videoUrl;
-          iframe.title = `${title} Video`;
-          iframe.allowFullscreen = true;
-          iframe.loading = 'lazy';
-          videoContainer.appendChild(iframe);
-          card.appendChild(videoContainer);
+          const items = [{ url: videoUrl, caption: title || '' }];
+          const videoCarousel = createMediaCarousel(items, (cfgDoc || globalConfig), {
+            className: 'video-carousel',
+            type: 'video',
+            borderClass: 'interactive-border'
+          });
+          // Add a little top margin for spacing like before
+          if (videoCarousel) {
+            videoCarousel.style.marginTop = '1rem';
+            card.appendChild(videoCarousel);
+          }
         }
         
         section.appendChild(card);
@@ -3008,26 +2688,10 @@ function renderDocumentationPage(pageId) {
     
     const videos = parseShowcaseVideos(page.showcase);
     if (videos.length > 0) {
-      const single = videos[0];
-      const fig = document.createElement('figure');
-      fig.className = 'intro__usage-figure';
-      const frame = document.createElement('div');
-      frame.className = 'intro__usage-video-frame media-border';
-      const iframe = document.createElement('iframe');
-      iframe.src = single.url;
-      iframe.setAttribute('allowfullscreen', '');
-      iframe.loading = 'lazy';
-      frame.appendChild(iframe);
-      fig.appendChild(frame);
-      const capText = getImageCaptionText(single);
-      if (capText) {
-        const fc = document.createElement('figcaption');
-        fc.className = 'intro__usage-caption';
-        fc.innerHTML = mdInlineToHtmlBoldOnly(String(capText));
-        fig.appendChild(fc);
-      }
-      showcaseContainer.appendChild(fig);
-      colorizeStrongIn(showcaseContainer, (cfgDoc || globalConfig));
+      const carousel = createVideoCarousel(videos, (cfgDoc || globalConfig), 'video-carousel');
+      if (carousel) showcaseContainer.appendChild(carousel);
+    } else {
+      showcaseSection.style.display = 'none';
     }
   } else if (showcaseSection) {
     showcaseSection.style.display = 'none';
@@ -3156,5 +2820,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   initBeforeAfterSliders();
   randomizeThemeElements();
   generateBackgroundShapes(cfg);
-  applyOutlineTextStyles();
 });
