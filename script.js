@@ -2970,6 +2970,86 @@ function initScrollUpIndicator() {
   }
 }
 
+// Page height indicator in bottom right corner
+function initPageHeightIndicator() {
+  // Create clickable area in bottom right
+  const clickArea = document.createElement('div');
+  clickArea.id = 'page-height-click-area';
+  clickArea.style.cssText = `
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  `;
+  
+  // Show subtle hint on hover
+  clickArea.addEventListener('mouseenter', () => {
+    clickArea.style.opacity = '0.1';
+    clickArea.style.background = 'var(--brand-color, #8A66D9)';
+  });
+  
+  clickArea.addEventListener('mouseleave', () => {
+    clickArea.style.opacity = '0';
+    clickArea.style.background = 'transparent';
+  });
+  
+  // Create the height display element
+  const heightDisplay = document.createElement('div');
+  heightDisplay.id = 'page-height-display';
+  heightDisplay.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    color: var(--text-white);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-family: var(--font-family-mono);
+    font-size: 1rem;
+    font-weight: bold;
+    border: 2px solid var(--brand-color, #8A66D9);
+    box-shadow: 0 0 16px var(--brand-color, #8A66D9);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: none;
+    user-select: none;
+    pointer-events: none;
+  `;
+  
+  document.body.appendChild(clickArea);
+  document.body.appendChild(heightDisplay);
+  
+  let hideTimeout = null;
+  
+  clickArea.addEventListener('click', () => {
+    // Calculate page height
+    const pageHeight = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
+    
+    // Show the height
+    heightDisplay.textContent = `${pageHeight}px`;
+    heightDisplay.style.display = 'block';
+    
+    // Clear any existing timeout
+    if (hideTimeout) clearTimeout(hideTimeout);
+    
+    // Hide after 3 seconds
+    hideTimeout = setTimeout(() => {
+      heightDisplay.style.display = 'none';
+    }, 3000);
+  });
+}
+
 // Initialize all functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
   // Prevent flashing hardcoded link before TOML is applied
@@ -3022,4 +3102,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   initBeforeAfterSliders();
   generateBackgroundShapes(cfg);
   initScrollUpIndicator();
+  initPageHeightIndicator();
 });
