@@ -2911,7 +2911,19 @@ function initScrollUpIndicator() {
     
     // Get all sections in active view
     const sections = activeView.querySelectorAll('.section');
-    if (sections.length === 0) {
+    
+    // Also check for citations section which may be outside the view container
+    const citationsSection = document.getElementById('citations');
+    const allSections = [...sections];
+    if (citationsSection && citationsSection.offsetHeight > 0 && citationsSection.style.display !== 'none') {
+      // Check if citations is visible based on current view
+      const isShowcaseActive = showcaseView && showcaseView.style.display !== 'none';
+      if (isShowcaseActive) {
+        allSections.push(citationsSection);
+      }
+    }
+    
+    if (allSections.length === 0) {
       indicator.style.display = 'none';
       isVisible = false;
       return;
@@ -2919,8 +2931,8 @@ function initScrollUpIndicator() {
     
     // Find the last visible section
     let lastSection = null;
-    for (let i = sections.length - 1; i >= 0; i--) {
-      const section = sections[i];
+    for (let i = allSections.length - 1; i >= 0; i--) {
+      const section = allSections[i];
       if (section.offsetHeight > 0 && section.style.display !== 'none') {
         lastSection = section;
         break;
