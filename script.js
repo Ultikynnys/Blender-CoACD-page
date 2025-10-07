@@ -962,8 +962,13 @@ function generateBackgroundShapes(cfg) {
           document.documentElement.offsetHeight
         );
         
-        // Set container height to match page height
+        // Change from fixed to absolute positioning to allow height control
+        container.style.position = 'absolute';
+        container.style.top = '0';
+        container.style.left = '0';
+        container.style.right = '0';
         container.style.height = `${pageHeight}px`;
+        container.style.width = '100%';
       }
       
       container.style.backgroundSize = site.background_size || 'cover';
