@@ -193,7 +193,7 @@
     ]
     alphacontrols_title = "Alpha & Transparency"
     alphacontrols_steps = [
-      "Control stamp transparency and blending behavior",
+      "Control stamp transparency with a toggle and a alpha texture",
       "Use alpha flip to invert transparency masks when needed",
       "Essential for achieving certain effects"
     ]
@@ -209,7 +209,7 @@
     heightmapmasking_title = "Height Map Masking"
     heightmapmasking_steps = [
       "Height map masking allows you to control stamp visibility based on surface elevation",
-      "This is particularly useful for applying stamps only to raised or recessed areas",
+      "This is particularly useful for applying stamps that blend well with the original material",
       "Adjust the height threshold to control which areas receive the stamp"
     ]
     heightmapmasking_images = [
