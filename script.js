@@ -2206,6 +2206,7 @@ function toggleView() {
   const showcaseView = document.getElementById('showcase-view');
   const documentationView = document.getElementById('documentation-view');
   const toggleBtn = document.getElementById('view-toggle-btn');
+  const supportToggleBtn = document.getElementById('support-view-toggle-btn');
   
   if (!showcaseView || !documentationView || !toggleBtn || !globalConfig) return;
   
@@ -2217,6 +2218,7 @@ function toggleView() {
     
     const toggleText = globalConfig?.documentation?.toggle_text_documentation || 'View Product Showcase';
     toggleBtn.textContent = toggleText;
+    if (supportToggleBtn) supportToggleBtn.textContent = toggleText;
     
     // Show TOC, hide any open page
     showDocumentationTOC();
@@ -2228,6 +2230,7 @@ function toggleView() {
     
     const toggleText = globalConfig?.documentation?.toggle_text_showcase || 'View Documentation';
     toggleBtn.textContent = toggleText;
+    if (supportToggleBtn) supportToggleBtn.textContent = toggleText;
   }
 }
 
@@ -2765,7 +2768,7 @@ async function initDocumentation(cfg) {
   const activeDocCfg = docsConfig || cfg;
   dbg('initDocumentation: enabled, default_view =', activeDocCfg?.documentation?.default_view);
 
-  // Set up toggle button
+  // Set up toggle button (header)
   const toggleBtn = document.getElementById('view-toggle-btn');
   if (toggleBtn) {
     const toggleText = (activeDocCfg?.documentation?.toggle_text_showcase)
@@ -2775,6 +2778,18 @@ async function initDocumentation(cfg) {
     toggleBtn.onclick = toggleView;
     toggleBtn.style.display = 'inline-block';
     dbg('initDocumentation: toggle button ready');
+  }
+  
+  // Set up toggle button (support section)
+  const supportToggleBtn = document.getElementById('support-view-toggle-btn');
+  if (supportToggleBtn) {
+    const toggleText = (activeDocCfg?.documentation?.toggle_text_showcase)
+      || (cfg?.documentation?.toggle_text_showcase)
+      || 'View Documentation';
+    supportToggleBtn.textContent = toggleText;
+    supportToggleBtn.onclick = toggleView;
+    supportToggleBtn.style.display = 'inline-block';
+    dbg('initDocumentation: support toggle button ready');
   }
   // Back to TOC
   const backBtn = document.getElementById('back-to-toc-btn');

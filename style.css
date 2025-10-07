@@ -1355,3 +1355,23 @@ strong {
 .documentation-page code ::selection {
   background: color-mix(in srgb, var(--brand-color) 35%, transparent) !important;
 }
+
+/* ===== SUPPORT SECTION BUTTONS ===== */
+.support-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .support-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .support-buttons .btn {
+    width: 100%;
+  }
+}
