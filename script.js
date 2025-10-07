@@ -949,9 +949,26 @@ function generateBackgroundShapes(cfg) {
       const layers = buildBackgroundLayers(site) || { backgroundImage: `url('${site.background_image}')`, blendMode: '' };
       container.style.backgroundImage = layers.backgroundImage;
       container.style.backgroundBlendMode = layers.blendMode || '';
+      
+      // If background repeats vertically, calculate size based on page height
+      const bgRepeat = site.background_repeat || 'no-repeat';
+      if (bgRepeat === 'repeat' || bgRepeat === 'repeat-y') {
+        // Get the actual page height
+        const pageHeight = Math.max(
+          document.body.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.clientHeight,
+          document.documentElement.scrollHeight,
+          document.documentElement.offsetHeight
+        );
+        
+        // Set container height to match page height
+        container.style.height = `${pageHeight}px`;
+      }
+      
       container.style.backgroundSize = site.background_size || 'cover';
       container.style.backgroundPosition = site.background_position || 'center';
-      container.style.backgroundRepeat = site.background_repeat || 'no-repeat';
+      container.style.backgroundRepeat = bgRepeat;
     }
     
     container.style.opacity = cfg?.site?.background_opacity || '0.3';
