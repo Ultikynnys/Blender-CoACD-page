@@ -2803,6 +2803,161 @@ async function initDocumentation(cfg) {
   if (defaultView === 'documentation') toggleView();
 }
 
+// Scroll up indicator when mouse is below last card
+function initScrollUpIndicator() {
+  // Create the indicator element
+  const indicator = document.createElement('div');
+  indicator.id = 'scroll-up-indicator';
+  indicator.style.cssText = `
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    pointer-events: none;
+    z-index: 9999;
+    user-select: none;
+    transition: opacity 0.2s ease;
+  `;
+  
+  // Create three triangles
+  const triangle1 = document.createElement('div');
+  triangle1.className = 'scroll-triangle scroll-triangle-1';
+  triangle1.innerHTML = '▲';
+  
+  const triangle2 = document.createElement('div');
+  triangle2.className = 'scroll-triangle scroll-triangle-2';
+  triangle2.innerHTML = '▲';
+  
+  const triangle3 = document.createElement('div');
+  triangle3.className = 'scroll-triangle scroll-triangle-3';
+  triangle3.innerHTML = '▲';
+  
+  const triangleStyle = `
+    color: var(--brand-color, #8A66D9);
+    font-size: 1.5rem;
+    line-height: 0.5;
+    text-shadow: 0 0 8px var(--brand-color, #8A66D9);
+  `;
+  
+  triangle1.style.cssText = triangleStyle;
+  triangle2.style.cssText = triangleStyle;
+  triangle3.style.cssText = triangleStyle;
+  
+  indicator.appendChild(triangle3); // Top
+  indicator.appendChild(triangle2); // Middle
+  indicator.appendChild(triangle1); // Bottom
+  document.body.appendChild(indicator);
+  
+  // Add flash animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes flash-triangle {
+      0% { opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+    
+    .scroll-triangle-1 {
+      animation: flash-triangle 0.3s linear infinite;
+      animation-delay: 0s;
+    }
+    
+    .scroll-triangle-2 {
+      animation: flash-triangle 0.3s linear infinite;
+      animation-delay: 0.2s;
+    }
+    
+    .scroll-triangle-3 {
+      animation: flash-triangle 0.3s linear infinite;
+      animation-delay: 0.4s;
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // Track mouse movement
+  let lastMouseY = 0;
+  let isVisible = false;
+  
+  document.addEventListener('mousemove', (e) => {
+    lastMouseY = e.clientY;
+    updateIndicator();
+  });
+  
+  // Also check on scroll
+  window.addEventListener('scroll', () => {
+    updateIndicator();
+  });
+  
+  function updateIndicator() {
+    // Find the active view (showcase or documentation)
+    const showcaseView = document.getElementById('showcase-view');
+    const documentationView = document.getElementById('documentation-view');
+    
+    let activeView = null;
+    if (showcaseView && showcaseView.style.display !== 'none') {
+      activeView = showcaseView;
+    } else if (documentationView && documentationView.style.display !== 'none') {
+      activeView = documentationView;
+    }
+    
+    if (!activeView) {
+      indicator.style.display = 'none';
+      isVisible = false;
+      return;
+    }
+    
+    // Get all sections in active view
+    const sections = activeView.querySelectorAll('.section');
+    if (sections.length === 0) {
+      indicator.style.display = 'none';
+      isVisible = false;
+      return;
+    }
+    
+    // Find the last visible section
+    let lastSection = null;
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const section = sections[i];
+      if (section.offsetHeight > 0 && section.style.display !== 'none') {
+        lastSection = section;
+        break;
+      }
+    }
+    
+    if (!lastSection) {
+      indicator.style.display = 'none';
+      isVisible = false;
+      return;
+    }
+    
+    // Get the bottom position of the last card
+    const lastCard = lastSection.querySelector('.card');
+    const bottomElement = lastCard || lastSection;
+    const rect = bottomElement.getBoundingClientRect();
+    const bottomY = rect.bottom;
+    
+    // Check if mouse is below the last card
+    if (lastMouseY > bottomY && bottomY < window.innerHeight) {
+      // Show indicator at mouse Y position
+      indicator.style.top = `${lastMouseY}px`;
+      indicator.style.display = 'flex';
+      indicator.style.opacity = '1';
+      isVisible = true;
+    } else {
+      indicator.style.opacity = '0';
+      setTimeout(() => {
+        if (indicator.style.opacity === '0') {
+          indicator.style.display = 'none';
+          isVisible = false;
+        }
+      }, 200);
+    }
+  }
+}
+
 // Initialize all functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
   // Prevent flashing hardcoded link before TOML is applied
@@ -2854,4 +3009,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize interactive/visual features after content is in the DOM
   initBeforeAfterSliders();
   generateBackgroundShapes(cfg);
+  initScrollUpIndicator();
 });
