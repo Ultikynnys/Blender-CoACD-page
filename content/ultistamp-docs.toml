@@ -161,6 +161,7 @@
       "alphacontrols",
       "heightmapmasking",
       "normalmasking",
+      "radialuv",
       "custommasks"
     ]
     initial_section = "intro"
@@ -243,6 +244,21 @@
     ]
     normalmasking_images_alignment = [
       "center",
+      "center"
+    ]
+    radialuv_title = "Radial UV Projection"
+    radialuv_steps = [
+      "Toggle between linear and radial UV projection for your stamps",
+      "Radial projection is perfect for wrapping decals around cylindrical shapes",
+      "This feature ensures seamless application on curved surfaces like pipes, columns, and bottles"
+    ]
+    radialuv_images = [
+      "images/UltiStamp/RadialUV3.webp"
+    ]
+    radialuv_images_captions = [
+      "Radial UV projection toggle for cylindrical decal wrapping"
+    ]
+    radialuv_images_alignment = [
       "center"
     ]
     custommasks_title = "Extras"

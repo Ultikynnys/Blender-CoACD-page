@@ -16,3 +16,7 @@
     * Improved normal map view
     * Added world aligned Masking (Normal Masking)
     * Added quick snapping toggle
+
+>## 1.0.36 - Feature Update 13/10/2025
+    * Added radial UV projection
+    * Default projection mode now uses simple cube projection for better results

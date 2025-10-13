@@ -82,7 +82,8 @@ fonts_config = "content/fonts.toml"
     "images/UltiStamp/Showcase5.webp",
     "images/UltiStamp/Showcase6.webp",
     "images/UltiStamp/Showcase8.webp",
-    "images/UltiStamp/HeightMapMasking2.webp"
+    "images/UltiStamp/HeightMapMasking2.webp",
+    "images/UltiStamp/RadialUV3.webp"
   ]
   images_captions = [
     "**Showcase 1** - This shows how we can easily work with the decals even in Blender's native environment using the visualizer",
@@ -92,7 +93,8 @@ fonts_config = "content/fonts.toml"
     "**Showcase 5** - Various parameters for tweaking decal visuals",
     "**Showcase 6** - UV decal scaling supported",
     "**Showcase 7** - HSV controls and more!",
-    "**Showcase 8** - Height map masking for precise decal placement based on surface elevation"
+    "**Showcase 8** - Height map masking for precise decal placement based on surface elevation",
+    "**Showcase 9** - Radial UV projection toggle for wrapping decals around cylindrical shapes"
   ]
   images_alt = [
     "Showcase 1",
@@ -102,7 +104,8 @@ fonts_config = "content/fonts.toml"
     "Showcase 5",
     "Showcase 6",
     "Showcase 7",
-    "Showcase 8"
+    "Showcase 8",
+    "Showcase 9"
   ]
   caption = "**UltiStamp Showcase** - Professional results with full PBR decal workflow"
 
