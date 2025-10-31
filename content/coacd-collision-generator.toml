@@ -58,6 +58,15 @@ fonts_config = "content/fonts.toml"
     "Post-Processing - **Generate LODs**: create multiple LOD levels via decimation; configure levels and ratios in the panel.",
   ]
 
+  workflow_title = "Recommended Workflow"
+  workflow_steps = [
+    "**For Simple Meshes** - Start by applying a collider profile at the lowest resolution. Gradually increase the resolution until the collision accuracy meets your needs.",
+    "**For Complex Meshes** - If a single collider is insufficient, split the mesh into smaller components and generate colliders for each piece individually.",
+    "**Iterative Refinement** - This approach is highly efficient, as you only need to increase the resolution on the specific parts where the initial results are unsatisfactory, saving you from reprocessing the entire model.",
+    "**Post-Processing** - Combine, Remove, and Mirror the colliders where needed using the built-in tools that come with the addon.",
+    "**Scalability** - This method scales effectively for any object, from simple props to complex structures.",
+  ]
+
   # Multiple usage images with carousel
   usage_images = [
     "images/Coacd_params.webp"

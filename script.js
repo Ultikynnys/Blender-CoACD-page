@@ -2083,6 +2083,27 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
     paramNodes.forEach(node => introContent.appendChild(node));
   }
 
+  // Build Workflow section
+  const workflowTitle = introConfig.workflow_title || '';
+  const workflowItems = Array.isArray(introConfig.workflow_steps) ? introConfig.workflow_steps : [];
+  if (workflowTitle && workflowItems.length > 0) {
+    const h3 = document.createElement('h3');
+    h3.className = 'intro__usage-title';
+    h3.textContent = workflowTitle;
+    introContent.appendChild(h3);
+  }
+  if (workflowItems.length > 0) {
+    const ul = document.createElement('ul');
+    ul.className = 'intro__usage-list';
+    workflowItems.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
+      colorizeStrongIn(li, cfg);
+      ul.appendChild(li);
+    });
+    introContent.appendChild(ul);
+  }
+
   // Quick Start section
   const quickstartTitle = introConfig.quickstart_title || '';
   const quickstartImages = parseMediaItems(introConfig, {
