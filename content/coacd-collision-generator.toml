@@ -64,9 +64,8 @@ fonts_config = "content/fonts.toml"
     "**For Simple Meshes** - Start by applying a collider profile at the lowest quality preset. Gradually use a higher quality preset until the collision accuracy meets your needs.",
     "**For Complex Meshes** - If the collision doesn't yield good results at High Quality, split the mesh into separate objects, with each object having their own quality preset. Generate colliders for each piece individually.",
     "**Quality Preset Guidelines** - The Maximum preset is only for experimental usage, as it tends to create hundreds of colliders. The performance overhead of using hundreds of colliders starts to become a liability for game engines. It's better to stick to up to the High quality preset. If High doesn't work, you're better off splitting the mesh. For slower machines, it's recommended to use Medium quality as the highest.",
-    "**Iterative Refinement** - This approach is highly efficient, as you only need to use a higher quality preset on the specific parts where the initial results are unsatisfactory, saving you from reprocessing the entire model.",
     "**Post-Processing** - Combine, Remove, and Mirror the colliders where needed using the built-in tools that come with the addon.",
-    "**Scalability** - This method scales effectively for any object, from simple props to complex structures.",
+    "**Iterative Refinement & Scalability** - This approach is highly efficient, as you only need to use a higher quality preset on the specific parts where the initial results are unsatisfactory, saving you from reprocessing the entire model. This method scales effectively for any object, from simple props to complex structures.",
   ]
 
   # Multiple usage images with carousel
