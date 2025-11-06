@@ -67,9 +67,8 @@ fonts_config = "content/fonts.toml"
     "**MCTS Iterations** - Search effort. Higher can improve fit at cost of time.",
     "**MCTS Depth** - Search depth. Controls how deep the Monte Carlo Tree Search explores.",
     "**Merge Sub-Hulls** - Enable post-processing to merge adjacent sub-hull components.",
-    "**Preprocessing Mode** - Toggle between two preprocessing methods:",
-    "  • **Geonode Mode** (COACD OFF): Uses Geonode Inflate and Geonode Resolution.",
-    "  • **COACD Mode** (COACD ON, default): Uses Preprocess Resolution and PCA Pre-processing for better hull alignment.",
+    "**Preprocess Resolution** - Resolution for manifold preprocessing (10-100). Lower = faster but less accurate.",
+    "**PCA Pre-processing** - Enable PCA (Principal Component Analysis) for better hull alignment.",
   ]
 
   usage_title = "Usage"

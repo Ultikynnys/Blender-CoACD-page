@@ -231,6 +231,7 @@ a.themed-link:hover, a.themed-link:focus-visible {
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
   white-space: nowrap;
+  margin-right: 1rem;
 }
 
 /* ===== BACKGROUND ELEMENTS ===== */
@@ -325,7 +326,7 @@ a.themed-link:hover, a.themed-link:focus-visible {
 .intro__usage-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(240px, 44%);
-  gap: 1rem;
+  gap: 2.5rem;
   align-items: start;
   margin-top: 0;
 }
@@ -574,6 +575,7 @@ strong {
   }
   .intro__usage-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
@@ -1098,6 +1100,10 @@ strong {
   .header-buttons {
     flex-direction: column;
     gap: 0.5rem;
+  }
+  
+  .research-paper-btn {
+    margin-right: 0;
   }
   
   .documentation-toc-grid {
