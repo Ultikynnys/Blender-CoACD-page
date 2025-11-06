@@ -98,7 +98,7 @@ fonts_config = "content/fonts.toml"
 
   # Multiple usage images with carousel
   usage_images = [
-    "images/Coacd_params.webp"
+    "images/COACD_SHOW.mp4"
   ]
   
   # Captions for the images (in order)

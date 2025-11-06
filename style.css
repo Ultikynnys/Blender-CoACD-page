@@ -588,6 +588,15 @@ strong {
   background: rgba(0, 0, 0, 0.2);
 }
 
+/* Remove aspect ratio constraint for items containing videos */
+.intro__usage-media .media-carousel .carousel-item:has(video) {
+  aspect-ratio: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Wide layout (16:9) for comparisons, wide intro, and documentation pages */
 .intro__usage-media-wide .media-carousel .carousel-item,
 .comparisons .media-carousel .carousel-item,
@@ -602,6 +611,15 @@ strong {
   height: 100%;
   display: block;
   object-fit: cover;
+}
+
+/* Video elements should fill container height */
+.media-carousel .carousel-item video {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  display: block;
+  object-fit: contain;
 }
 
 /* Unified carousel indicators */
@@ -666,6 +684,10 @@ strong {
   color: inherit;
   padding: 0;
   text-align: center;
+  max-width: 100%;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Responsive video embed */

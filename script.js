@@ -85,20 +85,34 @@ function createMediaCarousel(items, cfg, options = {}) {
   const carouselId = `${type}-carousel-${Date.now()}`;
 
   const itemsHtml = items.map((item, index) => {
-    const isVideo = type === 'video';
     const src = item.src || item.url;
-    const title = item.title || item.caption || (isVideo ? 'Video' : 'Image');
+    const title = item.title || item.caption || 'Media';
     const alt = item.alt || title;
     const alignment = item.alignment || 'center';
+    
+    // Detect if this is a video file (mp4, webm, etc.) or an embedded video
+    const isVideoFile = /\.(mp4|webm|ogg|mov)$/i.test(src);
+    const isEmbedVideo = type === 'video' && !isVideoFile;
     
     // Convert alignment to CSS classes
     const alignmentClass = alignment === 'top-left' ? 'object-position-top-left' : 
                           alignment === 'top-right' ? 'object-position-top-right' : 
                           'object-position-center';
     
-    const content = isVideo 
-      ? `<div class="video-frame ${borderClass}"><iframe src="${src}" title="${title}" allowfullscreen loading="lazy"></iframe></div>`
-      : `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: ${objectFit}; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;">`;
+    let content;
+    if (isVideoFile) {
+      // Native video file with autoplay
+      content = `<video autoplay loop muted playsinline class="d-block w-100 ${borderClass}" style="object-fit: ${objectFit};">
+        <source src="${src}" type="video/${src.match(/\.(\w+)$/)?.[1] || 'mp4'}">
+        Your browser does not support the video tag.
+      </video>`;
+    } else if (isEmbedVideo) {
+      // Embedded video (YouTube, Vimeo, etc.)
+      content = `<div class="video-frame ${borderClass}"><iframe src="${src}" title="${title}" allowfullscreen loading="lazy"></iframe></div>`;
+    } else {
+      // Image
+      content = `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: ${objectFit}; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;">`;
+    }
     
     return `<div class="carousel-item ${index === 0 ? 'active' : ''}" style="user-select: none;">${content}</div>`;
   }).join('');
@@ -160,18 +174,27 @@ function createMediaCarousel(items, cfg, options = {}) {
     updateCaption(activeIndex);
   });
 
-  // Make images zoomable (only for image carousels, not videos)
-  if (type === 'image') {
-    setTimeout(() => {
-      wrapper.querySelectorAll('.carousel-item').forEach((item, idx) => {
-        const img = item.querySelector('img');
-        if (img && items[idx]) {
-          const caption = getImageCaptionText(items[idx]) || '';
+  // Make images and videos zoomable/focusable
+  setTimeout(() => {
+    wrapper.querySelectorAll('.carousel-item').forEach((item, idx) => {
+      const img = item.querySelector('img');
+      const video = item.querySelector('video');
+      
+      if (items[idx]) {
+        const caption = getImageCaptionText(items[idx]) || '';
+        
+        // Make images zoomable
+        if (img && !video) {
           makeImageZoomable(img, caption);
         }
-      });
-    }, 100);
-  }
+        
+        // Make videos zoomable/focusable
+        if (video) {
+          makeImageZoomable(video, caption);
+        }
+      }
+    });
+  }, 100);
 
   setTimeout(() => colorizeStrongIn(wrapper, cfg), 0);
   return wrapper;
@@ -214,11 +237,22 @@ function initImageZoom() {
       -ms-user-select: none;
     `;
     
+    // Media container that can hold both images and videos
+    const mediaContainer = document.createElement('div');
+    mediaContainer.id = 'zoomed-media-container';
+    mediaContainer.style.cssText = `
+      max-width: 95%;
+      max-height: 95%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
     const zoomedImg = document.createElement('img');
     zoomedImg.id = 'zoomed-image';
     zoomedImg.style.cssText = `
-      max-width: 95%;
-      max-height: 95%;
+      max-width: 100%;
+      max-height: 95vh;
       object-fit: contain;
       transform-origin: center center;
       transition: transform 0.1s ease-out;
@@ -227,12 +261,37 @@ function initImageZoom() {
       -moz-user-select: none;
       -ms-user-select: none;
       pointer-events: none;
+      display: block;
     `;
+    
+    const zoomedVideo = document.createElement('video');
+    zoomedVideo.id = 'zoomed-video';
+    zoomedVideo.autoplay = true;
+    zoomedVideo.loop = true;
+    zoomedVideo.muted = true;
+    zoomedVideo.playsInline = true;
+    zoomedVideo.style.cssText = `
+      max-width: 100%;
+      max-height: 95vh;
+      object-fit: contain;
+      transform-origin: center center;
+      transition: transform 0.1s ease-out;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      pointer-events: none;
+      display: none;
+    `;
+    
+    mediaContainer.appendChild(zoomedImg);
+    mediaContainer.appendChild(zoomedVideo);
     
     const captionOverlay = document.createElement('div');
     captionOverlay.id = 'zoom-caption';
     captionOverlay.style.cssText = `
       position: absolute;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.75);
@@ -322,7 +381,7 @@ function initImageZoom() {
       if (navFunc) navFunc(1);
     });
     
-    zoomOverlay.appendChild(zoomedImg);
+    zoomOverlay.appendChild(mediaContainer);
     zoomOverlay.appendChild(captionOverlay);
     zoomOverlay.appendChild(leftArrow);
     zoomOverlay.appendChild(rightArrow);
@@ -431,11 +490,13 @@ function initImageZoom() {
     // Zoom on mouse position - listen on overlay to capture all movement
     zoomOverlay.addEventListener('mousemove', (e) => {
       if (zoomOverlay.style.display === 'flex' && currentZoom > 1) {
-        const rect = zoomedImg.getBoundingClientRect();
+        // Get the currently visible media element (img or video)
+        const activeMedia = zoomedVideo.style.display === 'block' ? zoomedVideo : zoomedImg;
+        const rect = activeMedia.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
-        zoomedImg.style.transformOrigin = `${x}% ${y}%`;
-        zoomedImg.style.transform = `scale(${currentZoom})`;
+        activeMedia.style.transformOrigin = `${x}% ${y}%`;
+        activeMedia.style.transform = `scale(${currentZoom})`;
       }
     });
     
@@ -448,12 +509,15 @@ function initImageZoom() {
         const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
         currentZoom = Math.max(1, Math.min(5, currentZoom + zoomDelta));
         
+        // Get the currently visible media element (img or video)
+        const activeMedia = zoomedVideo.style.display === 'block' ? zoomedVideo : zoomedImg;
+        
         // Update transform with current zoom
-        const rect = zoomedImg.getBoundingClientRect();
+        const rect = activeMedia.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
-        zoomedImg.style.transformOrigin = `${x}% ${y}%`;
-        zoomedImg.style.transform = `scale(${currentZoom})`;
+        activeMedia.style.transformOrigin = `${x}% ${y}%`;
+        activeMedia.style.transform = `scale(${currentZoom})`;
       }
     }, { passive: false });
   }
@@ -461,23 +525,25 @@ function initImageZoom() {
   return zoomOverlay;
 }
 
-function makeImageZoomable(img, caption = '') {
-  if (!img || img.classList.contains('zoomable-initialized')) return;
+function makeImageZoomable(element, caption = '') {
+  if (!element || element.classList.contains('zoomable-initialized')) return;
   
-  img.style.cursor = 'zoom-in';
-  img.classList.add('zoomable-initialized');
+  const isVideo = element.tagName === 'VIDEO';
   
-  const carousel = img.closest('.carousel');
+  element.style.cursor = 'zoom-in';
+  element.classList.add('zoomable-initialized');
   
-  // Store caption on the image element
+  const carousel = element.closest('.carousel');
+  
+  // Store caption on the element
   if (caption) {
-    img.dataset.zoomCaption = caption;
+    element.dataset.zoomCaption = caption;
   }
   
   // Update cursor based on mouse position
   if (carousel) {
-    img.addEventListener('mousemove', (e) => {
-      const rect = img.getBoundingClientRect();
+    element.addEventListener('mousemove', (e) => {
+      const rect = element.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
       
@@ -489,21 +555,21 @@ function makeImageZoomable(img, caption = '') {
       if (mouseY > rect.height - safeZoneBottom || 
           mouseX < safeZoneSides || 
           mouseX > rect.width - safeZoneSides) {
-        img.style.cursor = 'default';
+        element.style.cursor = 'default';
       } else {
-        img.style.cursor = 'zoom-in';
+        element.style.cursor = 'zoom-in';
       }
     });
     
-    img.addEventListener('mouseleave', () => {
-      img.style.cursor = 'zoom-in';
+    element.addEventListener('mouseleave', () => {
+      element.style.cursor = 'zoom-in';
     });
   }
   
-  img.addEventListener('click', (e) => {
+  element.addEventListener('click', (e) => {
     // Check if click is near carousel controls (safe zone)
     if (carousel) {
-      const rect = img.getBoundingClientRect();
+      const rect = element.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
       
@@ -522,9 +588,32 @@ function makeImageZoomable(img, caption = '') {
     e.stopPropagation();
     const overlay = initImageZoom();
     const zoomedImg = overlay.querySelector('#zoomed-image');
+    const zoomedVideo = overlay.querySelector('#zoomed-video');
     const captionEl = overlay.querySelector('#zoom-caption');
-    zoomedImg.src = img.src;
-    zoomedImg.alt = img.alt;
+    
+    // Handle video vs image differently
+    if (isVideo) {
+      // Hide image, show video
+      zoomedImg.style.display = 'none';
+      zoomedVideo.style.display = 'block';
+      
+      // Clear previous sources and add new one
+      zoomedVideo.innerHTML = '';
+      const source = document.createElement('source');
+      source.src = element.currentSrc || element.src;
+      // Get file extension for type
+      const ext = source.src.match(/\.(\w+)$/)?.[1] || 'mp4';
+      source.type = `video/${ext}`;
+      zoomedVideo.appendChild(source);
+      zoomedVideo.load();
+      zoomedVideo.play();
+    } else {
+      // Hide video, show image
+      zoomedVideo.style.display = 'none';
+      zoomedImg.style.display = 'block';
+      zoomedImg.src = element.src;
+      zoomedImg.alt = element.alt;
+    }
     
     // Store click position for centering
     overlay.dataset.clickX = e.clientX;
@@ -537,7 +626,7 @@ function makeImageZoomable(img, caption = '') {
     if (carousel) {
       overlay.dataset.carouselId = carousel.id;
       const items = Array.from(carousel.querySelectorAll('.carousel-item'));
-      const currentItem = img.closest('.carousel-item');
+      const currentItem = element.closest('.carousel-item');
       const currentIndex = items.indexOf(currentItem);
       overlay.dataset.currentIndex = currentIndex >= 0 ? currentIndex : 0;
       
@@ -552,18 +641,8 @@ function makeImageZoomable(img, caption = '') {
       if (rightArrow) rightArrow.style.display = 'none';
     }
     
-    // Set caption if available with markdown processing
-    const captionText = img.dataset.zoomCaption || img.alt || '';
-    if (captionText) {
-      captionEl.innerHTML = mdInlineToHtmlBoldOnly(String(captionText));
-      // Get the global config from window if available for colorization
-      if (window.globalConfig) {
-        colorizeStrongIn(captionEl, window.globalConfig);
-      }
-      captionEl.style.display = 'block';
-    } else {
-      captionEl.style.display = 'none';
-    }
+    // Hide caption in focus view (already shown in carousel view)
+    captionEl.style.display = 'none';
     
     overlay.style.display = 'flex';
     
