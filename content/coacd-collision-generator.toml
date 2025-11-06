@@ -39,17 +39,17 @@ fonts_config = "content/fonts.toml"
   # Parameters and Usage sections
   parameters_title = "Parameters"
   parameters = [
-    "**Threshold** - Concavity tolerance (0.01–1.0). Lower = more cuts/tighter hulls; higher = fewer, coarser hulls.",
-    "**Max Convex Hulls** - Upper limit on number of hull pieces to output (1-512).",
-    "**Max Hull Vertices** - Per-hull vertex cap after simplification (8-256).",
-    "**Min Volume Threshold** - Minimum volume threshold as percentage (0-100%) of largest hull; smaller pieces are discarded.",
-    "**MCTS Nodes** - Search breadth (1-40). Higher can improve fit at cost of time.",
-    "**MCTS Iterations** - Search effort (60-2000). Higher can improve fit at cost of time.",
-    "**MCTS Depth** - Search depth (2-7). Controls how deep the Monte Carlo Tree Search explores.",
+    "**Threshold** - Concavity tolerance. Lower = more cuts/tighter hulls; higher = fewer, coarser hulls.",
+    "**Max Convex Hulls** - Upper limit on number of hull pieces to output.",
+    "**Max Hull Vertices** - Per-hull vertex cap after simplification.",
+    "**Min Volume Threshold** - Minimum volume threshold as percentage of largest hull; smaller pieces are discarded.",
+    "**MCTS Nodes** - Search breadth. Higher can improve fit at cost of time.",
+    "**MCTS Iterations** - Search effort. Higher can improve fit at cost of time.",
+    "**MCTS Depth** - Search depth. Controls how deep the Monte Carlo Tree Search explores.",
     "**Merge Sub-Hulls** - Enable post-processing to merge adjacent sub-hull components.",
     "**Preprocessing Mode** - Toggle between two preprocessing methods:",
-    "  • **Geonode Mode** (COACD OFF): Uses Geonode Inflate (0-1% inflation) and Geonode Resolution (400-1600 voxel detail).",
-    "  • **COACD Mode** (COACD ON, default): Uses Preprocess Resolution (20-100) and PCA Pre-processing for better hull alignment.",
+    "  • **Geonode Mode** (COACD OFF): Uses Geonode Inflate and Geonode Resolution.",
+    "  • **COACD Mode** (COACD ON, default): Uses Preprocess Resolution and PCA Pre-processing for better hull alignment.",
   ]
 
   usage_title = "Usage"
