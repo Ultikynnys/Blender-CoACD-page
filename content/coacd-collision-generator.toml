@@ -122,6 +122,12 @@ fonts_config = "content/fonts.toml"
   link_text = "Join Discord"
   link_url = "https://discord.gg/J7kWSfM4jw"
 
+# Changelog
+[changelog]
+  enabled = true
+  url = "changelogs/coacd-changelog.md"
+  title = "Changelog"
+
 # Citations configuration
 [citations_config]
   enabled = true
