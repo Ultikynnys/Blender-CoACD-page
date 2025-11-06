@@ -19,7 +19,7 @@ fonts_config = "content/fonts.toml"
   og_type = "website"
   og_url = "https://colin97.github.io/CoACD/"
   og_title = "CoACD Collision Generator"
-  og_description = "Blender add-on to generate convex collision hulls using the CoACD (Collision-Aware Convex Decomposition) algorithm."
+  og_description = "Blender add-on to generate convex collision hulls using a custom optimized variant of CoACD (Collision-Aware Convex Decomposition) - up to 10x faster than the original."
 
 
 # Section titles (optional overrides)
@@ -32,20 +32,24 @@ fonts_config = "content/fonts.toml"
 [introduction]
   title = ""
   paragraphs = [
-    "A Blender add-on for generating convex collision hulls using the CoACD (Collision-Aware Convex Decomposition) algorithm. Perfect for creating high-quality custom collisions for **Unity** and **Unreal Engine**.",
+    "A Blender add-on for generating convex collision hulls using a custom optimized variant of the CoACD (Collision-Aware Convex Decomposition) algorithm. This version is **up to 10x faster** than the original CoACD implementation.",
+    "Perfect for creating high-quality custom collisions for **Unity** and **Unreal Engine**.",
   ]
 
   # Parameters and Usage sections
   parameters_title = "Parameters"
   parameters = [
-    "**Threshold** - Concavity tolerance. Lower = more cuts/tighter hulls; higher = fewer, coarser hulls. Typical 0.03–0.20.",
-    "**Max Convex Hulls** - Upper limit on number of hull pieces to output.",
-    "**Resolution** - Voxel grid detail for preprocessing and CoACD; higher = more detail, slower.",
-    "**Max Hull Vertices** - Per-hull vertex cap after simplification.",
-    "**Merge Sub-Hulls** - Merge adjacent sub-hull components when possible.",
-    "**Inflate Thickness** - Inflate mesh faces before voxelization. Set to 0 to disable.",
-    "**Min Volume Threshold** - Minimum volume for creating a hull; smaller pieces are discarded.",
-    "**MCTS Nodes/Iterations** - Search breadth and effort; higher can improve fit at the cost of time.",
+    "**Threshold** - Concavity tolerance (0.01–1.0). Lower = more cuts/tighter hulls; higher = fewer, coarser hulls.",
+    "**Max Convex Hulls** - Upper limit on number of hull pieces to output (1-512).",
+    "**Max Hull Vertices** - Per-hull vertex cap after simplification (8-256).",
+    "**Min Volume Threshold** - Minimum volume threshold as percentage (0-100%) of largest hull; smaller pieces are discarded.",
+    "**MCTS Nodes** - Search breadth (1-40). Higher can improve fit at cost of time.",
+    "**MCTS Iterations** - Search effort (60-2000). Higher can improve fit at cost of time.",
+    "**MCTS Depth** - Search depth (2-7). Controls how deep the Monte Carlo Tree Search explores.",
+    "**Merge Sub-Hulls** - Enable post-processing to merge adjacent sub-hull components.",
+    "**Preprocessing Mode** - Toggle between two preprocessing methods:",
+    "  • **Geonode Mode** (COACD OFF): Uses Geonode Inflate (0-1% inflation) and Geonode Resolution (400-1600 voxel detail).",
+    "  • **COACD Mode** (COACD ON, default): Uses Preprocess Resolution (20-100) and PCA Pre-processing for better hull alignment.",
   ]
 
   usage_title = "Usage"
@@ -53,8 +57,12 @@ fonts_config = "content/fonts.toml"
     "**Select** one or more mesh objects.",
     "**Pick a Quality Preset** (Minimal/Low/Medium/High/Maximum) or adjust parameters.",
     "**Click Generate Collision**.",
-    "Post-Processing - **Mirror Collision Objects**: mirror across X/Y/Z with center threshold.",
+    "Post-Processing - **Split Mesh with Plane**: draw a line to define a cutting plane and split the mesh.",
+    "Post-Processing - **Split Mesh with Cylinder**: draw from center to edge to define cylinder radius, then extrude along view.",
+    "Post-Processing - **Split Mesh with Square**: draw diagonal to define square, then extrude along view to split.",
+    "Post-Processing - **Use Child Objects as Colliders**: convert existing child objects to UCX_ colliders.",
     "Post-Processing - **Combine Colliders**: merge selected collision hulls into one.",
+    "Post-Processing - **Mirror Collision Objects**: mirror across X/Y/Z with center threshold.",
     "Post-Processing - **Generate LODs**: create multiple LOD levels via decimation; configure levels and ratios in the panel.",
   ]
 
