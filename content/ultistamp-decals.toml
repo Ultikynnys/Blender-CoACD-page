@@ -72,41 +72,45 @@ fonts_config = "content/fonts.toml"
   video_title = "Video Showcase"
   video_url = "https://www.youtube.com/embed/hWIO-FiaHsQ"
 
-# Feature comparisons (using carousel-style content)
-[[comparisons]]
-  images = [
-    "images/UltiStamp/Showcase1.webp",
-    "images/UltiStamp/Showcase2.webp",
-    "images/UltiStamp/Showcase3.webp",
-    "images/UltiStamp/Showcase4.webp",
-    "images/UltiStamp/Showcase5.webp",
-    "images/UltiStamp/Showcase6.webp",
-    "images/UltiStamp/Showcase8.webp",
-    "images/UltiStamp/HeightMapMasking2.webp",
-    "images/UltiStamp/RadialUV3.webp"
-  ]
-  images_captions = [
-    "**Showcase 1** - This shows how we can easily work with the decals even in Blender's native environment using the visualizer",
-    "**Showcase 2** - Transparency decals are supported",
-    "**Showcase 3** - Adding surface imperfections with multiple decals",
-    "**Showcase 4** - Emissive decals are supported",
-    "**Showcase 5** - Various parameters for tweaking decal visuals",
-    "**Showcase 6** - UV decal scaling supported",
-    "**Showcase 7** - HSV controls and more!",
-    "**Showcase 8** - Height map masking for precise decal placement based on surface elevation",
-    "**Showcase 9** - Radial UV projection toggle for wrapping decals around cylindrical shapes"
-  ]
-  images_alt = [
-    "Showcase 1",
-    "Showcase 2",
-    "Showcase 3",
-    "Showcase 4",
-    "Showcase 5",
-    "Showcase 6",
-    "Showcase 7",
-    "Showcase 8",
-    "Showcase 9"
-  ]
+  # Generic sections
+  [[introduction.sections]]
+    type = "comparisons"
+    title = "Showcase"
+    
+    [[introduction.sections.items]]
+      images = [
+        "images/UltiStamp/Showcase1.webp",
+        "images/UltiStamp/Showcase2.webp",
+        "images/UltiStamp/Showcase3.webp",
+        "images/UltiStamp/Showcase4.webp",
+        "images/UltiStamp/Showcase5.webp",
+        "images/UltiStamp/Showcase6.webp",
+        "images/UltiStamp/Showcase8.webp",
+        "images/UltiStamp/HeightMapMasking2.webp",
+        "images/UltiStamp/RadialUV3.webp"
+      ]
+      images_captions = [
+        "**Showcase 1** - This shows how we can easily work with the decals even in Blender's native environment using the visualizer",
+        "**Showcase 2** - Transparency decals are supported",
+        "**Showcase 3** - Adding surface imperfections with multiple decals",
+        "**Showcase 4** - Emissive decals are supported",
+        "**Showcase 5** - Various parameters for tweaking decal visuals",
+        "**Showcase 6** - UV decal scaling supported",
+        "**Showcase 7** - HSV controls and more!",
+        "**Showcase 8** - Height map masking for precise decal placement based on surface elevation",
+        "**Showcase 9** - Radial UV projection toggle for wrapping decals around cylindrical shapes"
+      ]
+      images_alt = [
+        "Showcase 1",
+        "Showcase 2",
+        "Showcase 3",
+        "Showcase 4",
+        "Showcase 5",
+        "Showcase 6",
+        "Showcase 7",
+        "Showcase 8",
+        "Showcase 9"
+      ]
   caption = "**UltiStamp Showcase** - Professional results with full PBR decal workflow"
 
 

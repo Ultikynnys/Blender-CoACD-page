@@ -65,34 +65,38 @@ fonts_config = "content/fonts.toml"
   usage_image_2_alt = "Batch processing interface"
   usage_image_2_caption = "Batch processing tools for production workflows"
 
-# Comparisons (Before/After sliders)
-[[comparisons]]
-  initial = 0.3
-  before = "images/Logo.webp"
-  after  = "images/UltiBridge2_Unreal.webp"
-  caption = "**Traditional workflow** vs **UltiBridge Unreal integration**"
-  handle_shape = "circle"
+  # Generic sections
+  [[introduction.sections]]
+    type = "comparisons"
+    title = "Workflow Comparisons"
+    
+    [[introduction.sections.items]]
+      initial = 0.3
+      before = "images/Logo.webp"
+      after  = "images/UltiBridge2_Unreal.webp"
+      caption = "**Traditional workflow** vs **UltiBridge Unreal integration**"
+      handle_shape = "circle"
 
-[[comparisons]]
-  initial = 0.6
-  before = "images/Logo.webp"
-  after  = "images/UltiBridge2_Unreal.webp"
-  caption = "**Manual export process** vs **automated Unreal pipeline**"
-  handle_shape = "circle"
+    [[introduction.sections.items]]
+      initial = 0.6
+      before = "images/Logo.webp"
+      after  = "images/UltiBridge2_Unreal.webp"
+      caption = "**Manual export process** vs **automated Unreal pipeline**"
+      handle_shape = "circle"
 
-[[comparisons]]
-  initial = 0.4
-  before = "images/Logo.webp"
-  after  = "images/UltiBridge2_Unreal.webp"
-  caption = "**Material recreation** vs **automatic Unreal material mapping**"
-  handle_shape = "circle"
+    [[introduction.sections.items]]
+      initial = 0.4
+      before = "images/Logo.webp"
+      after  = "images/UltiBridge2_Unreal.webp"
+      caption = "**Material recreation** vs **automatic Unreal material mapping**"
+      handle_shape = "circle"
 
-[[comparisons]]
-  initial = 0.6
-  before = "images/Logo.webp"
-  after  = "images/UltiBridge2_Unreal.webp"
-  caption = "**Multiple steps** vs **streamlined Content Browser import**"
-  handle_shape = "circle"
+    [[introduction.sections.items]]
+      initial = 0.6
+      before = "images/Logo.webp"
+      after  = "images/UltiBridge2_Unreal.webp"
+      caption = "**Multiple steps** vs **streamlined Content Browser import**"
+      handle_shape = "circle"
 
 # Showcase video
 [showcase]

@@ -2037,59 +2037,308 @@ async function renderContent(cfg) {
     renderIntroductionSection(cfg?.introduction || {}, cfg, 'intro-content', { includeVideo: true });
   }
 
+  // Generic sections (inserted after introduction, before comparisons)
+  const introConfig = cfg?.introduction || {};
+  const sections = Array.isArray(introConfig.sections) ? introConfig.sections : [];
+  if (sections.length > 0) {
+    // Process each section individually
+    let insertAfter = document.querySelector('.intro');
+    
+    sections.forEach(section => {
+      const sectionType = section.type || 'content';
+      const sectionTitle = section.title || '';
+      
+      // Handle comparison-type sections
+      if (sectionType === 'comparisons') {
+        const comparisonItems = Array.isArray(section.items) ? section.items : [];
+        dbg(`Comparison section "${sectionTitle}": found ${comparisonItems.length} items`);
+        if (comparisonItems.length > 0) {
+          // Create standalone section element
+          const mainSection = document.createElement('section');
+          mainSection.className = 'section comparisons';
+          
+          // Add section title as h2
+          if (sectionTitle) {
+            const h2 = document.createElement('h2');
+            h2.className = 'section__title';
+            h2.textContent = sectionTitle;
+            mainSection.appendChild(h2);
+          }
+          
+          const comparisonsGrid = document.createElement('div');
+          comparisonsGrid.className = 'grid grid--one-col';
+          
+          comparisonItems.forEach((item, idx) => {
+            dbg(`Processing comparison item ${idx}:`, item);
+            const el = createComparisonElement(item, cfg);
+            if (el) {
+              colorizeStrongIn(el, cfg);
+              comparisonsGrid.appendChild(el);
+              dbg(`Successfully created comparison element ${idx}`);
+            } else {
+              dbg(`Failed to create comparison element ${idx}`);
+            }
+          });
+          
+          mainSection.appendChild(comparisonsGrid);
+          
+          // Insert after previous section
+          if (insertAfter && insertAfter.parentNode) {
+            insertAfter.parentNode.insertBefore(mainSection, insertAfter.nextSibling);
+            dbg(`Inserted comparison section "${sectionTitle}" with ${comparisonItems.length} items`);
+            // Update reference for next section
+            insertAfter = mainSection;
+          } else {
+            dbg(`WARNING: Could not insert comparison section "${sectionTitle}" - no parent found`);
+          }
+          
+          // Initialize before/after sliders and carousels after DOM insertion
+          setTimeout(() => {
+            // Initialize sliders
+            initBeforeAfterSliders();
+            
+            // Initialize any Bootstrap carousels
+            if (typeof bootstrap !== 'undefined') {
+              mainSection.querySelectorAll('.carousel').forEach(carouselEl => {
+                if (!bootstrap.Carousel.getInstance(carouselEl)) {
+                  new bootstrap.Carousel(carouselEl, {
+                    interval: false,
+                    wrap: true
+                  });
+                }
+              });
+            }
+          }, 50);
+        }
+        return; // Skip rest of processing for comparison sections
+      }
+      
+      // Handle content-type sections
+      const sectionItems = Array.isArray(section.steps) ? section.steps : [];
+      const sectionImages = parseMediaItems(section, {
+        itemsKey: 'images',
+        captionsKey: 'images_captions',
+        altKey: 'images_alt',
+        alignmentKey: 'images_alignment'
+      });
+      
+      // Check layout preference for this section
+      const imageLayout = section.images_layout || 'vertical';
+      const isWideLayout = imageLayout === 'wide' || imageLayout === '16:9' || imageLayout === 'horizontal';
+
+      if ((sectionTitle && sectionItems.length > 0) || sectionImages.length > 0) {
+        // Create container for the section
+        const sectionContainer = document.createElement('div');
+        sectionContainer.className = 'intro__section-container';
+        
+        // If no images, just render text without grid
+        if (sectionImages.length === 0) {
+          if (sectionTitle && sectionItems.length > 0) {
+            const h3 = document.createElement('h3');
+            h3.className = 'intro__usage-title';
+            h3.textContent = sectionTitle;
+            sectionContainer.appendChild(h3);
+
+            const ul = document.createElement('ul');
+            ul.className = 'intro__usage-list';
+            let currentLi = null;
+            let nestedUl = null;
+
+            sectionItems.forEach(item => {
+              const itemStr = String(item);
+              const isIndented = /^\s+[•·\-\*]/.test(itemStr);
+
+              if (isIndented) {
+                if (!nestedUl) {
+                  nestedUl = document.createElement('ul');
+                  if (currentLi) {
+                    currentLi.appendChild(nestedUl);
+                  }
+                }
+                const li = document.createElement('li');
+                const cleanedItem = itemStr.replace(/^\s+[•·\-\*]\s*/, '');
+                li.innerHTML = mdInlineToHtmlBoldOnly(cleanedItem);
+                colorizeStrongIn(li, cfg);
+                nestedUl.appendChild(li);
+              } else {
+                currentLi = document.createElement('li');
+                currentLi.innerHTML = mdInlineToHtmlBoldOnly(itemStr);
+                colorizeStrongIn(currentLi, cfg);
+                ul.appendChild(currentLi);
+                nestedUl = null;
+              }
+            });
+            sectionContainer.appendChild(ul);
+          }
+        } else if (isWideLayout) {
+          // Wide layout: text above, image below (full width)
+          if (sectionTitle && sectionItems.length > 0) {
+            const h3 = document.createElement('h3');
+            h3.className = 'intro__usage-title';
+            h3.textContent = sectionTitle;
+            sectionContainer.appendChild(h3);
+
+            const ul = document.createElement('ul');
+            ul.className = 'intro__usage-list';
+            let currentLi = null;
+            let nestedUl = null;
+
+            sectionItems.forEach(item => {
+              const itemStr = String(item);
+              const isIndented = /^\s+[•·\-\*]/.test(itemStr);
+
+              if (isIndented) {
+                if (!nestedUl) {
+                  nestedUl = document.createElement('ul');
+                  if (currentLi) {
+                    currentLi.appendChild(nestedUl);
+                  }
+                }
+                const li = document.createElement('li');
+                const cleanedItem = itemStr.replace(/^\s+[•·\-\*]\s*/, '');
+                li.innerHTML = mdInlineToHtmlBoldOnly(cleanedItem);
+                colorizeStrongIn(li, cfg);
+                nestedUl.appendChild(li);
+              } else {
+                currentLi = document.createElement('li');
+                currentLi.innerHTML = mdInlineToHtmlBoldOnly(itemStr);
+                colorizeStrongIn(currentLi, cfg);
+                ul.appendChild(currentLi);
+                nestedUl = null;
+              }
+            });
+            sectionContainer.appendChild(ul);
+          }
+          
+          // Add media below text (full width)
+          if (sectionImages.length > 0) {
+            const mediaContainer = document.createElement('div');
+            mediaContainer.className = 'intro__usage-media-wide';
+            
+            const carousel = createMediaCarousel(sectionImages, cfg, {
+              className: 'generic-section-carousel generic-section-carousel--wide',
+              type: 'image',
+              borderClass: 'media-border',
+              objectFit: 'contain'
+            });
+            if (carousel) mediaContainer.appendChild(carousel);
+            
+            sectionContainer.appendChild(mediaContainer);
+          }
+        } else {
+          // Vertical layout: side-by-side grid
+          const grid = document.createElement('div');
+          grid.className = 'intro__usage-grid';
+
+          const mainCol = document.createElement('div');
+          mainCol.className = 'intro__usage-main';
+
+          if (sectionTitle && sectionItems.length > 0) {
+            const h3 = document.createElement('h3');
+            h3.className = 'intro__usage-title';
+            h3.textContent = sectionTitle;
+            mainCol.appendChild(h3);
+
+            const ul = document.createElement('ul');
+            ul.className = 'intro__usage-list';
+            let currentLi = null;
+            let nestedUl = null;
+
+            sectionItems.forEach(item => {
+              const itemStr = String(item);
+              const isIndented = /^\s+[•·\-\*]/.test(itemStr);
+
+              if (isIndented) {
+                if (!nestedUl) {
+                  nestedUl = document.createElement('ul');
+                  if (currentLi) {
+                    currentLi.appendChild(nestedUl);
+                  }
+                }
+                const li = document.createElement('li');
+                const cleanedItem = itemStr.replace(/^\s+[•·\-\*]\s*/, '');
+                li.innerHTML = mdInlineToHtmlBoldOnly(cleanedItem);
+                colorizeStrongIn(li, cfg);
+                nestedUl.appendChild(li);
+              } else {
+                currentLi = document.createElement('li');
+                currentLi.innerHTML = mdInlineToHtmlBoldOnly(itemStr);
+                colorizeStrongIn(currentLi, cfg);
+                ul.appendChild(currentLi);
+                nestedUl = null;
+              }
+            });
+            mainCol.appendChild(ul);
+          }
+
+          grid.appendChild(mainCol);
+
+          // Add media if available (side-by-side)
+          if (sectionImages.length > 0) {
+            const mediaCol = document.createElement('div');
+            mediaCol.className = 'intro__usage-media';
+
+            const carousel = createMediaCarousel(sectionImages, cfg, {
+              className: 'generic-section-carousel',
+              type: 'image',
+              borderClass: 'media-border'
+            });
+            if (carousel) mediaCol.appendChild(carousel);
+
+            grid.appendChild(mediaCol);
+          }
+
+          sectionContainer.appendChild(grid);
+        }
+
+        // Create standalone section element
+        const mainSection = document.createElement('section');
+        mainSection.className = 'section generic-section';
+        
+        // Add section title as h2
+        if (sectionTitle) {
+          const h2 = document.createElement('h2');
+          h2.className = 'section__title';
+          h2.textContent = sectionTitle;
+          mainSection.appendChild(h2);
+        }
+        
+        // Wrap in grid for consistency
+        const grid = document.createElement('div');
+        grid.className = 'grid grid--one-col';
+        grid.appendChild(sectionContainer);
+        mainSection.appendChild(grid);
+        
+        // Insert after previous section
+        if (insertAfter && insertAfter.parentNode) {
+          insertAfter.parentNode.insertBefore(mainSection, insertAfter.nextSibling);
+          // Update reference for next section
+          insertAfter = mainSection;
+        }
+      }
+    });
+  }
+
   // Titles overrides
   if (cfg?.titles) {
     const t = cfg.titles;
-    if (t.comparisons) {
-      const el = document.getElementById('comparisons-title');
-      if (el) el.textContent = t.comparisons;
-    }
-    if (t.showcase) {
-      const el = document.getElementById('showcase-title');
-      if (el) el.textContent = t.showcase;
-    }
     if (t.support) {
       const el = document.getElementById('support-title');
       if (el) el.textContent = t.support;
     }
   }
 
-  // Comparisons grid (DRY: reuse createComparisonElement)
-  const grid = document.getElementById('comparisons-grid');
-  if (grid) {
-    grid.innerHTML = '';
-    const items = Array.isArray(cfg?.comparisons) ? cfg.comparisons : [];
-    items.forEach(item => {
-      const el = createComparisonElement(item, cfg);
-      if (!el) return;
-      colorizeStrongIn(el, cfg);
-      grid.appendChild(el);
-    });
+  // Hide static comparisons section - now using generic sections system
+  // Only hide the one with comparisons-grid, not our dynamically created ones
+  const staticComparisonsSection = document.querySelector('.comparisons.section:has(#comparisons-grid)');
+  if (staticComparisonsSection) {
+    staticComparisonsSection.style.display = 'none';
   }
 
-  // Showcase (single or multiple videos with carousel)
-  const showcase = document.getElementById('showcase-container');
-  const showcaseSection = showcase?.closest('section');
-  if (showcase) {
-    showcase.innerHTML = '';
-    const videos = parseShowcaseVideos(cfg?.showcase || {});
-    showcase.classList.remove('video-embed');
-    
-    if (videos.length > 1) {
-      showcase.classList.add('video-embed');
-      const carousel = createVideoCarousel(videos, cfg, 'video-carousel');
-      showcase.appendChild(carousel);
-      if (showcaseSection) showcaseSection.style.display = 'block';
-    } else if (videos.length === 1) {
-      showcase.classList.add('video-embed');
-      // Use unified carousel even for a single video for consistency
-      const carousel = createVideoCarousel(videos, cfg, 'video-carousel');
-      showcase.appendChild(carousel);
-      if (showcaseSection) showcaseSection.style.display = 'block';
-    } else {
-      // No videos - hide the entire showcase section
-      if (showcaseSection) showcaseSection.style.display = 'none';
-    }
+  // Hide static showcase section - now using introduction video or generic sections
+  const showcaseSection = document.querySelector('.showcase.section');
+  if (showcaseSection) {
+    showcaseSection.style.display = 'none';
   }
 
   // Support
@@ -2317,61 +2566,6 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
     // No images - just append sections normally
     usageNodes.forEach(node => introContent.appendChild(node));
     paramNodes.forEach(node => introContent.appendChild(node));
-  }
-
-  // Build Workflow section in its own container
-  const workflowTitle = introConfig.workflow_title || '';
-  const workflowItems = Array.isArray(introConfig.workflow_steps) ? introConfig.workflow_steps : [];
-  if (workflowTitle || workflowItems.length > 0) {
-    const workflowContainer = document.createElement('div');
-    workflowContainer.className = 'intro__workflow-section';
-    
-    if (workflowTitle && workflowItems.length > 0) {
-      const h3 = document.createElement('h3');
-      h3.className = 'intro__usage-title';
-      h3.textContent = workflowTitle;
-      workflowContainer.appendChild(h3);
-    }
-    
-    if (workflowItems.length > 0) {
-      const ul = document.createElement('ul');
-      ul.className = 'intro__usage-list';
-      let currentLi = null;
-      let nestedUl = null;
-      
-      workflowItems.forEach(item => {
-        const itemStr = String(item);
-        // Check if this is an indented sub-item (starts with spaces + bullet)
-        const isIndented = /^\s+[•·\-\*]/.test(itemStr);
-        
-        if (isIndented) {
-          // This is a sub-item
-          if (!nestedUl) {
-            // Create nested list if it doesn't exist
-            nestedUl = document.createElement('ul');
-            if (currentLi) {
-              currentLi.appendChild(nestedUl);
-            }
-          }
-          const li = document.createElement('li');
-          // Remove leading whitespace and bullet character
-          const cleanedItem = itemStr.replace(/^\s+[•·\-\*]\s*/, '');
-          li.innerHTML = mdInlineToHtmlBoldOnly(cleanedItem);
-          colorizeStrongIn(li, cfg);
-          nestedUl.appendChild(li);
-        } else {
-          // This is a top-level item
-          currentLi = document.createElement('li');
-          currentLi.innerHTML = mdInlineToHtmlBoldOnly(itemStr);
-          colorizeStrongIn(currentLi, cfg);
-          ul.appendChild(currentLi);
-          nestedUl = null; // Reset nested list for next group
-        }
-      });
-      workflowContainer.appendChild(ul);
-    }
-    
-    introContent.appendChild(workflowContainer);
   }
 
   // Quick Start section

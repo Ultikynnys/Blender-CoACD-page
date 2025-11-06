@@ -98,47 +98,50 @@ fonts_config = "content/fonts.toml"
   video_title = "Video Showcase"
   video_url = "https://www.youtube.com/embed/_gE_KFakj5Q"
 
-# Feature comparisons (using carousel-style content)
-[[comparisons]]
-  initial = 0.5
-  before = "images/Ultibake/BasicUsage/UltibakePre.webp"
-  after  = "images/Ultibake/BasicUsage/UltibakePost.webp"
-  caption = "Transform **complex scene setups** into a **unified texture set**. Handles **advanced materials**, **multi-object workflows**, **decals**, and more with ease."
-  handle_shape = "circle"
-
-# Profile System Showcase
-[[comparisons]]
-  images = [
-    "images/Ultibake/BasicUsage/ProfileShowcase.webp",
-    "images/Ultibake/BasicUsage/EasyChannelPack.webp",
-    "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.webp",
-    "images/Ultibake/BasicUsage/AutomaticSuffixGen.webp",
-    "images/Ultibake/BasicUsage/SuffixGenNaming.webp",
-    "images/Ultibake/BasicUsage/BakeVisualization.webp",
-    "images/Ultibake/BasicUsage/BakeSetGenerator.webp",
-    "images/Ultibake/BasicUsage/MultiBakeSet5.webp"
-  ]
-  images_captions = [
-    "**Modular Profile System** - Define your baking workflow just like in **Substance Painter**",
-    "**Easy Channel Packing** - Intuitive interface for packing multiple textures into RGBA channels",
-    "**23 Bake Types** - Mix of **BSDF inputs** and **custom types** for industry-standard workflows",
-    "**Automatic Suffix Generation** - Texture names are automatically generated based on your settings",
-    "**Manual Suffix Definition** - Manually define texture suffixes based on bake type to fit your project",
-    "**Bake Visualization** - Visualize the bake before you start it to ensure everything is set up correctly",
-    "**Bake Set Generator** - Automatically generate Bake Sets based on object names in a collection",
-    "**Finalize** - Instantly creates export-ready objects based on your baked textures after baking"
-  ]
-  images_alt = [
-    "UltiBake Profile System",
-    "Channel Packing Interface",
-    "Available Bake Types",
-    "Automatic Suffix Generation",
-    "Manual Suffix Definition",
-    "Bake Visualization",
-    "Bake Set Generator",
-    "Finalize Feature"
-  ]
-  caption = "**Profile System Features** - Save, load, and reuse your setups across projects"
+  # Generic sections
+  [[introduction.sections]]
+    type = "comparisons"
+    title = "Showcase"
+    
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/Ultibake/BasicUsage/UltibakePre.webp"
+      after  = "images/Ultibake/BasicUsage/UltibakePost.webp"
+      caption = "Transform **complex scene setups** into a **unified texture set**. Handles **advanced materials**, **multi-object workflows**, **decals**, and more with ease."
+      handle_shape = "circle"
+    
+    [[introduction.sections.items]]
+      images = [
+        "images/Ultibake/BasicUsage/ProfileShowcase.webp",
+        "images/Ultibake/BasicUsage/EasyChannelPack.webp",
+        "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.webp",
+        "images/Ultibake/BasicUsage/AutomaticSuffixGen.webp",
+        "images/Ultibake/BasicUsage/SuffixGenNaming.webp",
+        "images/Ultibake/BasicUsage/BakeVisualization.webp",
+        "images/Ultibake/BasicUsage/BakeSetGenerator.webp",
+        "images/Ultibake/BasicUsage/MultiBakeSet5.webp"
+      ]
+      images_captions = [
+        "**Modular Profile System** - Define your baking workflow just like in **Substance Painter**",
+        "**Easy Channel Packing** - Intuitive interface for packing multiple textures into RGBA channels",
+        "**23 Bake Types** - Mix of **BSDF inputs** and **custom types** for industry-standard workflows",
+        "**Automatic Suffix Generation** - Texture names are automatically generated based on your settings",
+        "**Manual Suffix Definition** - Manually define texture suffixes based on bake type to fit your project",
+        "**Bake Visualization** - Visualize the bake before you start it to ensure everything is set up correctly",
+        "**Bake Set Generator** - Automatically generate Bake Sets based on object names in a collection",
+        "**Finalize** - Instantly creates export-ready objects based on your baked textures after baking"
+      ]
+      images_alt = [
+        "UltiBake Profile System",
+        "Channel Packing Interface",
+        "Available Bake Types",
+        "Automatic Suffix Generation",
+        "Manual Suffix Definition",
+        "Bake Visualization",
+        "Bake Set Generator",
+        "Finalize Feature"
+      ]
+      caption = "**Profile System Features** - Save, load, and reuse your setups across projects"
 
 
 # Support / Community

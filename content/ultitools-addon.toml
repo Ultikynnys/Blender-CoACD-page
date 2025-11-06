@@ -62,27 +62,31 @@ fonts_config = "content/fonts.toml"
   usage_image_alt = "UltiTools interface"
   usage_image_caption = "UltiTools - Essential Blender utilities"
 
-# Tool category comparisons
-[[comparisons]]
-  initial = 0.5
-  before = "images/Logo.webp"
-  after  = "images/Logo2.webp"
-  caption = "**Standard Blender tools** vs **UltiTools enhanced workflow**"
-  handle_shape = "circle"
+  # Generic sections
+  [[introduction.sections]]
+    type = "comparisons"
+    title = "Tool Comparisons"
+    
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/Logo.webp"
+      after  = "images/Logo2.webp"
+      caption = "**Standard Blender tools** vs **UltiTools enhanced workflow**"
+      handle_shape = "circle"
 
-[[comparisons]]
-  initial = 0.6
-  before = "images/Logo.webp"
-  after  = "images/Logo2.webp"
-  caption = "**Manual mesh checking** vs **Automated mesh analysis**"
-  handle_shape = "circle"
+    [[introduction.sections.items]]
+      initial = 0.6
+      before = "images/Logo.webp"
+      after  = "images/Logo2.webp"
+      caption = "**Manual mesh checking** vs **Automated mesh analysis**"
+      handle_shape = "circle"
 
-[[comparisons]]
-  initial = 0.4
-  before = "images/Logo.webp"
-  after  = "images/Logo2.webp"
-  caption = "**Complex FBX setup** vs **Game-ready export presets**"
-  handle_shape = "circle"
+    [[introduction.sections.items]]
+      initial = 0.4
+      before = "images/Logo.webp"
+      after  = "images/Logo2.webp"
+      caption = "**Complex FBX setup** vs **Game-ready export presets**"
+      handle_shape = "circle"
 
 # Showcase
 [showcase]

@@ -68,20 +68,24 @@ fonts_config = "content/fonts.toml"
     "Layered animation and quick exports"
   ]
 
-# Feature comparisons (placeholder images)
-[[comparisons]]
-  initial = 0.5
-  before = "images/CompareBase1.webp"
-  after  = "images/CompareColl1.webp"
-  caption = "Base animation vs. enhanced with AnimPlus tools"
-  handle_shape = "circle"
+  # Generic sections
+  [[introduction.sections]]
+    type = "comparisons"
+    title = "Feature Comparisons"
+    
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/CompareBase1.webp"
+      after  = "images/CompareColl1.webp"
+      caption = "Base animation vs. enhanced with AnimPlus tools"
+      handle_shape = "circle"
 
-[[comparisons]]
-  initial = 0.5
-  before = "images/CompareBase2.webp"
-  after  = "images/CompareColl2.webp"
-  caption = "Faster iteration and cleanup"
-  handle_shape = "circle"
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/CompareBase2.webp"
+      after  = "images/CompareColl2.webp"
+      caption = "Faster iteration and cleanup"
+      handle_shape = "circle"
 
 # Showcase videos
 [showcase]

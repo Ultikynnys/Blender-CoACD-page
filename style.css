@@ -362,6 +362,15 @@ a.themed-link:hover, a.themed-link:focus-visible {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
 }
+
+/* Generic section container - for additional sections like post-processing */
+.intro__section-container {
+  margin-top: 1.5rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
   
 /* Preset keywords - prevent line breaks within multi-word keywords and preserve inline colors */
 .preset-keyword {

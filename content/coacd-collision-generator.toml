@@ -85,17 +85,6 @@ fonts_config = "content/fonts.toml"
     "  • Generate LODs (via panel)",
   ]
 
-  workflow_title = "Recommended Workflow"
-  workflow_steps = [
-    "**Mesh Quality** - Clean meshes result in clean collision. Use manifold meshes when possible for optimal results.",
-    "**For Simple Meshes** - Start with the lowest quality preset and gradually increase quality until the collision accuracy meets your needs.",
-    "**For Complex Meshes** - If collision results are unsatisfactory, split the mesh into separate objects rather than increasing quality. Generate colliders for each piece individually with appropriate quality settings per piece.",
-    "**When to Split the Mesh** - If High quality doesn't produce satisfactory results, don't use Maximum - instead, split the mesh. This gives you better control and avoids performance issues from too many colliders.",
-    "**Quality Preset Guidelines** - The Maximum preset is experimental only and creates hundreds of colliders, which becomes a performance liability in game engines. Stick to High quality or below. For slower machines, use Medium as the highest.",
-    "**Post-Processing** - Combine, Remove, and Mirror colliders where needed using the built-in tools.",
-    "**Iterative Refinement & Scalability** - This workflow is highly efficient: only increase quality on specific problematic parts instead of reprocessing the entire model. This approach scales effectively for any object, from simple props to complex structures.",
-  ]
-
   # Multiple usage images with carousel
   usage_images = [
     "images/COACD_SHOW.mp4"
@@ -111,29 +100,57 @@ fonts_config = "content/fonts.toml"
     "center"
   ]
 
-# Comparisons (Before/After sliders). Provide image paths relative to the site root.
-# Leave before/after empty strings if not available yet.
-
-
-[[comparisons]]
-  initial = 0.5
-  before = "images/CompareBase1.webp"
-  after  = "images/CompareColl1.webp"
-  caption = "Before/After with CoACD decomposition"
-  handle_shape = "pentagon"
-
-[[comparisons]]
-  initial = 0.5
-  before = "images/CompareBase2.webp"
-  after  = "images/CompareColl2.webp"
-  caption = "Collision pieces with Convex Mirror Post-Processing"
-  handle_shape = "diamond"
-
-# Showcase video
-[showcase]
-  # Provide an embeddable video URL (YouTube embed, etc.), or omit to show placeholder text.
+  # Video showcase in introduction
+  video_title = "Video Showcase"
   video_url = "https://www.youtube.com/embed/ZpX_PMRmCxQ"
-  placeholder = "Demo video coming soon"
+
+  # Generic sections - flexible system for any content type
+  # Each section is rendered as a standalone section with its own title
+  [[introduction.sections]]
+    type = "comparisons"  # Comparison/slider section
+    title = "Comparisons"
+    
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/CompareBase1.webp"
+      after  = "images/CompareColl1.webp"
+      caption = "Before/After with CoACD decomposition"
+      handle_shape = "pentagon"
+
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/CompareBase2.webp"
+      after  = "images/CompareColl2.webp"
+      caption = "Collision pieces with Convex Mirror Post-Processing"
+      handle_shape = "diamond"
+
+  [[introduction.sections]]
+    type = "content"
+    title = "Recommended Workflow"
+    steps = [
+      "**Mesh Quality** - Clean meshes result in clean collision. Use manifold meshes when possible for optimal results.",
+      "**For Simple Meshes** - Start with the lowest quality preset and gradually increase quality until the collision accuracy meets your needs.",
+      "**For Complex Meshes** - If collision results are unsatisfactory, split the mesh into separate objects rather than increasing quality. Generate colliders for each piece individually with appropriate quality settings per piece.",
+      "**When to Split the Mesh** - If High quality doesn't produce satisfactory results, don't use Maximum - instead, split the mesh. This gives you better control and avoids performance issues from too many colliders.",
+      "**Quality Preset Guidelines** - The Maximum preset is experimental only and creates hundreds of colliders, which becomes a performance liability in game engines. Stick to High quality or below. For slower machines, use Medium as the highest.",
+      "**Post-Processing** - Combine, Remove, and Mirror colliders where needed using the built-in tools.",
+      "**Iterative Refinement & Scalability** - This workflow is highly efficient: only increase quality on specific problematic parts instead of reprocessing the entire model. This approach scales effectively for any object, from simple props to complex structures.",
+    ]
+
+  [[introduction.sections]]
+    type = "content"
+    title = "Post-Processing"
+    steps = [
+      "**Split with Plane, Circle, or Square** - Manually divide collision hulls for finer control.",
+      "**Hullify Children** - Convert child objects into individual collision hulls.",
+      "**Combine Colliders** - Merge multiple collision hulls into a single hull.",
+      "**Mirror Collision Objects** - Mirror collision hulls across an axis for symmetrical objects.",
+      "**Generate LODs** - Create Level of Detail collision meshes via the panel.",
+    ]
+    images = ["images/COACD_PP.mp4"]
+    images_captions = ["Post-processing tools demonstration"]
+    images_alignment = ["center"]
+    images_layout = "wide"  # Use wide/16:9 layout for full-width display
 
 # Support / Community
 [support]
