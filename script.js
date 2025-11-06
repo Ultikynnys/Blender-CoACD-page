@@ -609,6 +609,30 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
+// Global preset keywords and blacklist (populated from config)
+let globalPresetKeywords = {};
+let globalPresetBlacklist = [];
+
+// Convert HSL to hex (S=85%, L=55% for vibrant colors)
+function hslToHex(h, s = 0.85, l = 0.55) {
+  const hueToRgb = (p, q, t) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+  };
+  
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const r = Math.round(hueToRgb(p, q, h + 1/3) * 255);
+  const g = Math.round(hueToRgb(p, q, h) * 255);
+  const b = Math.round(hueToRgb(p, q, h - 1/3) * 255);
+  
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
 function mdInlineToHtmlBoldOnly(s) {
   // First, extract and protect markdown links from escaping
   const linkPlaceholders = [];
@@ -624,8 +648,53 @@ function mdInlineToHtmlBoldOnly(s) {
   // Now escape HTML
   const escaped = escapeHtml(text);
   
-  // Convert **text** to <strong>text</strong>
-  let result = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Colorize preset quality keywords BEFORE converting bold markdown
+  // This way keywords work even inside **bold** text
+  let result = escaped;
+  if (globalPresetKeywords && Object.keys(globalPresetKeywords).length > 0) {
+    // Sort by keyword length (longest first) to prevent partial matches
+    const sortedKeywords = Object.entries(globalPresetKeywords).sort((a, b) => b[0].length - a[0].length);
+    
+    sortedKeywords.forEach(([keyword, color]) => {
+      // Use color directly (now hex values from config instead of hue)
+      // Match keywords with proper boundaries (not breaking multi-word keywords)
+      const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Match whole keyword when preceded/followed by non-letter chars (but allow spaces within keyword)
+      const regex = new RegExp(`(^|[^a-zA-Z])(${escapedKeyword})(?=[^a-zA-Z]|$)`, 'gi');
+      const beforeReplace = result;
+      result = result.replace(regex, (match, prefix, word, offset) => {
+        // Check if this match is part of a blacklisted pattern
+        const matchStart = offset + prefix.length;
+        const matchEnd = matchStart + word.length;
+        
+        // Get context around the match (a few chars before and after)
+        const contextStart = Math.max(0, matchStart - 20);
+        const contextEnd = Math.min(result.length, matchEnd + 20);
+        const context = result.substring(contextStart, contextEnd).toLowerCase();
+        
+        // Check if any blacklisted pattern appears in this context
+        const isBlacklisted = globalPresetBlacklist.some(pattern => {
+          const patternLower = pattern.toLowerCase();
+          return context.includes(patternLower) && patternLower.includes(word.toLowerCase());
+        });
+        
+        if (isBlacklisted) {
+          dbg(`Skipping blacklisted match: "${word}" in context`);
+          return match; // Don't colorize, return original
+        }
+        
+        return `${prefix}<span class="preset-keyword" style="color: ${color} !important; font-weight: 600;">${word}</span>`;
+      });
+      if (result !== beforeReplace) {
+        dbg(`Colorized keyword: "${keyword}" -> ${color}`);
+      }
+    });
+  } else {
+    dbg('No preset keywords loaded for coloring');
+  }
+  
+  // Convert **text** to <strong>text</strong> AFTER colorizing keywords
+  result = result.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   
   // Restore links as HTML <a> tags
   linkPlaceholders.forEach((link, index) => {
@@ -679,6 +748,12 @@ function mixHex(hex1, hex2, t) {
 function getLighterBrandColor(cfg) {
   const raw = cfg?.theme_colors;
   const colors = normalizeThemeColors(raw || {});
+  
+  // If strong_color is explicitly set, use it directly
+  if (raw?.strong_color) {
+    return raw.strong_color.trim();
+  }
+  
   const brand = (raw?.brand_primary || colors.brand_primary || '').trim();
   const rgb = hexToRgb(brand);
   if (!rgb) return '#666666';
@@ -1767,6 +1842,33 @@ function applyThemeColors(cfg) {
   } else {
     // No theme colors block
   }
+  
+  // Load preset keywords from config for colorizing quality preset names
+  if (cfg?.preset_keywords) {
+    // Strip quotes from keys (TOML parser may include them) and filter out non-keyword entries
+    globalPresetKeywords = {};
+    Object.entries(cfg.preset_keywords).forEach(([key, value]) => {
+      // Skip entries that don't look like color values
+      if (typeof value !== 'string' || !value.startsWith('#')) return;
+      // Remove surrounding quotes from key if present
+      const cleanKey = key.replace(/^["']|["']$/g, '');
+      globalPresetKeywords[cleanKey] = value;
+    });
+    dbg('applyThemeColors: loaded preset keywords', Object.keys(globalPresetKeywords));
+  } else {
+    globalPresetKeywords = {};
+  }
+  
+  // Load preset keywords blacklist
+  const blacklistPatterns = cfg?.preset_keywords?.blacklist?.patterns;
+  dbg('applyThemeColors: blacklist patterns in config?', blacklistPatterns);
+  if (blacklistPatterns && Array.isArray(blacklistPatterns)) {
+    globalPresetBlacklist = blacklistPatterns.map(s => String(s).toLowerCase());
+    dbg('applyThemeColors: loaded preset blacklist', globalPresetBlacklist);
+  } else {
+    globalPresetBlacklist = [];
+    dbg('applyThemeColors: no blacklist found');
+  }
 }
 
 async function applyFontConfiguration(cfg) {
@@ -1801,6 +1903,9 @@ async function applyFontConfiguration(cfg) {
 // Outline text styles removed (no runtime toggling)
 
 async function renderContent(cfg) {
+  // Store config globally for access by other functions
+  window.globalConfig = cfg;
+  
   // Apply theme colors and fonts first
   applyThemeColors(cfg);
   await applyFontConfiguration(cfg);
@@ -1974,11 +2079,37 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
 
     const ulp = document.createElement('ul');
     ulp.className = 'intro__params-list';
+    let currentLi = null;
+    let nestedUl = null;
+    
     parameters.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-      colorizeStrongIn(li, cfg);
-      ulp.appendChild(li);
+      const itemStr = String(item);
+      // Check if this is an indented sub-item (starts with spaces + bullet)
+      const isIndented = /^\s+[•·\-\*]/.test(itemStr);
+      
+      if (isIndented) {
+        // This is a sub-item
+        if (!nestedUl) {
+          // Create nested list if it doesn't exist
+          nestedUl = document.createElement('ul');
+          if (currentLi) {
+            currentLi.appendChild(nestedUl);
+          }
+        }
+        const li = document.createElement('li');
+        // Remove leading whitespace and bullet character
+        const cleanedItem = itemStr.replace(/^\s+[•·\-\*]\s*/, '');
+        li.innerHTML = mdInlineToHtmlBoldOnly(cleanedItem);
+        colorizeStrongIn(li, cfg);
+        nestedUl.appendChild(li);
+      } else {
+        // This is a top-level item
+        currentLi = document.createElement('li');
+        currentLi.innerHTML = mdInlineToHtmlBoldOnly(itemStr);
+        colorizeStrongIn(currentLi, cfg);
+        ulp.appendChild(currentLi);
+        nestedUl = null; // Reset nested list for next group
+      }
     });
     paramNodes.push(ulp);
   }
@@ -1996,11 +2127,37 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
   if (usageItems.length > 0) {
     const ul = document.createElement('ul');
     ul.className = 'intro__usage-list';
+    let currentLi = null;
+    let nestedUl = null;
+    
     usageItems.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-      colorizeStrongIn(li, cfg);
-      ul.appendChild(li);
+      const itemStr = String(item);
+      // Check if this is an indented sub-item (starts with spaces + bullet)
+      const isIndented = /^\s+[•·\-\*]/.test(itemStr);
+      
+      if (isIndented) {
+        // This is a sub-item
+        if (!nestedUl) {
+          // Create nested list if it doesn't exist
+          nestedUl = document.createElement('ul');
+          if (currentLi) {
+            currentLi.appendChild(nestedUl);
+          }
+        }
+        const li = document.createElement('li');
+        // Remove leading whitespace and bullet character
+        const cleanedItem = itemStr.replace(/^\s+[•·\-\*]\s*/, '');
+        li.innerHTML = mdInlineToHtmlBoldOnly(cleanedItem);
+        colorizeStrongIn(li, cfg);
+        nestedUl.appendChild(li);
+      } else {
+        // This is a top-level item
+        currentLi = document.createElement('li');
+        currentLi.innerHTML = mdInlineToHtmlBoldOnly(itemStr);
+        colorizeStrongIn(currentLi, cfg);
+        ul.appendChild(currentLi);
+        nestedUl = null; // Reset nested list for next group
+      }
     });
     usageNodes.push(ul);
   }
@@ -2083,25 +2240,59 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
     paramNodes.forEach(node => introContent.appendChild(node));
   }
 
-  // Build Workflow section
+  // Build Workflow section in its own container
   const workflowTitle = introConfig.workflow_title || '';
   const workflowItems = Array.isArray(introConfig.workflow_steps) ? introConfig.workflow_steps : [];
-  if (workflowTitle && workflowItems.length > 0) {
-    const h3 = document.createElement('h3');
-    h3.className = 'intro__usage-title';
-    h3.textContent = workflowTitle;
-    introContent.appendChild(h3);
-  }
-  if (workflowItems.length > 0) {
-    const ul = document.createElement('ul');
-    ul.className = 'intro__usage-list';
-    workflowItems.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = mdInlineToHtmlBoldOnly(String(item));
-      colorizeStrongIn(li, cfg);
-      ul.appendChild(li);
-    });
-    introContent.appendChild(ul);
+  if (workflowTitle || workflowItems.length > 0) {
+    const workflowContainer = document.createElement('div');
+    workflowContainer.className = 'intro__workflow-section';
+    
+    if (workflowTitle && workflowItems.length > 0) {
+      const h3 = document.createElement('h3');
+      h3.className = 'intro__usage-title';
+      h3.textContent = workflowTitle;
+      workflowContainer.appendChild(h3);
+    }
+    
+    if (workflowItems.length > 0) {
+      const ul = document.createElement('ul');
+      ul.className = 'intro__usage-list';
+      let currentLi = null;
+      let nestedUl = null;
+      
+      workflowItems.forEach(item => {
+        const itemStr = String(item);
+        // Check if this is an indented sub-item (starts with spaces + bullet)
+        const isIndented = /^\s+[•·\-\*]/.test(itemStr);
+        
+        if (isIndented) {
+          // This is a sub-item
+          if (!nestedUl) {
+            // Create nested list if it doesn't exist
+            nestedUl = document.createElement('ul');
+            if (currentLi) {
+              currentLi.appendChild(nestedUl);
+            }
+          }
+          const li = document.createElement('li');
+          // Remove leading whitespace and bullet character
+          const cleanedItem = itemStr.replace(/^\s+[•·\-\*]\s*/, '');
+          li.innerHTML = mdInlineToHtmlBoldOnly(cleanedItem);
+          colorizeStrongIn(li, cfg);
+          nestedUl.appendChild(li);
+        } else {
+          // This is a top-level item
+          currentLi = document.createElement('li');
+          currentLi.innerHTML = mdInlineToHtmlBoldOnly(itemStr);
+          colorizeStrongIn(currentLi, cfg);
+          ul.appendChild(currentLi);
+          nestedUl = null; // Reset nested list for next group
+        }
+      });
+      workflowContainer.appendChild(ul);
+    }
+    
+    introContent.appendChild(workflowContainer);
   }
 
   // Quick Start section

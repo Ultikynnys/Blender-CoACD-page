@@ -64,8 +64,8 @@ body {
   letter-spacing: var(--letter-spacing-normal);
 }
 
-/* Unified text color override (exclude links and strong to allow theme colors) */
-*:not(a):not(strong), .card, .card *:not(a):not(strong), p, span, div, .content-container, .content-container *:not(a):not(strong) {
+/* Unified text color override (exclude links, strong, and preset keywords to allow theme colors) */
+*:not(a):not(strong):not(.preset-keyword), .card, .card *:not(a):not(strong):not(.preset-keyword), p, span:not(.preset-keyword), div, .content-container, .content-container *:not(a):not(strong):not(.preset-keyword) {
   color: var(--text-white) !important;
 }
 
@@ -340,7 +340,34 @@ a.themed-link:hover, a.themed-link:focus-visible {
 .intro__usage-list li { margin: 0 0 0.4rem 0; }
 .intro__params-list li:last-child,
 .intro__usage-list li:last-child { margin-bottom: 0; }
+
+/* Nested lists within params and usage sections */
+.intro__params-list ul,
+.intro__usage-list ul {
+  margin: 0.3rem 0 0 0;
+  padding-left: 1.2rem;
+  list-style-type: circle;
+}
+.intro__params-list ul li,
+.intro__usage-list ul li {
+  margin: 0.2rem 0;
+  font-size: 0.93em;
+}
+
+/* Workflow section - separate container for visual separation */
+.intro__workflow-section {
+  margin-top: 1.5rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
   
+/* Preset keywords - prevent line breaks within multi-word keywords and preserve inline colors */
+.preset-keyword {
+  white-space: nowrap !important;
+}
+
 /* Colored strong (assigned via JS) */
 .themed-strong { color: var(--strong-color) !important; }
 
