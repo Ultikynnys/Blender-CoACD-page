@@ -19,7 +19,6 @@
   Low = "#fcbf49"                # Yellow
   Medium = "#06d6a0"             # Cyan
   High = "#118ab2"               # Blue
-  Maximum = "#e056fd"            # Magenta
 
 # Blacklist patterns - keywords won't be colored if they appear in these contexts
 [preset_keywords.blacklist]
@@ -74,10 +73,10 @@ fonts_config = "content/fonts.toml"
   usage_title = "Usage"
   usage_steps = [
     "**Select** one or more mesh objects.",
-    "**Pick a Quality Preset** (Single Convex/Minimal/Low/Medium/High/Maximum) or adjust parameters.",
+    "**Pick a Quality Preset** (Single Convex/Minimal/Low/Medium/High) or adjust parameters.",
     "**Click Generate Collision**.",
     "**Post-Processing Tools** - Access via pie menu (Shift+Q) or the panel:",
-    "  • Split with Plane, Circle, or Square",
+    "  • Split with Plane",
     "  • Hullify Children (convert child objects to colliders)",
     "  • Combine Colliders",
     "  • Mirror Collision Objects",
@@ -101,7 +100,7 @@ fonts_config = "content/fonts.toml"
 
   # Video showcase in introduction
   video_title = "Video Showcase"
-  video_url = "https://www.youtube.com/embed/ZpX_PMRmCxQ"
+  video_url = "https://www.youtube.com/embed/1kxVIj7n86E"
 
   # Generic sections - flexible system for any content type
   # Each section is rendered as a standalone section with its own title
@@ -125,6 +124,22 @@ fonts_config = "content/fonts.toml"
 
   [[introduction.sections]]
     type = "content"
+    title = "Examples"
+    images = [
+      "images/COACDExamples/Buildingex1.mp4",
+      "images/COACDExamples/Carex1.mp4",
+      "images/COACDExamples/Spaceex1.mp4"
+    ]
+    images_captions = [
+      "Building collision example",
+      "Car collision example",
+      "Spaceship collision example"
+    ]
+    images_alignment = ["center", "center", "center"]
+    images_layout = "wide"
+
+  [[introduction.sections]]
+    type = "content"
     title = "Recommended Workflow"
     steps = [
       "**Mesh Quality** - Clean meshes result in clean collision. Use manifold meshes when possible for optimal results.",
@@ -140,7 +155,7 @@ fonts_config = "content/fonts.toml"
     type = "content"
     title = "Post-Processing"
     steps = [
-      "**Split with Plane, Circle, or Square** - Manually divide collision hulls for finer control.",
+      "**Split with Plane** - Manually divide collision hulls for finer control.",
       "**Hullify Children** - Convert child objects into individual collision hulls.",
       "**Combine Colliders** - Merge multiple collision hulls into a single hull.",
       "**Mirror Collision Objects** - Mirror collision hulls across an axis for symmetrical objects.",
