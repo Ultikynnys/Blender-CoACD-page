@@ -130,8 +130,8 @@ fonts_config = "content/fonts.toml"
       "**Mesh Quality** - Clean meshes result in clean collision. Use manifold meshes when possible for optimal results.",
       "**For Simple Meshes** - Start with the lowest quality preset and gradually increase quality until the collision accuracy meets your needs.",
       "**For Complex Meshes** - If collision results are unsatisfactory, split the mesh into separate objects rather than increasing quality. Generate colliders for each piece individually with appropriate quality settings per piece.",
-      "**When to Split the Mesh** - If High quality doesn't produce satisfactory results, don't use Maximum - instead, split the mesh. This gives you better control and avoids performance issues from too many colliders.",
-      "**Quality Preset Guidelines** - The Maximum preset is experimental only and creates hundreds of colliders, which becomes a performance liability in game engines. Stick to High quality or below. For slower machines, use Medium as the highest.",
+      "**When to Split the Mesh** - If High quality doesn't produce satisfactory results, split the mesh into separate parts. This gives you better control over the collision generation.",
+      "**Quality Preset Guidelines** - Start with lower presets and increase as needed. For slower machines, Medium quality is a good balance.",
       "**Post-Processing** - Combine, Remove, and Mirror colliders where needed using the built-in tools.",
       "**Iterative Refinement & Scalability** - This workflow is highly efficient: only increase quality on specific problematic parts instead of reprocessing the entire model. This approach scales effectively for any object, from simple props to complex structures.",
     ]
