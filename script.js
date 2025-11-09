@@ -461,17 +461,8 @@ function initImageZoom() {
         zoomedImg.alt = newImg.alt;
         zoomOverlay.dataset.currentIndex = newIndex;
         
-        // Update caption
-        const captionText = newImg.dataset.zoomCaption || newImg.alt || '';
-        if (captionText) {
-          captionOverlay.innerHTML = mdInlineToHtmlBoldOnly(String(captionText));
-          if (window.globalConfig) {
-            colorizeStrongIn(captionOverlay, window.globalConfig);
-          }
-          captionOverlay.style.display = 'block';
-        } else {
-          captionOverlay.style.display = 'none';
-        }
+        // Keep caption hidden during navigation (DRY - no captions in focus mode)
+        captionOverlay.style.display = 'none';
         
         // Also update the carousel position
         const bsCarousel = bootstrap.Carousel.getInstance(carousel);
