@@ -1,7 +1,7 @@
 # Site settings (UltiStamp)
 [site]
   title = "UltiStamp"
-  banner = "images/UltiStamp/UltiStamp.webp"
+  banner = "images/UltiStampBanner.png"
   research_link_enabled = false
   # Background pattern (black/white mask with color mapping)
   background_image = "images/Pattern.svg"
