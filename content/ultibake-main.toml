@@ -2,9 +2,6 @@
 [site]
   title = "Ultibake"
   banner = "images/UltibakeBanner.png"
-  research_link_text = "API Documentation"
-  research_link_url = "https://ultikynnys.github.io/UltiBake/documentation"
-  research_link_enabled = false
   # Background pattern (black/white mask with color mapping)
   background_image = "images/Pattern.svg"
   background_size = "auto"
