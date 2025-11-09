@@ -400,7 +400,7 @@ function initImageZoom() {
       }
       
       zoomOverlay.style.display = 'none';
-      zoomedImg.style.transform = 'scale(1)';
+      if (zoomOverlay.resetZoomState) zoomOverlay.resetZoomState();
       delete zoomOverlay.dataset.carouselId;
       delete zoomOverlay.dataset.currentIndex;
     });
@@ -410,7 +410,7 @@ function initImageZoom() {
       if (zoomOverlay.style.display === 'flex') {
         if (e.key === 'Escape') {
           zoomOverlay.style.display = 'none';
-          zoomedImg.style.transform = 'scale(1)';
+          if (zoomOverlay.resetZoomState) zoomOverlay.resetZoomState();
           delete zoomOverlay.dataset.carouselId;
           delete zoomOverlay.dataset.currentIndex;
         } else if (e.key === 'ArrowLeft') {
@@ -477,6 +477,18 @@ function initImageZoom() {
     
     // Track current zoom level
     let currentZoom = 1;
+    
+    // Reset function to clear zoom and pan state
+    const resetZoomState = () => {
+      currentZoom = 1;
+      zoomedImg.style.transform = 'scale(1)';
+      zoomedImg.style.transformOrigin = 'center center';
+      zoomedVideo.style.transform = 'scale(1)';
+      zoomedVideo.style.transformOrigin = 'center center';
+    };
+    
+    // Store reset function on overlay for easy access
+    zoomOverlay.resetZoomState = resetZoomState;
     
     // Zoom on mouse position - listen on overlay to capture all movement
     zoomOverlay.addEventListener('mousemove', (e) => {
