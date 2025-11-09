@@ -493,8 +493,18 @@ function initImageZoom() {
         // Get the currently visible media element (img or video)
         const activeMedia = zoomedVideo.style.display === 'block' ? zoomedVideo : zoomedImg;
         const rect = activeMedia.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        // Calculate position relative to center (0 to 100%)
+        const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+        const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        // Apply sensitivity multiplier to amplify movement from center
+        const sensitivity = 1.5; // Increase this for more panning distance
+        const centerX = 50;
+        const centerY = 50;
+        const x = centerX + (xPercent - centerX) * sensitivity;
+        const y = centerY + (yPercent - centerY) * sensitivity;
+        
         activeMedia.style.transformOrigin = `${x}% ${y}%`;
         activeMedia.style.transform = `scale(${currentZoom})`;
       }
