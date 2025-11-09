@@ -647,34 +647,63 @@ function makeImageZoomable(element, caption = '') {
     overlay.style.display = 'flex';
     
     // Position the image at the click Y position, centered horizontally
-    requestAnimationFrame(() => {
+    const positionMedia = () => {
       const clickY = parseFloat(overlay.dataset.clickY) || window.innerHeight / 2;
       
-      // Calculate position to center image at click Y, centered X
-      const imgRect = zoomedImg.getBoundingClientRect();
-      const left = (window.innerWidth - imgRect.width) / 2;
-      const top = clickY - (imgRect.height / 2);
+      // Get the currently visible media element
+      const activeMedia = isVideo ? zoomedVideo : zoomedImg;
       
-      zoomedImg.style.position = 'absolute';
-      zoomedImg.style.left = `${left}px`;
-      zoomedImg.style.top = `${top}px`;
-      
-      // Position caption and arrows relative to the image
-      const leftArrow = overlay.querySelector('#zoom-nav-left');
-      const rightArrow = overlay.querySelector('#zoom-nav-right');
-      
-      if (leftArrow) {
-        leftArrow.style.top = `${top}px`;
-        leftArrow.style.height = `${imgRect.height}px`;
+      // Wait for next frame to ensure media is rendered
+      requestAnimationFrame(() => {
+        const imgRect = activeMedia.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+        
+        // Calculate position to center image at click Y, centered X
+        const left = (viewportWidth - imgRect.width) / 2;
+        let top = clickY - (imgRect.height / 2);
+        
+        // Clamp top position to keep image within viewport
+        const minTop = 10; // 10px margin from top
+        const maxTop = viewportHeight - imgRect.height - 10; // 10px margin from bottom
+        top = Math.max(minTop, Math.min(top, maxTop));
+        
+        activeMedia.style.position = 'absolute';
+        activeMedia.style.left = `${left}px`;
+        activeMedia.style.top = `${top}px`;
+        
+        // Position caption and arrows relative to the image
+        const leftArrow = overlay.querySelector('#zoom-nav-left');
+        const rightArrow = overlay.querySelector('#zoom-nav-right');
+        
+        if (leftArrow) {
+          leftArrow.style.top = `${top}px`;
+          leftArrow.style.height = `${imgRect.height}px`;
+        }
+        if (rightArrow) {
+          rightArrow.style.top = `${top}px`;
+          rightArrow.style.height = `${imgRect.height}px`;
+        }
+        if (captionEl && captionEl.style.display !== 'none') {
+          captionEl.style.top = `${top + imgRect.height - 60}px`;
+        }
+      });
+    };
+    
+    // Wait for media to load before positioning
+    if (isVideo) {
+      zoomedVideo.addEventListener('loadedmetadata', positionMedia, { once: true });
+      // Fallback in case video is already loaded
+      if (zoomedVideo.readyState >= 1) {
+        positionMedia();
       }
-      if (rightArrow) {
-        rightArrow.style.top = `${top}px`;
-        rightArrow.style.height = `${imgRect.height}px`;
+    } else {
+      if (zoomedImg.complete) {
+        positionMedia();
+      } else {
+        zoomedImg.addEventListener('load', positionMedia, { once: true });
       }
-      if (captionEl && captionEl.style.display !== 'none') {
-        captionEl.style.top = `${top + imgRect.height - 60}px`;
-      }
-    });
+    }
   });
 }
 
@@ -981,38 +1010,57 @@ function initBeforeAfterSliders() {
         overlay.style.display = 'flex';
         
         // Position the image at the click Y position, centered horizontally
-        requestAnimationFrame(() => {
+        const positionImage = () => {
           const clickY = parseFloat(overlay.dataset.clickY) || window.innerHeight / 2;
           
-          // Calculate position to center image at click Y, centered X
-          const imgRect = zoomedImg.getBoundingClientRect();
-          const left = (window.innerWidth - imgRect.width) / 2;
-          const top = clickY - (imgRect.height / 2);
-          
-          zoomedImg.style.position = 'absolute';
-          zoomedImg.style.left = `${left}px`;
-          zoomedImg.style.top = `${top}px`;
-          
-          // Position caption and arrows relative to the image
-          const leftArrow = overlay.querySelector('#zoom-nav-left');
-          const rightArrow = overlay.querySelector('#zoom-nav-right');
-          
-          if (leftArrow) {
-            leftArrow.style.top = `${top}px`;
-            leftArrow.style.height = `${imgRect.height}px`;
-          }
-          if (rightArrow) {
-            rightArrow.style.top = `${top}px`;
-            rightArrow.style.height = `${imgRect.height}px`;
-          }
-          if (captionEl && captionEl.style.display !== 'none') {
-            captionEl.style.top = `${top + imgRect.height - 60}px`;
-          }
-        });
-      }, true); // Use capture phase to ensure we get the event first
+          // Wait for next frame to ensure image is rendered
+          requestAnimationFrame(() => {
+            const imgRect = zoomedImg.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            const viewportWidth = window.innerWidth;
+            
+            // Calculate position to center image at click Y, centered X
+            const left = (viewportWidth - imgRect.width) / 2;
+            let top = clickY - (imgRect.height / 2);
+            
+            // Clamp top position to keep image within viewport
+            const minTop = 10; // 10px margin from top
+            const maxTop = viewportHeight - imgRect.height - 10; // 10px margin from bottom
+            top = Math.max(minTop, Math.min(top, maxTop));
+            
+            zoomedImg.style.position = 'absolute';
+            zoomedImg.style.left = `${left}px`;
+            zoomedImg.style.top = `${top}px`;
+            
+            // Position caption and arrows relative to the image
+            const leftArrow = overlay.querySelector('#zoom-nav-left');
+            const rightArrow = overlay.querySelector('#zoom-nav-right');
+            
+            if (leftArrow) {
+              leftArrow.style.top = `${top}px`;
+              leftArrow.style.height = `${imgRect.height}px`;
+            }
+            if (rightArrow) {
+              rightArrow.style.top = `${top}px`;
+              rightArrow.style.height = `${imgRect.height}px`;
+            }
+            if (captionEl && captionEl.style.display !== 'none') {
+              captionEl.style.top = `${top + imgRect.height - 60}px`;
+            }
+          });
+        };
+        
+        // Wait for image to load before positioning
+        if (zoomedImg.complete) {
+          positionImage();
+        } else {
+          zoomedImg.addEventListener('load', positionImage, { once: true });
+        }
+      });
     });
   }
   
+  // Initialize all sliders on the page
   document.querySelectorAll('.ba-slider').forEach(initSlider);
 }
 
