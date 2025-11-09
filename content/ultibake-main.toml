@@ -1,7 +1,7 @@
 # Site settings (UltiBake)
 [site]
   title = "Ultibake"
-  banner = "images/UltibakeBanner.webp"
+  banner = "images/UltibakeBanner.png"
   research_link_text = "API Documentation"
   research_link_url = "https://ultikynnys.github.io/UltiBake/documentation"
   research_link_enabled = false
@@ -25,13 +25,6 @@
 fonts_config = "content/fonts.toml"
 
 
-# Open Graph / SEO
-[meta]
-  og_type = "website"
-  og_url = "https://ultikynnys.github.io/UltiBake"
-  og_title = "UltiBake"
-  og_description = "An all-in-one baking solution for Blender, which aims to streamline the baking process, while providing a wide range of features."
-  og_image = "images/Banner.webp"
 
 # Section titles
 [titles]
