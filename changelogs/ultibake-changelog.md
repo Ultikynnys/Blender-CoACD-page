@@ -466,3 +466,19 @@
 >## 1.9.97 - Addition 01/10/2025
     * Added Bake Set UV selection
     * Finalize with Ctrl + Left Click now works with shared Texture Name Bake Sets
+
+
+>## 2.0.21 - Version Increment 09/11/2025
+    * Bake Units are deprecated (Now part of Bake sets)
+    * Bake Types limited to 4 per Texture
+    * Bit depth control for baked images
+    * Better decal baking
+    * Parallel Baking!! (much faster)
+    * More BSDF bake types
+    * Cage/Extrusion visualiser added
+    * UV overlap visualizer added
+    * UV sync tool added (ensures all objects have the same UV layout and selection)
+    * Resolution is part of Bake Set parameters now
+    * Collection baking is deprecated now (Its no longer needed since its automatic now)
+    * UDIMS deprecated (This workflow isn't required anymore due to the multi texture workflow)
+    * Automatic high, low, cage relationship system added
