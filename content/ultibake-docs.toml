@@ -42,7 +42,7 @@
     parameters = [
       "**Bake Sets** - The primary container for organizing your work. A Bake Set groups multiple Bake Units and instructs them to be combined into a single, unified texture set",
       "**Bake Units** - Defines the 'what' of your bake. Each Bake Unit specifies the individual objects to be processed in a baking operation",
-      "**Profiles** - Defines the 'how' of your bake. Profiles are powerful presets that control all output settings, including texture resolution, file formats, UDIMs, and more",
+      "**Profiles** - Defines the 'how' of your bake. Profiles are powerful presets that control all output settings, including texture resolution, file formats, and more",
       "**Unified Workflow** - Replaces the traditional Blender process with a single, centralized panel where all baking operations are managed, simplifying your entire workflow"
     ]
     profiles_title = "Profiles"
@@ -302,7 +302,7 @@
       "**Step 5:** Ready to bake!",
       "**Step 6:** Once the bake is finished, use **Finalize** to create a copy of your mesh with a generated material that uses the baked textures. Perfect for exporting and previewing results. **Ctrl + Left Click** on Finalize will finalize all Bake Sets that share the same texture name",
       "**Step 7:** This prop has 3 parts: the gate frame and its doors. To bake all parts into the same texture, assign 1 Bake Unit per object. Ensure the combined UVmaps don't overlap by checking in the UV Editor with the correct UVmap selected (highlighted in blue). This isn't a problem if your object has only a single UVmap",
-      "**Step 8:** The top left corner shows the current UVmap for the **Active object**. Check each object to ensure they all have the correct UV selected (UVMap in this case). Verify there's no overlap with UV islands and they fit within the first UV tile. Ultibake Handles UDIMS automatically. You can configure the resolution scaling in the profile per UDIM. For UDIM baking, follow standard UDIM tiling from 1001 to 1100 in the X+ and Y+ directions",
+      "**Step 8:** The top left corner shows the current UVmap for the **Active object**. Check each object to ensure they all have the correct UV selected (UVMap in this case). Verify there's no overlap with UV islands and they fit within the UV tile bounds",
       "**Step 9:** After baking and finalizing, multiple objects are created instead of one. Finalize keeps track of your exportables and automatically creates the right number of objects for export. Hassle-free!",
       "**Step 10:** Notice a difference? This is expected since our original gate uses emission color. Simply switch to the second profile which has Emission already configured, then bake again",
       "**Step 11:** Here's the exported result - looks nice, but it's missing something. We've added **Decals** to our gate. This is what other bake tools cannot do - it's the unique selling point of UltiBake",

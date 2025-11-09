@@ -37,7 +37,8 @@ fonts_config = "content/fonts.toml"
   title = ""
   paragraphs = [
     "**UltiBake** is a complete replacement for Blender's baking workflow, developed specifically for **game development**. Battle-tested with various asset packs and users, it handles even the most complicated scenes with ease.",
-    "Built for **Unreal Engine**, **Unity**, and industry-standard pipelines, UltiBake streamlines the entire baking process. **Multiple materials per model** and **automatic UV map selection** - no more manual setup. The addon handles all the unintuitive Blender stuff, allowing you to **focus on assets**."
+    "Built for **Unreal Engine**, **Unity**, and industry-standard pipelines, UltiBake streamlines the entire baking process. **Multiple materials per model** and **automatic UV map selection** - no more manual setup. The addon handles all the unintuitive Blender stuff, allowing you to **focus on assets**.",
+    "Perfect for **baking multiple assets at once** - something even Substance Painter or Marmoset can't handle efficiently. Batch process entire asset collections with a single click."
   ]
 
   # Features section
@@ -52,8 +53,8 @@ fonts_config = "content/fonts.toml"
     "**Multi High to Low Baking** - Transfer surface details from high-poly to low-poly meshes. You can bake as many high-to-low combinations as you wish with one click!",
     "**Profiles** - Create your own bake setup profile. You can also save/load to external files for other projects.",
     "**Bake Post Processing** - Apply antialiasing, denoising, sharpening and more.",
-    "**UDIM Baking** - Visualize your UDIM resolution before baking. UDIMs are automatically detected from UVs.",
-    "**Multi Texture Channel Packed Baking** - Bake multiple textures with a single click while having Full Control over texture channels with 23 unique bake types."
+    "**Visualizers** - UV and Cage/Extrusion visualizers allow you to see information you would normally have to guess, like overlapping UVs and baking ray distances.",
+    "**Multi Texture Channel Packed Baking** - Bake multiple textures with a single click while having Full Control over texture channels with 35 unique bake types."
   ]
 
   # Multiple usage images with carousel (simple array format for now)
