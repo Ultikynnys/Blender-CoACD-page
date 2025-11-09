@@ -1004,18 +1004,8 @@ function initBeforeAfterSliders() {
         overlay.dataset.clickX = e.clientX;
         overlay.dataset.clickY = e.clientY;
         
-        // Get caption from the slider's caption element
-        const sliderCaption = slider.closest('.card')?.querySelector('.intro__usage-caption');
-        if (sliderCaption && sliderCaption.textContent) {
-          captionEl.innerHTML = sliderCaption.innerHTML;
-          // Apply colorization to match site theme
-          if (window.globalConfig) {
-            colorizeStrongIn(captionEl, window.globalConfig);
-          }
-          captionEl.style.display = 'block';
-        } else {
-          captionEl.style.display = 'none';
-        }
+        // Hide caption in focus view (consistent with carousel images)
+        captionEl.style.display = 'none';
         
         overlay.style.display = 'flex';
         
