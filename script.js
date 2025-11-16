@@ -3306,7 +3306,7 @@ function renderDocumentationPage(pageId) {
 async function initDocumentation(cfg) {
   globalConfig = cfg;
   const docUrl = cfg?.documentation?.toml_url || cfg?.documentation?.source_toml;
-  const docsEnabled = (cfg?.documentation && cfg.documentation.enabled !== false) || Boolean(docUrl);
+  const docsEnabled = cfg?.documentation?.enabled === true || (cfg?.documentation && cfg.documentation.enabled !== false && Boolean(docUrl));
   if (!docsEnabled) return;
 
   // Load external documentation TOML if provided

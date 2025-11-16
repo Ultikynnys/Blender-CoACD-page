@@ -149,7 +149,7 @@ fonts_config = "content/fonts.toml"
 
 # Documentation configuration
 [documentation]
-  enabled = true
+  enabled = false
   default_view = "showcase"  # "showcase" or "documentation"
   toggle_text_showcase = "View Documentation"
   toggle_text_documentation = "View Product Showcase"
