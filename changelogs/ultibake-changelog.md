@@ -482,3 +482,10 @@
     * Collection baking is deprecated now (Its no longer needed since its automatic now)
     * UDIMS deprecated (This workflow isn't required anymore due to the multi texture workflow)
     * Automatic high, low, cage relationship system added
+
+>## 2.0.41 - Stability Update 16/11/2025
+    * Various critical bug fixes in edge cases
+    * Decal Stencil tools added
+    * Improved UV tools
+    * Faster decal baking
+    
