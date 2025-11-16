@@ -71,22 +71,22 @@ fonts_config = "content/fonts.toml"
   # Multiple usage images with carousel (simple array format for now)
   usage_images_layout = "vertical"  # "vertical" (9:16) or "wide" (16:9)
   usage_images = [
-    "images/Ultibake/Ultibake_Bake1.webp",
-    "images/Ultibake/Ultibake_Bake2.webp",
-    "images/Ultibake/Ultibake_Settings1.webp",
-    "images/Ultibake/Ultibake_Settings2.webp",
-    "images/Ultibake/Ultibake_Settings3.webp",
-    "images/Ultibake/Ultibake_Settings_4.webp"
+    "images/Ultibake/UltibakeSettingsnew/MainPanel.png",
+    "images/Ultibake/UltibakeSettingsnew/DecalToolsPanel.png",
+    "images/Ultibake/UltibakeSettingsnew/UVToolsPanel.png",
+    "images/Ultibake/UltibakeSettingsnew/SettingsPanel.png",
+    "images/Ultibake/UltibakeSettingsnew/ProfilesPanel.png",
+    "images/Ultibake/UltibakeSettingsnew/UpdatesPanel.png"
   ]
   
   # Captions for the images (in order)
   usage_images_captions = [
-   "Panel location: 3D Viewport > N > Ultibake",
-    "Ability to Bake Collections, High to Low, Decals and more!",
-    "Settings for advanced configuration",
-    "Texture suffixes are generated based on your settings",
-    "Configure your baking setup to match your exact specifications with reusable profiles",
-    "Comes with over 10 presets, for fast usage"
+    "Panel location: 3D Viewport > N > Ultibake",
+    "Decal Tools - Various toosl to help you use Decal Baking",
+    "UV Tools - Manage UV maps with built-in tools",
+    "Settings - Configure your global parameters",
+    "Profiles - Create and manage reusable baking profiles",
+    "Updates - Stay up to date with the latest features and improvements"
   ]
   
   # Alignment for the images (in order) - options: "top-left", "top-right", "center"
