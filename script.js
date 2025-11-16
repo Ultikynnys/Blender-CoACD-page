@@ -132,8 +132,9 @@ function createMediaCarousel(items, cfg, options = {}) {
   if (className) {
     className.split(/\s+/).filter(Boolean).forEach(cls => wrapper.classList.add(cls));
   }
-  // Add navigation arrows HTML for carousels with multiple items
-  const navArrowsHtml = items.length > 1 ? `
+  // Add navigation arrows only for non-video carousels with multiple items
+  // Videos use only center indicators to avoid interfering with YouTube controls
+  const navArrowsHtml = (items.length > 1 && type !== 'video') ? `
     <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
@@ -2646,28 +2647,29 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
   const includeVideo = options.includeVideo !== false;
   if (includeVideo) {
     const videoTitle = introConfig.video_title || '';
-    const videoUrl = introConfig.video_url || '';
-    if (videoUrl) {
+    
+    // Parse videos using generic parser (supports both single video_url and videos array)
+    const videos = parseMediaItems(introConfig, {
+      itemsKey: 'videos',
+      urlsKey: 'video_urls', 
+      urlKey: 'video_url',
+      captionsKey: 'video_captions'
+    });
+    
+    if (videos.length > 0) {
       const videoSection = document.createElement('div');
       videoSection.className = 'intro__video';
+      
       if (videoTitle) {
         const h3 = document.createElement('h3');
         h3.className = 'intro__usage-title';
         h3.textContent = videoTitle;
         videoSection.appendChild(h3);
       }
-      const videoContainer = document.createElement('div');
-      videoContainer.className = 'video-embed';
-      const videoFrame = document.createElement('div');
-      videoFrame.className = 'video-frame interactive-border';
-      const iframe = document.createElement('iframe');
-      iframe.src = videoUrl;
-      iframe.title = videoTitle || 'Video showcase';
-      iframe.allowFullscreen = true;
-      iframe.loading = 'lazy';
-      videoFrame.appendChild(iframe);
-      videoContainer.appendChild(videoFrame);
-      videoSection.appendChild(videoContainer);
+      
+      // Use unified carousel for both single and multiple videos (DRY)
+      const carousel = createVideoCarousel(videos, cfg, 'video-carousel');
+      videoSection.appendChild(carousel);
       introContent.appendChild(videoSection);
     }
   }

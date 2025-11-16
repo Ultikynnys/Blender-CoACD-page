@@ -87,8 +87,10 @@ fonts_config = "content/fonts.toml"
 
   # Video showcase in introduction
   video_title = "Video Showcase"
-  video_url = "https://www.youtube.com/embed/_gE_KFakj5Q"
-
+  videos = [
+    { title = "Baking Basics", url = "https://www.youtube.com/embed/ml9_cHWFPtg" },
+    { title = "Decal Baking", url = "https://www.youtube.com/embed/o7HeKuUa624" }
+  ]
   # Generic sections
   [[introduction.sections]]
     type = "comparisons"
