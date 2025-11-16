@@ -14,9 +14,22 @@
 # Theme colors (Crimson theme)
 [theme_colors]
   brand_primary = "#DC143C"     # Crimson - shades auto-derived
+  strong_color = "#FF6B8A"      # Color for bolded text
   bg_dark = "#1A0A0A"           # Very dark crimson
   text_white = "#FFFFFF"
   # hyperlink_color optional; falls back to brand_primary when omitted
+
+# Preset keyword colors (maps important terms to hex colors)
+[preset_keywords]
+  "Unreal Engine" = "strong"
+  "Unity" = "strong"
+  "Blender" = "strong"
+  "GLTF" = "strong"
+  "UV" = "strong"
+  "Decal" = "strong"
+  "Bake Sets" = "strong"
+  "Finalize" = "strong"
+  "Profile" = "strong"
 
 # Font configuration (references shared font config)
 fonts_config = "content/fonts.toml"
@@ -43,6 +56,7 @@ fonts_config = "content/fonts.toml"
   parameters = [
     "**Modular Design Pattern** - Stores bakes in hierarchical reusable containers called Bake Sets for organized workflows.",
     "**Finalize** - Instantly creates export-ready objects with automatic texture material creation. Makes exporting to other pipelines a breeze.",
+    "**GLTF Exporter** - Instantly export baked textures/materials and objects into a glb file.",
     "**Automatic Texture Name Generation** - Texture names are automatically generated based on texture contents, saving you time.",
     "**Advanced Material Support** - As long as your material uses the Principled BSDF node, even the most complicated materials can be baked into textures.",
     "**Collection Baking** - Bake entire collections into a single texture as long as UVs aren't overlapping.",
@@ -102,40 +116,7 @@ fonts_config = "content/fonts.toml"
       after  = "images/Ultibake/BasicUsage/UltibakePost.webp"
       caption = "Transform **complex scene setups** into a **unified texture set**. Handles **advanced materials**, **multi-object workflows**, **decals**, and more with ease."
       handle_shape = "circle"
-    
-    [[introduction.sections.items]]
-      images = [
-        "images/Ultibake/BasicUsage/ProfileShowcase.webp",
-        "images/Ultibake/BasicUsage/EasyChannelPack.webp",
-        "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.webp",
-        "images/Ultibake/BasicUsage/AutomaticSuffixGen.webp",
-        "images/Ultibake/BasicUsage/SuffixGenNaming.webp",
-        "images/Ultibake/BasicUsage/BakeVisualization.webp",
-        "images/Ultibake/BasicUsage/BakeSetGenerator.webp",
-        "images/Ultibake/BasicUsage/MultiBakeSet5.webp"
-      ]
-      images_captions = [
-        "**Modular Profile System** - Define your baking workflow just like in **Substance Painter**",
-        "**Easy Channel Packing** - Intuitive interface for packing multiple textures into RGBA channels",
-        "**23 Bake Types** - Mix of **BSDF inputs** and **custom types** for industry-standard workflows",
-        "**Automatic Suffix Generation** - Texture names are automatically generated based on your settings",
-        "**Manual Suffix Definition** - Manually define texture suffixes based on bake type to fit your project",
-        "**Bake Visualization** - Visualize the bake before you start it to ensure everything is set up correctly",
-        "**Bake Set Generator** - Automatically generate Bake Sets based on object names in a collection",
-        "**Finalize** - Instantly creates export-ready objects based on your baked textures after baking"
-      ]
-      images_alt = [
-        "UltiBake Profile System",
-        "Channel Packing Interface",
-        "Available Bake Types",
-        "Automatic Suffix Generation",
-        "Manual Suffix Definition",
-        "Bake Visualization",
-        "Bake Set Generator",
-        "Finalize Feature"
-      ]
-      caption = "**Profile System Features** - Save, load, and reuse your setups across projects"
-
+  
 
 # Support / Community
 [support]
