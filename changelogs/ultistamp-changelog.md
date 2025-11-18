@@ -20,3 +20,7 @@
 >## 1.0.36 - Feature Update 13/10/2025
     * Added radial UV projection
     * Default projection mode now uses simple cube projection for better results
+
+>## 1.0.43 - Hotfix 18/11/2025
+    * Fixed stamp assignment issues with certain language unicode characters
+    
