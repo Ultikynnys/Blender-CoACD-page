@@ -12,3 +12,9 @@
     * Plane and Circle splitters are deprecated (just use blender booleans)
     * PCA mode no longer results in translationally offsetted colliders
     * Various bug fixes
+
+
+>## 1.0.18 - Fixes 08/11/2025
+    * Plane and Circle splitters are deprecated (just use blender booleans)
+    * PCA mode no longer results in translationally offsetted colliders
+    * Various bug fixes

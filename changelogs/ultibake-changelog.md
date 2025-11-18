@@ -488,4 +488,4 @@
     * Decal Stencil tools added
     * Improved UV tools
     * Faster decal baking
-    
+
