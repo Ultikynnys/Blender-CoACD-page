@@ -490,7 +490,7 @@
     * Faster decal baking
 
 
->## 2.0.42 - Stability Update 21/11/2025
+>## 2.0.49 - Stability Update 21/11/2025
     * More critical bug fixes in edge cases
 
 
