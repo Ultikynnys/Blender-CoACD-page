@@ -494,3 +494,6 @@
     * More critical bug fixes in edge cases
 
 
+>## 2.0.49 - ATLAS mode Update 23/11/2025
+    * Added full support for atlas mode
+
