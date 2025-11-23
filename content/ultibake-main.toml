@@ -122,7 +122,9 @@ fonts_config = "content/fonts.toml"
       "images/Ultibake/UltibakeShowcase/OverlappingDecals.jpg",
       "images/Ultibake/UltibakeShowcase/UVVisualizer.jpg",
       "images/Ultibake/UltibakeShowcase/MaxraydistanceCageExtrusionVisualizer.jpg",
-      "images/Ultibake/UltibakeShowcase/SeamlessGLTFExport.jpg"
+      "images/Ultibake/UltibakeShowcase/SeamlessGLTFExport.jpg",
+      "images/Ultibake/UltibakeShowcase/AtlasBaking1.png",
+      "images/Ultibake/UltibakeShowcase/AtlasBaking2.png"
     ]
     images_captions = [
       "Complex Material Setup - Advanced material support with Principled BSDF",
@@ -131,9 +133,11 @@ fonts_config = "content/fonts.toml"
       "Overlapping Decals - Handle multiple overlapping decals with ease",
       "UV Visualizer - Visualize UV maps and detect overlapping UVs",
       "Cage/Extrusion Visualizer - Visualize baking ray distances and cage settings",
-      "Seamless GLTF Export - Export baked textures and materials directly to GLB format"
+      "Seamless GLTF Export - Export baked textures and materials directly to GLB format",
+      "Atlas Baking - Create Texture Atlases",
+      "Atlas Baking - Create Decal Atlases"
     ]
-    images_alignment = ["center", "center", "center", "center", "center", "center", "center"]
+    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
     images_layout = "wide"
 
 # Support / Community
