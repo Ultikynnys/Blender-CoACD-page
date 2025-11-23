@@ -69,7 +69,8 @@ fonts_config = "content/fonts.toml"
     "**Profiles** - Create your own bake setup profile. You can also save/load to external files for other projects.",
     "**Bake Post Processing** - Apply antialiasing, denoising, sharpening and more.",
     "**Visualizers** - UV and Cage/Extrusion visualizers allow you to see information you would normally have to guess, like overlapping UVs and baking ray distances.",
-    "**Multi Texture Channel Packed Baking** - Bake multiple textures with a single click while having Full Control over texture channels with 35 unique bake types."
+    "**Multi Texture Channel Packed Baking** - Bake multiple textures with a single click while having Full Control over texture channels with 35 unique bake types.",
+    "**ATLAS Baking** - Create ATLAS textures with a single click. You can make your own PBR decals or Texture Atlases for your platform of choice."
   ]
 
   # Multiple usage images with carousel (simple array format for now)
@@ -107,7 +108,8 @@ fonts_config = "content/fonts.toml"
   video_title = "Video Showcase"
   videos = [
     { title = "Baking Basics", url = "https://www.youtube.com/embed/ml9_cHWFPtg" },
-    { title = "Decal Baking", url = "https://www.youtube.com/embed/o7HeKuUa624" }
+    { title = "Decal Baking", url = "https://www.youtube.com/embed/o7HeKuUa624" },
+    { title = "ATLAS Baking", url = "https://www.youtube.com/embed/N9TwSyBMqZ8" },
   ]
   # Generic sections
   [[introduction.sections]]
