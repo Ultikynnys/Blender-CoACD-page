@@ -497,3 +497,5 @@
 >## 2.0.53 - ATLAS mode Update 23/11/2025
     * ATLAS mode baking now fully supported
 
+>## 2.0.56 - ATLAS mode stability update 23/11/2025
+    * ATLAS mode now has better bake stability
