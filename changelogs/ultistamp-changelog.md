@@ -1,6 +1,5 @@
 >## 1.0.0 - INITIAL PUBLIC RELEASE
-
-
+    * Addon released
 
 >## 1.0.29 - Hotfix 30/03/2025
     * Keybind label visualized correctly
