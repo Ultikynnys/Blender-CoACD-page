@@ -23,4 +23,7 @@
 
 >## 1.0.45 - Hotfix 18/11/2025
     * Fixed stamp assignment issues with certain language unicode characters
+
+>## 1.0.47 - Hotfix 27/11/2025
+    * Fixed issue with version getting stuck at 1.0.46
     
