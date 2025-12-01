@@ -1,6 +1,6 @@
-# Site settings (AnimPlus)
+# Site settings (Animation+)
 [site]
-  title = "AnimPlus"
+  title = "Animation+"
   banner = "images/AnimationPlusBanner.png"
   research_link_text = "Documentation"
   research_link_url = "https://ultikynnys.github.io/AnimPlus"
@@ -19,7 +19,7 @@ fonts_config = "content/fonts.toml"
 [meta]
   og_type = "website"
   og_url = "https://ultikynnys.github.io/AnimPlus"
-  og_title = "AnimPlus"
+  og_title = "Animation+"
   og_description = "Blender add-on to streamline animation workflows with layers, retargeting, and powerful utilities."
   og_image = "images/Banner.webp"
 
@@ -31,9 +31,9 @@ fonts_config = "content/fonts.toml"
 
 # Introduction section
 [introduction]
-  title = "AnimPlus utility add-on for Blender animators"
+  title = "Animation+ utility add-on for Blender animators"
   paragraphs = [
-    "AnimPlus is an utility add-on for Blender animators. It streamlines various animation-related quirks and adds powerful animation tools that allow you to modify mocap and baked animations with ease.",
+    "Animation+ is an utility add-on for Blender animators. It streamlines various animation-related quirks and adds powerful animation tools that allow you to modify mocap and baked animations with ease.",
     "It unifies various Blender features into a single place, making your animation workflow a breeze."
   ]
 
@@ -60,13 +60,13 @@ fonts_config = "content/fonts.toml"
     "images/AnimationPlus/UILocation/Rig Diagnostics.png"
   ]
   usage_images_alt = [
-    "AnimPlus main panel in animation editors",
+    "Animation+ main panel in animation editors",
     "3D View update panel with copy visual pose tools",
     "Rigging tools panel",
     "Rig diagnostics panel"
   ]
   usage_images_captions = [
-    "Main AnimPlus panel in Dopesheet, Action Editor, Timeline (up to Blender 4.5), NLA, and Graph Editor",
+    "Main Animation+ panel in Dopesheet, Action Editor, Timeline (up to Blender 4.5), NLA, and Graph Editor",
     "Update panel and copy visual pose tools in the 3D View",
     "Rigging tools available alongside the main animation panels",
     "Rig diagnostics tools for checking rigs in animation editors"
@@ -74,7 +74,7 @@ fonts_config = "content/fonts.toml"
 
   video_title = "Video Showcase"
   videos = [
-    { title = "AnimPlus overview", url = "https://www.youtube.com/embed/yANvQJICSvo" },
+    { title = "Animation+ overview", url = "https://www.youtube.com/embed/yANvQJICSvo" },
   ]
 
   # Generic sections
@@ -93,6 +93,7 @@ fonts_config = "content/fonts.toml"
       "images/AnimationPlus/AnimPlusFeatures/AutomaticTimelineControl.mp4",
       "images/AnimationPlus/AnimPlusFeatures/InstantAssetLibraryIcons.mp4",
       "images/AnimationPlus/AnimPlusFeatures/ActionDeleteNotJustClear.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/UILocations.mp4",
     ]
     images_captions = [
       "Delta Offset - add your modified pose on top of an existing animation, even on baked animations.",
@@ -100,19 +101,20 @@ fonts_config = "content/fonts.toml"
       "Copy/Paste Visual Pose - supercharged visual pose copy that supports simulated/modifier-driven poses.",
       "Replace Selected Bones - blend two actions together based on your posed bone selection.",
       "Naming Scheme Conversion - fix non-Blender naming so X-mirrored copy/paste works on symmetrical rigs.",
-      "Apply Selected Scale - normalize armature scale to 1.0 while preserving selected animations.",
-      "Clamp - ensure keyframes cover the full timeline range required by some engines.",
-      "Snap - align your action so the first keyframe starts exactly at frame 0.",
+      "Quat Convertor Operator - convert any non-quaternion pose bone rotation keyframes to quaternion keyframes.",
+      "Snap and Clamp - align your action so the first keyframe starts exactly at frame 0 and ensure keyframes cover the full timeline range required by some engines.",
+      "Fast Motion Paths - create motion paths for your animations.",
       "Automatic Timeline Control - per-action timelines that update automatically when you change actions.",
       "Asset Library with Viewport Icon - capture the viewport and use it as the asset library icon.",
       "Remove Actions from UI - choose between clearing or fully removing actions from your blend file.",
+      "UI Locations - quickly see where all Animation+ panels live in Blender's UI.",
     ]
-    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
+    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
     images_layout = "wide"
 
 # Showcase videos
 [showcase]
-  placeholder = "AnimPlus demonstration videos"
+  placeholder = "Animation+ demonstration videos"
 
 # Support / Community
 [support]
@@ -127,11 +129,11 @@ fonts_config = "content/fonts.toml"
   url = "changelogs/animplus-changelog.md"
   title = "Changelog"
 
-# Citations configuration - disabled for AnimPlus
+# Citations configuration - disabled for Animation+
 [citations_config]
   enabled = false
 
 # Citations (optional)
 # [[citations]]
 #   id = "animplus2025"
-#   bibtex = "@software{animplus2025,\n  title={AnimPlus: Animation Workflow Enhancer for Blender},\n  author={Ultikynnys},\n  year={2025},\n  url={https://ultikynnys.github.io/AnimPlus}\n}"
+#   bibtex = "@software{animplus2025,\n  title={Animation+: Animation Workflow Enhancer for Blender},\n  author={Ultikynnys},\n  year={2025},\n  url={https://ultikynnys.github.io/AnimPlus}\n}"
