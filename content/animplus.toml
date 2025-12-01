@@ -1,15 +1,15 @@
 # Site settings (AnimPlus)
 [site]
   title = "AnimPlus"
-  banner = "images/Banner.webp"
+  banner = "images/AnimationPlusBanner.png"
   research_link_text = "Documentation"
   research_link_url = "https://ultikynnys.github.io/AnimPlus"
-  research_link_enabled = true
+  research_link_enabled = false
 
 # Theme colors (Default theme)
 [theme_colors]
-  brand_primary = "#D94E81"     # Pink - shades auto-derived
-  bg_dark = "#232626"
+  brand_primary = "#ffffff"     # White - shades auto-derived
+  bg_dark = "#000000"
   text_white = "#ffffff"
 
 # Font configuration (references shared font config)
@@ -31,61 +31,84 @@ fonts_config = "content/fonts.toml"
 
 # Introduction section
 [introduction]
-  title = ""
+  title = "AnimPlus utility add-on for Blender animators"
   paragraphs = [
-    "**AnimPlus** supercharges your Blender animation workflow with non-destructive layers, quick blocking tools, and better control.",
-    "Retarget motion, bake selectively, and manage takes with a clean, intuitive UI integrated into your daily workflow."
+    "AnimPlus is an utility add-on for Blender animators. It streamlines various animation-related quirks and adds powerful animation tools that allow you to modify mocap and baked animations with ease.",
+    "It unifies various Blender features into a single place, making your animation workflow a breeze."
   ]
 
-  parameters_title = "Key Features"
+  parameters_title = "Main features"
   parameters = [
-    "**Animation Layers** - Non-destructive additive and override layers.",
-    "**Retargeting** - Bring motions across rigs with minimal setup.",
-    "**Baking Tools** - Bake procedural motion to keys quickly and safely.",
-    "**Graph Editor Utilities** - Cleanup, easing, and timing tools.",
-    "**Takes Management** - Iterate on ideas without losing work."
-  ]
-
-  usage_title = "Simple to Use"
-  usage_steps = [
-    "**Step 1:** Install the addon .zip from Blender Preferences",
-    "**Step 2:** Create or import your animation",
-    "**Step 3:** Add layers or retarget as needed",
-    "**Step 4:** Bake and finalize"
+    "**Delta Offset** - Add your modified pose on top of an existing animation, even on baked animations.",
+    "**Delta Offset All Keyframes** - Apply your current modified pose as an offset that affects all keyframes, perfect for aligning animations.",
+    "**Copy/Paste Visual Pose** - Supercharged version of Blender's internal pose copy/paste that supports simulated and modifier-driven poses.",
+    "**Replace Selected Bones** - Combine two actions into a single one, using the posed bone selection to define which bones get replaced, perfect for creating blended animations.",
+    "**Naming Scheme Conversion** - Rigging diagnostics detect non-Blender naming schemes and suggest fixes so operators like X-mirrored copy/paste work on symmetrical armatures.",
+    "**Apply Selected Scale** - Scale your armature to 1.0 while fixing your selected animations to work with the new scale, ideal for resolving export issues related to scale.",
+    "**Clamp** - Add keyframes so your active action matches the timeline min/max; required by certain engines that need keyframes defined across the full timeline.",
+    "**Snap** - Align your action so that the first keyframe is on frame 0.",
+    "**Automatic Timeline Control** - Define per-action timelines that update automatically when you change actions.",
+    "**Asset Library with Viewport Icon** - Take a snapshot of your viewport and use it as the asset library icon, making batch action creation much easier.",
+    "**Remove Actions from UI** - Choose between clearing (default Blender behavior) or fully removing the action from your blend file."
   ]
 
   # Optional usage images (carousel)
   usage_images = [
-    "images/Logo.webp",
-    "images/Logo2.webp"
+    "images/AnimationPlus/UILocation/Main Animation Panel.png",
+    "images/AnimationPlus/UILocation/3DVIEW_Updatepanel.png",
+    "images/AnimationPlus/UILocation/Rigging Tools.png",
+    "images/AnimationPlus/UILocation/Rig Diagnostics.png"
   ]
   usage_images_alt = [
-    "AnimPlus interface mockup",
-    "AnimPlus workflow overview"
+    "AnimPlus main panel in animation editors",
+    "3D View update panel with copy visual pose tools",
+    "Rigging tools panel",
+    "Rig diagnostics panel"
   ]
   usage_images_captions = [
-    "Clean UI integrated into Blender",
-    "Layered animation and quick exports"
+    "Main AnimPlus panel in Dopesheet, Action Editor, Timeline (up to Blender 4.5), NLA, and Graph Editor",
+    "Update panel and copy visual pose tools in the 3D View",
+    "Rigging tools available alongside the main animation panels",
+    "Rig diagnostics tools for checking rigs in animation editors"
+  ]
+
+  video_title = "Video Showcase"
+  videos = [
+    { title = "AnimPlus overview", url = "https://www.youtube.com/embed/yANvQJICSvo" },
   ]
 
   # Generic sections
   [[introduction.sections]]
-    type = "comparisons"
-    title = "Feature Comparisons"
-    
-    [[introduction.sections.items]]
-      initial = 0.5
-      before = "images/CompareBase1.webp"
-      after  = "images/CompareColl1.webp"
-      caption = "Base animation vs. enhanced with AnimPlus tools"
-      handle_shape = "circle"
-
-    [[introduction.sections.items]]
-      initial = 0.5
-      before = "images/CompareBase2.webp"
-      after  = "images/CompareColl2.webp"
-      caption = "Faster iteration and cleanup"
-      handle_shape = "circle"
+    type = "content"
+    title = "Feature Clips"
+    images = [
+      "images/AnimationPlus/AnimPlusFeatures/DeltaOffsetWithEaseControls.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/DeltaOffsetAllkeyframes.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/VisualPoseCopypaste.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/ReplaceSelectedBones.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/BlenderLRConvertOperator.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/QuatConvertorOperator.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/SnapAndClamp.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/FastMotionPaths.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/AutomaticTimelineControl.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/InstantAssetLibraryIcons.mp4",
+      "images/AnimationPlus/AnimPlusFeatures/ActionDeleteNotJustClear.mp4",
+    ]
+    images_captions = [
+      "Delta Offset - add your modified pose on top of an existing animation, even on baked animations.",
+      "Delta Offset All Keyframes - apply your current modified pose as an offset across all keyframes.",
+      "Copy/Paste Visual Pose - supercharged visual pose copy that supports simulated/modifier-driven poses.",
+      "Replace Selected Bones - blend two actions together based on your posed bone selection.",
+      "Naming Scheme Conversion - fix non-Blender naming so X-mirrored copy/paste works on symmetrical rigs.",
+      "Apply Selected Scale - normalize armature scale to 1.0 while preserving selected animations.",
+      "Clamp - ensure keyframes cover the full timeline range required by some engines.",
+      "Snap - align your action so the first keyframe starts exactly at frame 0.",
+      "Automatic Timeline Control - per-action timelines that update automatically when you change actions.",
+      "Asset Library with Viewport Icon - capture the viewport and use it as the asset library icon.",
+      "Remove Actions from UI - choose between clearing or fully removing actions from your blend file.",
+    ]
+    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
+    images_layout = "wide"
 
 # Showcase videos
 [showcase]
