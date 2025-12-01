@@ -20,7 +20,7 @@ fonts_config = "content/fonts.toml"
   og_type = "website"
   og_url = "https://ultikynnys.github.io/AnimPlus"
   og_title = "Animation+"
-  og_description = "Blender add-on to streamline animation workflows with layers, retargeting, and powerful utilities."
+  og_description = "A Blender add-on that streamlines animation workflows with layers, retargeting, and powerful utilities."
   og_image = "images/Banner.webp"
 
 # Section titles
@@ -33,23 +33,23 @@ fonts_config = "content/fonts.toml"
 [introduction]
   title = "Introduction"
   paragraphs = [
-    "Animation+ is an utility add-on for Blender animators. It streamlines various animation-related quirks and adds powerful animation tools that allow you to modify mocap and baked animations with ease.",
-    "It unifies various Blender features into a single place, making your animation workflow a breeze."
+    "Animation+ is a utility add-on for Blender animators. It streamlines common animation quirks and adds powerful tools that let you edit mocap and baked animations with ease.",
+    "It brings several Blender animation features together in one place, making your workflow smoother and more consistent."
   ]
 
   parameters_title = "Main features"
   parameters = [
-    "**Delta Offset** - Add your modified pose on top of an existing animation, even on baked animations.",
-    "**Delta Offset All Keyframes** - Apply your current modified pose as an offset that affects all keyframes, perfect for aligning animations.",
-    "**Copy/Paste Visual Pose** - Supercharged version of Blender's internal pose copy/paste that supports simulated and modifier-driven poses.",
-    "**Replace Selected Bones** - Combine two actions into a single one, using the posed bone selection to define which bones get replaced, perfect for creating blended animations.",
-    "**Naming Scheme Conversion** - Rigging diagnostics detect non-Blender naming schemes and suggest fixes so operators like X-mirrored copy/paste work on symmetrical armatures.",
-    "**Apply Selected Scale** - Scale your armature to 1.0 while fixing your selected animations to work with the new scale, ideal for resolving export issues related to scale.",
-    "**Clamp** - Add keyframes so your active action matches the timeline min/max; required by certain engines that need keyframes defined across the full timeline.",
-    "**Snap** - Align your action so that the first keyframe is on frame 0.",
+    "**Delta Offset** - Add your modified pose on top of an existing animation, even on fully baked animations.",
+    "**Delta Offset All Keyframes** - Apply your current pose as an offset across all keyframes, perfect for aligning animations.",
+    "**Copy/Paste Visual Pose** - A supercharged version of Blender's built-in pose copy/paste that also supports simulated and modifier-driven poses.",
+    "**Replace Selected Bones** - Combine two actions into one by using your posed bone selection to define which bones are replaced, perfect for creating blended animations.",
+    "**Naming Scheme Conversion** - Rigging diagnostics detect non-Blender naming schemes and suggest fixes so tools like X-mirrored copy/paste work correctly on symmetrical armatures.",
+    "**Apply Selected Scale** - Scale your armature to 1.0 while updating your selected animations to work with the new scale, ideal for resolving export issues related to scale.",
+    "**Clamp** - Add keyframes so your active action matches the timeline minimum and maximum, as required by engines that need keyframes defined across the full timeline.",
+    "**Snap** - Align your action so that the first keyframe starts at frame 0.",
     "**Automatic Timeline Control** - Define per-action timelines that update automatically when you change actions.",
     "**Asset Library with Viewport Icon** - Take a snapshot of your viewport and use it as the asset library icon, making batch action creation much easier.",
-    "**Remove Actions from UI** - Choose between clearing (default Blender behavior) or fully removing the action from your blend file."
+    "**Remove Actions from UI** - Choose between clearing an action (the default Blender behavior) or fully removing it from your blend file."
   ]
 
   # Optional usage images (carousel)
@@ -96,17 +96,17 @@ fonts_config = "content/fonts.toml"
       "images/AnimationPlus/AnimPlusFeatures/UILocations.mp4",
     ]
     images_captions = [
-      "Delta Offset - add your modified pose on top of an existing animation, even on baked animations.",
-      "Delta Offset All Keyframes - apply your current modified pose as an offset across all keyframes.",
-      "Copy/Paste Visual Pose - supercharged visual pose copy that supports simulated/modifier-driven poses.",
-      "Replace Selected Bones - blend two actions together based on your posed bone selection.",
-      "Naming Scheme Conversion - fix non-Blender naming so X-mirrored copy/paste works on symmetrical rigs.",
+      "Delta Offset - add your modified pose on top of an existing animation, even on fully baked animations.",
+      "Delta Offset All Keyframes - apply your current pose as an offset across all keyframes.",
+      "Copy/Paste Visual Pose - a supercharged visual pose copy that supports simulated and modifier-driven poses.",
+      "Replace Selected Bones - blend two actions together based on your current posed bone selection.",
+      "Naming Scheme Conversion - fix non-Blender naming so X-mirrored copy/paste works correctly on symmetrical rigs.",
       "Quat Convertor Operator - convert any non-quaternion pose bone rotation keyframes to quaternion keyframes.",
-      "Snap and Clamp - align your action so the first keyframe starts exactly at frame 0 and ensure keyframes cover the full timeline range required by some engines.",
+      "Snap and Clamp - align your action so the first keyframe starts exactly at frame 0 and ensure that keyframes cover the full timeline range required by some engines.",
       "Fast Motion Paths - create motion paths for your animations.",
       "Automatic Timeline Control - per-action timelines that update automatically when you change actions.",
-      "Asset Library with Viewport Icon - capture the viewport and use it as the asset library icon.",
-      "Remove Actions from UI - choose between clearing or fully removing actions from your blend file.",
+      "Asset Library with Viewport Icon - capture your viewport and use it as the asset library icon.",
+      "Remove Actions from UI - choose between clearing an action or fully removing it from your blend file.",
       "UI Locations - quickly see where all Animation+ panels live in Blender's UI.",
     ]
     images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
