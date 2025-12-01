@@ -31,7 +31,7 @@ fonts_config = "content/fonts.toml"
 
 # Introduction section
 [introduction]
-  title = "Animation+ utility add-on for Blender animators"
+  title = "Introduction"
   paragraphs = [
     "Animation+ is an utility add-on for Blender animators. It streamlines various animation-related quirks and adds powerful animation tools that allow you to modify mocap and baked animations with ease.",
     "It unifies various Blender features into a single place, making your animation workflow a breeze."
