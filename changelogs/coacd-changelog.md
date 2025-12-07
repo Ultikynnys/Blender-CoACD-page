@@ -19,6 +19,5 @@
     * PCA mode no longer results in translationally offsetted colliders
     * Various bug fixes
 
-
 >## 1.0.19 - Fixes 07/12/2025
     * Blender 5.0 collider material fix
