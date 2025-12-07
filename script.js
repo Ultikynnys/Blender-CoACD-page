@@ -2186,11 +2186,6 @@ async function renderContent(cfg) {
         // If no images, just render text without grid
         if (sectionImages.length === 0) {
           if (sectionTitle && sectionItems.length > 0) {
-            const h3 = document.createElement('h3');
-            h3.className = 'intro__usage-title';
-            h3.textContent = sectionTitle;
-            sectionContainer.appendChild(h3);
-
             const ul = document.createElement('ul');
             ul.className = 'intro__usage-list';
             let currentLi = null;
@@ -2225,11 +2220,6 @@ async function renderContent(cfg) {
         } else if (isWideLayout) {
           // Wide layout: text above, image below (full width)
           if (sectionTitle && sectionItems.length > 0) {
-            const h3 = document.createElement('h3');
-            h3.className = 'intro__usage-title';
-            h3.textContent = sectionTitle;
-            sectionContainer.appendChild(h3);
-
             const ul = document.createElement('ul');
             ul.className = 'intro__usage-list';
             let currentLi = null;
@@ -2286,11 +2276,6 @@ async function renderContent(cfg) {
           mainCol.className = 'intro__usage-main';
 
           if (sectionTitle && sectionItems.length > 0) {
-            const h3 = document.createElement('h3');
-            h3.className = 'intro__usage-title';
-            h3.textContent = sectionTitle;
-            mainCol.appendChild(h3);
-
             const ul = document.createElement('ul');
             ul.className = 'intro__usage-list';
             let currentLi = null;
