@@ -1,6 +1,5 @@
-
 >## 1.0.0 - INITIAL PUBLIC RELEASE
-    * Relase
+    * Release
 
 >## 1.0.10 - Refactor 06/11/2025
     * Optimized COACD algorithm to be 10x faster
