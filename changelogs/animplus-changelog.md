@@ -17,3 +17,7 @@
 >## 2.0.8 - Automatic Updater added 1/12/2025
     * Refactored various tools to work with modern Blender API
     * More tools added
+
+>## 2.0.9 - Hotfix 1/12/2025
+    * Fixed crashing on Blender 5
+
