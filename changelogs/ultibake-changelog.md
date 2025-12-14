@@ -500,6 +500,8 @@
 >## 2.0.56 - ATLAS mode stability update 23/11/2025
     * ATLAS mode now has better bake stability
 
-
 >## 2.0.57 - Hotfix 1/12/2025
     * Fixed crashing on Blender 5
+
+>## 2.0.58 - Hotfix 14/12/2025
+    * UV tool unwrapper bug fixed on multi-user objects
