@@ -505,3 +505,7 @@
 
 >## 2.0.58 - Hotfix 14/12/2025
     * UV tool unwrapper bug fixed on multi-user objects
+
+
+>## 2.0.60 - Hotfix 16/12/2025
+    * GLTF and Finalize fixed on Linux
