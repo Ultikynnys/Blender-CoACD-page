@@ -20,3 +20,7 @@
 
 >## 1.0.19 - Fixes 07/12/2025
     * Blender 5 collider material fix
+
+
+>## 1.0.29 - Fixes 07/12/2025
+    * Linux compatibility fixed
