@@ -25,4 +25,8 @@
 
 >## 1.0.47 - Hotfix 27/11/2025
     * Fixed issue with version getting stuck at 1.0.46
-    
+
+>## 1.0.51 - Hotfix 5/01/2026
+    * Fixed Blender 5 errors
+
+
