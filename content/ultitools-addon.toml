@@ -67,10 +67,11 @@ fonts_config = "content/fonts.toml"
   # Multiple usage images with carousel
   usage_images_layout = "vertical"  # "vertical" (9:16) or "wide" (16:9)
   usage_images = [
-    "images/Logo.webp",
-    "images/Logo.webp",
-    "images/Logo.webp",
-    "images/Logo.webp"
+    "images/Ultitools/3Dviewpanel.png",
+    "images/Ultitools/UVEditorAtlastoolkit.png",
+    "images/Ultitools/ShaderGraphAssetLibrary.png",
+    "images/Ultitools/AssetBrowserAssetLibraryPanel.png",
+    "images/Ultitools/Addonpref.png"
   ]
   
   # Captions for the images (in order)
@@ -78,11 +79,13 @@ fonts_config = "content/fonts.toml"
     "3D Viewport > N > UltiTools",
     "UV Editor > N > Atlas Toolkit",
     "Shader Editor > N > UltiTools",
-    "Asset Library panels"
+    "Asset Library panels",
+    "Addon Preferences"
   ]
   
   # Alignment for the images (in order)
   usage_images_alignment = [
+    "top-right",
     "top-right",
     "top-right",
     "top-right",

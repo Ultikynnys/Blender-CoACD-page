@@ -16,7 +16,7 @@ function dbge(...args) { if (DEBUG) console.error('[DEBUG]', ...args); }
 function parseMediaItems(config, options = {}) {
   const items = [];
   if (!config) return items;
-  
+
   const {
     itemsKey = 'items',
     urlsKey = 'urls',
@@ -45,8 +45,8 @@ function parseMediaItems(config, options = {}) {
         const capArr = Array.isArray(config[captionsKey]) ? config[captionsKey] : [];
         const altArr = Array.isArray(config[altKey]) ? config[altKey] : [];
         const alignArr = Array.isArray(config[alignmentKey]) ? config[alignmentKey] : [];
-        items.push({ 
-          src: item.src || item.url || item.image || '', 
+        items.push({
+          src: item.src || item.url || item.image || '',
           url: item.url || item.src || item.image || '',
           caption: item.caption || item.title || '',
           alt: item.alt || item.alt_text || altArr[i] || capArr[i] || '',
@@ -67,7 +67,7 @@ function parseMediaItems(config, options = {}) {
 function parseShowcaseVideos(showcase) {
   return parseMediaItems(showcase, {
     itemsKey: 'videos',
-    urlsKey: 'video_urls', 
+    urlsKey: 'video_urls',
     urlKey: 'video_url',
     captionsKey: 'video_captions'
   });
@@ -81,7 +81,7 @@ function createMediaCarousel(items, cfg, options = {}) {
     borderClass = 'media-border',
     objectFit = 'cover' // allow callers to override object-fit for images
   } = options;
-  
+
   const carouselId = `${type}-carousel-${Date.now()}`;
 
   const itemsHtml = items.map((item, index) => {
@@ -89,16 +89,16 @@ function createMediaCarousel(items, cfg, options = {}) {
     const title = item.title || item.caption || 'Media';
     const alt = item.alt || title;
     const alignment = item.alignment || 'center';
-    
+
     // Detect if this is a video file (mp4, webm, etc.) or an embedded video
     const isVideoFile = /\.(mp4|webm|ogg|mov)$/i.test(src);
     const isEmbedVideo = type === 'video' && !isVideoFile;
-    
+
     // Convert alignment to CSS classes
-    const alignmentClass = alignment === 'top-left' ? 'object-position-top-left' : 
-                          alignment === 'top-right' ? 'object-position-top-right' : 
-                          'object-position-center';
-    
+    const alignmentClass = alignment === 'top-left' ? 'object-position-top-left' :
+      alignment === 'top-right' ? 'object-position-top-right' :
+        'object-position-center';
+
     let content;
     if (isVideoFile) {
       // Native video file with autoplay
@@ -113,7 +113,7 @@ function createMediaCarousel(items, cfg, options = {}) {
       // Image
       content = `<img src="${src}" alt="${alt}" loading="lazy" class="d-block w-100 ${alignmentClass}" style="object-fit: ${objectFit}; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; pointer-events: auto;">`;
     }
-    
+
     return `<div class="carousel-item ${index === 0 ? 'active' : ''}" style="user-select: none;">${content}</div>`;
   }).join('');
 
@@ -144,7 +144,7 @@ function createMediaCarousel(items, cfg, options = {}) {
       <span class="visually-hidden">Next</span>
     </button>
   ` : '';
-  
+
   wrapper.innerHTML = `
     <div id="${carouselId}" class="carousel slide ${type === 'video' ? 'interactive-border' : ''}" data-bs-ride="false">
       <div class="carousel-inner">${itemsHtml}</div>
@@ -157,13 +157,13 @@ function createMediaCarousel(items, cfg, options = {}) {
   const captionEl = document.createElement('div');
   const defaultCaptionClass = type === 'video' ? 'intro__usage-caption' : 'usage-carousel-caption intro__usage-caption';
   captionEl.className = options.captionClass || defaultCaptionClass;
-  
+
   const updateCaption = (index) => {
     const text = getImageCaptionText(items[index]) || '';
     captionEl.innerHTML = text ? mdInlineToHtmlBoldOnly(String(text)) : '';
     colorizeStrongIn(captionEl, cfg);
   };
-  
+
   updateCaption(0);
   wrapper.appendChild(captionEl);
 
@@ -175,20 +175,23 @@ function createMediaCarousel(items, cfg, options = {}) {
     updateCaption(activeIndex);
   });
 
+  // Carousel sizing is handled by CSS - carousel-item has fixed aspect ratio
+  // and images use object-fit: cover to fill consistently
+
   // Make images and videos zoomable/focusable
   setTimeout(() => {
     wrapper.querySelectorAll('.carousel-item').forEach((item, idx) => {
       const img = item.querySelector('img');
       const video = item.querySelector('video');
-      
+
       if (items[idx]) {
         const caption = getImageCaptionText(items[idx]) || '';
-        
+
         // Make images zoomable
         if (img && !video) {
           makeImageZoomable(img, caption);
         }
-        
+
         // Make videos zoomable/focusable
         if (video) {
           makeImageZoomable(video, caption);
@@ -216,7 +219,7 @@ const utils = {
 // Image zoom functionality
 function initImageZoom() {
   let zoomOverlay = document.getElementById('image-zoom-overlay');
-  
+
   if (!zoomOverlay) {
     zoomOverlay = document.createElement('div');
     zoomOverlay.id = 'image-zoom-overlay';
@@ -237,7 +240,7 @@ function initImageZoom() {
       -moz-user-select: none;
       -ms-user-select: none;
     `;
-    
+
     // Media container that can hold both images and videos
     const mediaContainer = document.createElement('div');
     mediaContainer.id = 'zoomed-media-container';
@@ -248,7 +251,7 @@ function initImageZoom() {
       align-items: center;
       justify-content: center;
     `;
-    
+
     const zoomedImg = document.createElement('img');
     zoomedImg.id = 'zoomed-image';
     zoomedImg.style.cssText = `
@@ -264,7 +267,7 @@ function initImageZoom() {
       pointer-events: none;
       display: block;
     `;
-    
+
     const zoomedVideo = document.createElement('video');
     zoomedVideo.id = 'zoomed-video';
     zoomedVideo.autoplay = true;
@@ -284,10 +287,10 @@ function initImageZoom() {
       pointer-events: none;
       display: none;
     `;
-    
+
     mediaContainer.appendChild(zoomedImg);
     mediaContainer.appendChild(zoomedVideo);
-    
+
     const captionOverlay = document.createElement('div');
     captionOverlay.id = 'zoom-caption';
     captionOverlay.style.cssText = `
@@ -309,7 +312,7 @@ function initImageZoom() {
       white-space: normal;
       word-wrap: break-word;
     `;
-    
+
     // Create left arrow indicator
     const leftArrow = document.createElement('div');
     leftArrow.id = 'zoom-nav-left';
@@ -345,7 +348,7 @@ function initImageZoom() {
       const navFunc = zoomOverlay.navigateZoomedImage;
       if (navFunc) navFunc(-1);
     });
-    
+
     // Create right arrow indicator
     const rightArrow = document.createElement('div');
     rightArrow.id = 'zoom-nav-right';
@@ -381,31 +384,31 @@ function initImageZoom() {
       const navFunc = zoomOverlay.navigateZoomedImage;
       if (navFunc) navFunc(1);
     });
-    
+
     zoomOverlay.appendChild(mediaContainer);
     zoomOverlay.appendChild(captionOverlay);
     zoomOverlay.appendChild(leftArrow);
     zoomOverlay.appendChild(rightArrow);
     document.body.appendChild(zoomOverlay);
-    
+
     // Close on click (but not on navigation zones)
     zoomOverlay.addEventListener('click', (e) => {
       const rect = zoomOverlay.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const navZoneWidth = 100; // pixels from left/right edges
-      
+
       // Check if clicking in navigation zones
       if (clickX < navZoneWidth || clickX > rect.width - navZoneWidth) {
         // Don't close, let navigation handler deal with it
         return;
       }
-      
+
       zoomOverlay.style.display = 'none';
       if (zoomOverlay.resetZoomState) zoomOverlay.resetZoomState();
       delete zoomOverlay.dataset.carouselId;
       delete zoomOverlay.dataset.currentIndex;
     });
-    
+
     // Close on Escape key and arrow key navigation
     document.addEventListener('keydown', (e) => {
       if (zoomOverlay.style.display === 'flex') {
@@ -421,13 +424,13 @@ function initImageZoom() {
         }
       }
     });
-    
+
     // Add navigation on click (left/right zones)
     zoomOverlay.addEventListener('click', (e) => {
       const rect = zoomOverlay.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const navZoneWidth = 100;
-      
+
       if (clickX < navZoneWidth) {
         navigateZoomedImage(-1);
         e.stopPropagation();
@@ -436,35 +439,35 @@ function initImageZoom() {
         e.stopPropagation();
       }
     });
-    
+
     // Navigation function
     function navigateZoomedImage(direction) {
       const carouselId = zoomOverlay.dataset.carouselId;
       const currentIndex = parseInt(zoomOverlay.dataset.currentIndex || '0');
-      
+
       if (!carouselId) return;
-      
+
       const carousel = document.getElementById(carouselId);
       if (!carousel) return;
-      
+
       const items = carousel.querySelectorAll('.carousel-item');
       if (items.length <= 1) return;
-      
+
       let newIndex = currentIndex + direction;
       if (newIndex < 0) newIndex = items.length - 1;
       if (newIndex >= items.length) newIndex = 0;
-      
+
       const newItem = items[newIndex];
       const newImg = newItem.querySelector('img');
-      
+
       if (newImg) {
         zoomedImg.src = newImg.src;
         zoomedImg.alt = newImg.alt;
         zoomOverlay.dataset.currentIndex = newIndex;
-        
+
         // Keep caption hidden during navigation (DRY - no captions in focus mode)
         captionOverlay.style.display = 'none';
-        
+
         // Also update the carousel position
         const bsCarousel = bootstrap.Carousel.getInstance(carousel);
         if (bsCarousel) {
@@ -472,13 +475,13 @@ function initImageZoom() {
         }
       }
     }
-    
+
     // Store navigation function on overlay for arrow click handlers
     zoomOverlay.navigateZoomedImage = navigateZoomedImage;
-    
+
     // Track current zoom level
     let currentZoom = 1;
-    
+
     // Reset function to clear zoom and pan state
     const resetZoomState = () => {
       currentZoom = 1;
@@ -487,45 +490,45 @@ function initImageZoom() {
       zoomedVideo.style.transform = 'scale(1)';
       zoomedVideo.style.transformOrigin = 'center center';
     };
-    
+
     // Store reset function on overlay for easy access
     zoomOverlay.resetZoomState = resetZoomState;
-    
+
     // Zoom on mouse position - listen on overlay to capture all movement
     zoomOverlay.addEventListener('mousemove', (e) => {
       if (zoomOverlay.style.display === 'flex' && currentZoom > 1) {
         // Get the currently visible media element (img or video)
         const activeMedia = zoomedVideo.style.display === 'block' ? zoomedVideo : zoomedImg;
         const rect = activeMedia.getBoundingClientRect();
-        
+
         // Calculate position relative to center (0 to 100%)
         const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
         const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
-        
+
         // Apply sensitivity multiplier to amplify movement from center
         const sensitivity = 1.5; // Increase this for more panning distance
         const centerX = 50;
         const centerY = 50;
         const x = centerX + (xPercent - centerX) * sensitivity;
         const y = centerY + (yPercent - centerY) * sensitivity;
-        
+
         activeMedia.style.transformOrigin = `${x}% ${y}%`;
         activeMedia.style.transform = `scale(${currentZoom})`;
       }
     });
-    
+
     // Scroll wheel zoom
     zoomOverlay.addEventListener('wheel', (e) => {
       if (zoomOverlay.style.display === 'flex') {
         e.preventDefault();
-        
+
         // Adjust zoom level based on scroll direction
         const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
         currentZoom = Math.max(1, Math.min(5, currentZoom + zoomDelta));
-        
+
         // Get the currently visible media element (img or video)
         const activeMedia = zoomedVideo.style.display === 'block' ? zoomedVideo : zoomedImg;
-        
+
         // Update transform with current zoom
         const rect = activeMedia.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -535,82 +538,82 @@ function initImageZoom() {
       }
     }, { passive: false });
   }
-  
+
   return zoomOverlay;
 }
 
 function makeImageZoomable(element, caption = '') {
   if (!element || element.classList.contains('zoomable-initialized')) return;
-  
+
   const isVideo = element.tagName === 'VIDEO';
-  
+
   element.style.cursor = 'zoom-in';
   element.classList.add('zoomable-initialized');
-  
+
   const carousel = element.closest('.carousel');
-  
+
   // Store caption on the element
   if (caption) {
     element.dataset.zoomCaption = caption;
   }
-  
+
   // Update cursor based on mouse position
   if (carousel) {
     element.addEventListener('mousemove', (e) => {
       const rect = element.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
-      
+
       // Define safe zones (in pixels from edges)
       const safeZoneBottom = 60; // Bottom area for indicators
       const safeZoneSides = 80;  // Left/right areas for prev/next buttons
-      
+
       // Change cursor based on whether we're in a safe zone
-      if (mouseY > rect.height - safeZoneBottom || 
-          mouseX < safeZoneSides || 
-          mouseX > rect.width - safeZoneSides) {
+      if (mouseY > rect.height - safeZoneBottom ||
+        mouseX < safeZoneSides ||
+        mouseX > rect.width - safeZoneSides) {
         element.style.cursor = 'default';
       } else {
         element.style.cursor = 'zoom-in';
       }
     });
-    
+
     element.addEventListener('mouseleave', () => {
       element.style.cursor = 'zoom-in';
     });
   }
-  
+
   element.addEventListener('click', (e) => {
     // Check if click is near carousel controls (safe zone)
     if (carousel) {
       const rect = element.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
-      
+
       // Define safe zones (in pixels from edges)
       const safeZoneBottom = 60; // Bottom area for indicators
       const safeZoneSides = 80;  // Left/right areas for prev/next buttons
-      
+
       // Don't zoom if clicking in safe zones
-      if (clickY > rect.height - safeZoneBottom || 
-          clickX < safeZoneSides || 
-          clickX > rect.width - safeZoneSides) {
+      if (clickY > rect.height - safeZoneBottom ||
+        clickX < safeZoneSides ||
+        clickX > rect.width - safeZoneSides) {
         return;
       }
     }
-    
+
     e.stopPropagation();
     const overlay = initImageZoom();
     const zoomedImg = overlay.querySelector('#zoomed-image');
     const zoomedVideo = overlay.querySelector('#zoomed-video');
     const captionEl = overlay.querySelector('#zoom-caption');
-    
+
     // Handle video vs image differently
     if (isVideo) {
       // Hide image, show video
       zoomedImg.style.display = 'none';
       zoomedVideo.style.display = 'block';
-      
+
       // Clear previous sources and add new one
       zoomedVideo.innerHTML = '';
       const source = document.createElement('source');
@@ -628,22 +631,22 @@ function makeImageZoomable(element, caption = '') {
       zoomedImg.src = element.src;
       zoomedImg.alt = element.alt;
     }
-    
+
     // Store click position for centering
     overlay.dataset.clickX = e.clientX;
     overlay.dataset.clickY = e.clientY;
-    
+
     // Store carousel context for navigation
     const leftArrow = overlay.querySelector('#zoom-nav-left');
     const rightArrow = overlay.querySelector('#zoom-nav-right');
-    
+
     if (carousel) {
       overlay.dataset.carouselId = carousel.id;
       const items = Array.from(carousel.querySelectorAll('.carousel-item'));
       const currentItem = element.closest('.carousel-item');
       const currentIndex = items.indexOf(currentItem);
       overlay.dataset.currentIndex = currentIndex >= 0 ? currentIndex : 0;
-      
+
       // Show arrows if there are multiple items
       if (items.length > 1) {
         if (leftArrow) leftArrow.style.display = 'flex';
@@ -654,42 +657,42 @@ function makeImageZoomable(element, caption = '') {
       if (leftArrow) leftArrow.style.display = 'none';
       if (rightArrow) rightArrow.style.display = 'none';
     }
-    
+
     // Hide caption in focus view (already shown in carousel view)
     captionEl.style.display = 'none';
-    
+
     overlay.style.display = 'flex';
-    
+
     // Position the image at the click Y position, centered horizontally
     const positionMedia = () => {
       const clickY = parseFloat(overlay.dataset.clickY) || window.innerHeight / 2;
-      
+
       // Get the currently visible media element
       const activeMedia = isVideo ? zoomedVideo : zoomedImg;
-      
+
       // Wait for next frame to ensure media is rendered
       requestAnimationFrame(() => {
         const imgRect = activeMedia.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         const viewportWidth = window.innerWidth;
-        
+
         // Calculate position to center image at click Y, centered X
         const left = (viewportWidth - imgRect.width) / 2;
         let top = clickY - (imgRect.height / 2);
-        
+
         // Clamp top position to keep image within viewport
         const minTop = 10; // 10px margin from top
         const maxTop = viewportHeight - imgRect.height - 10; // 10px margin from bottom
         top = Math.max(minTop, Math.min(top, maxTop));
-        
+
         activeMedia.style.position = 'absolute';
         activeMedia.style.left = `${left}px`;
         activeMedia.style.top = `${top}px`;
-        
+
         // Position caption and arrows relative to the image
         const leftArrow = overlay.querySelector('#zoom-nav-left');
         const rightArrow = overlay.querySelector('#zoom-nav-right');
-        
+
         if (leftArrow) {
           leftArrow.style.top = `${top}px`;
           leftArrow.style.height = `${imgRect.height}px`;
@@ -703,7 +706,7 @@ function makeImageZoomable(element, caption = '') {
         }
       });
     };
-    
+
     // Wait for media to load before positioning
     if (isVideo) {
       zoomedVideo.addEventListener('loadedmetadata', positionMedia, { once: true });
@@ -740,18 +743,18 @@ function hslToHex(h, s = 0.85, l = 0.55) {
   const hueToRgb = (p, q, t) => {
     if (t < 0) t += 1;
     if (t > 1) t -= 1;
-    if (t < 1/6) return p + (q - p) * 6 * t;
-    if (t < 1/2) return q;
-    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
     return p;
   };
-  
+
   const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
   const p = 2 * l - q;
-  const r = Math.round(hueToRgb(p, q, h + 1/3) * 255);
+  const r = Math.round(hueToRgb(p, q, h + 1 / 3) * 255);
   const g = Math.round(hueToRgb(p, q, h) * 255);
-  const b = Math.round(hueToRgb(p, q, h - 1/3) * 255);
-  
+  const b = Math.round(hueToRgb(p, q, h - 1 / 3) * 255);
+
   return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 
@@ -759,24 +762,24 @@ function mdInlineToHtmlBoldOnly(s) {
   // First, extract and protect markdown links from escaping
   const linkPlaceholders = [];
   let text = String(s);
-  
+
   // Extract markdown links [text](url) and replace with placeholders
   text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, linkText, url) => {
     const placeholder = `__LINK_${linkPlaceholders.length}__`;
     linkPlaceholders.push({ text: linkText, url: url });
     return placeholder;
   });
-  
+
   // Now escape HTML
   const escaped = escapeHtml(text);
-  
+
   // Colorize preset quality keywords BEFORE converting bold markdown
   // This way keywords work even inside **bold** text
   let result = escaped;
   if (globalPresetKeywords && Object.keys(globalPresetKeywords).length > 0) {
     // Sort by keyword length (longest first) to prevent partial matches
     const sortedKeywords = Object.entries(globalPresetKeywords).sort((a, b) => b[0].length - a[0].length);
-    
+
     sortedKeywords.forEach(([keyword, color]) => {
       // Use color directly (now hex values from config instead of hue)
       // Match keywords with proper boundaries (not breaking multi-word keywords)
@@ -788,23 +791,23 @@ function mdInlineToHtmlBoldOnly(s) {
         // Check if this match is part of a blacklisted pattern
         const matchStart = offset + prefix.length;
         const matchEnd = matchStart + word.length;
-        
+
         // Get context around the match (a few chars before and after)
         const contextStart = Math.max(0, matchStart - 20);
         const contextEnd = Math.min(result.length, matchEnd + 20);
         const context = result.substring(contextStart, contextEnd).toLowerCase();
-        
+
         // Check if any blacklisted pattern appears in this context
         const isBlacklisted = globalPresetBlacklist.some(pattern => {
           const patternLower = pattern.toLowerCase();
           return context.includes(patternLower) && patternLower.includes(word.toLowerCase());
         });
-        
+
         if (isBlacklisted) {
           dbg(`Skipping blacklisted match: "${word}" in context`);
           return match; // Don't colorize, return original
         }
-        
+
         return `${prefix}<span class="preset-keyword" style="color: ${color} !important; font-weight: 600;">${word}</span>`;
       });
       if (result !== beforeReplace) {
@@ -814,17 +817,17 @@ function mdInlineToHtmlBoldOnly(s) {
   } else {
     dbg('No preset keywords loaded for coloring');
   }
-  
+
   // Convert **text** to <strong>text</strong> AFTER colorizing keywords
   result = result.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  
+
   // Restore links as HTML <a> tags
   linkPlaceholders.forEach((link, index) => {
     const placeholder = `__LINK_${index}__`;
     const linkHtml = `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.text)}</a>`;
     result = result.replace(placeholder, linkHtml);
   });
-  
+
   return result;
 }
 
@@ -870,12 +873,12 @@ function mixHex(hex1, hex2, t) {
 function getLighterBrandColor(cfg) {
   const raw = cfg?.theme_colors;
   const colors = normalizeThemeColors(raw || {});
-  
+
   // If strong_color is explicitly set, use it directly
   if (raw?.strong_color) {
     return raw.strong_color.trim();
   }
-  
+
   const brand = (raw?.brand_primary || colors.brand_primary || '').trim();
   const rgb = hexToRgb(brand);
   if (!rgb) return '#666666';
@@ -897,8 +900,8 @@ function colorizeStrongIn(root, cfg) {
     if (docRoot && strongColor) {
       docRoot.style.setProperty('--strong-color', strongColor, 'important');
     }
-  } catch {}
-  
+  } catch { }
+
   root.querySelectorAll('strong').forEach((el) => {
     if (!el.classList.contains('themed-strong')) {
       el.classList.add('themed-strong');
@@ -907,7 +910,7 @@ function colorizeStrongIn(root, cfg) {
     // Do not apply outline stroke to strong text to avoid overlapping glyphs
     // in display fonts that lack a true bold face (e.g., Digitalt).
   });
-  
+
   // Also colorize links with theme colors from TOML
   root.querySelectorAll('a').forEach((el) => {
     if (!el.classList.contains('themed-link')) {
@@ -926,7 +929,7 @@ function initBeforeAfterSliders() {
   function initSlider(slider) {
     const initialValue = parseFloat(slider.dataset.initial || '0.5');
     const handle = slider.querySelector('.ba-handle');
-    
+
     const setPosition = (position) => {
       position = utils.clamp(position, 0, 1);
       slider.style.setProperty('--pos', (position * 100).toFixed(2) + '%');
@@ -934,7 +937,7 @@ function initBeforeAfterSliders() {
         handle.setAttribute('aria-valuenow', String(Math.round(position * 100)));
       }
     };
-    
+
     setPosition(initialValue);
 
     const pointerToPosition = (event) => {
@@ -943,7 +946,7 @@ function initBeforeAfterSliders() {
     };
 
     let isDragging = false;
-    
+
     const handlePointerDown = (event) => {
       // Only start dragging if clicking on the handle
       if (event.target === handle || handle.contains(event.target)) {
@@ -952,13 +955,13 @@ function initBeforeAfterSliders() {
         event.preventDefault();
       }
     };
-    
+
     const handlePointerMove = (event) => {
       if (isDragging) {
         setPosition(pointerToPosition(event));
       }
     };
-    
+
     const handlePointerUp = () => {
       isDragging = false;
       slider.classList.remove('dragging');
@@ -973,7 +976,7 @@ function initBeforeAfterSliders() {
       handle.addEventListener('keydown', (event) => {
         const currentPos = parseFloat(getComputedStyle(slider).getPropertyValue('--pos')) / 100 || 0.5;
         const step = event.shiftKey ? 0.1 : 0.02;
-        
+
         if (event.key === 'ArrowLeft') {
           setPosition(currentPos - step);
           event.preventDefault();
@@ -994,7 +997,7 @@ function initBeforeAfterSliders() {
       img.style.webkitUserSelect = 'none';
       img.style.mozUserSelect = 'none';
       img.style.msUserSelect = 'none';
-      
+
       img.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -1003,43 +1006,43 @@ function initBeforeAfterSliders() {
         const captionEl = overlay.querySelector('#zoom-caption');
         zoomedImg.src = img.src;
         zoomedImg.alt = img.alt;
-        
+
         // Store click position for centering
         overlay.dataset.clickX = e.clientX;
         overlay.dataset.clickY = e.clientY;
-        
+
         // Hide caption in focus view (consistent with carousel images)
         captionEl.style.display = 'none';
-        
+
         overlay.style.display = 'flex';
-        
+
         // Position the image at the click Y position, centered horizontally
         const positionImage = () => {
           const clickY = parseFloat(overlay.dataset.clickY) || window.innerHeight / 2;
-          
+
           // Wait for next frame to ensure image is rendered
           requestAnimationFrame(() => {
             const imgRect = zoomedImg.getBoundingClientRect();
             const viewportHeight = window.innerHeight;
             const viewportWidth = window.innerWidth;
-            
+
             // Calculate position to center image at click Y, centered X
             const left = (viewportWidth - imgRect.width) / 2;
             let top = clickY - (imgRect.height / 2);
-            
+
             // Clamp top position to keep image within viewport
             const minTop = 10; // 10px margin from top
             const maxTop = viewportHeight - imgRect.height - 10; // 10px margin from bottom
             top = Math.max(minTop, Math.min(top, maxTop));
-            
+
             zoomedImg.style.position = 'absolute';
             zoomedImg.style.left = `${left}px`;
             zoomedImg.style.top = `${top}px`;
-            
+
             // Position caption and arrows relative to the image
             const leftArrow = overlay.querySelector('#zoom-nav-left');
             const rightArrow = overlay.querySelector('#zoom-nav-right');
-            
+
             if (leftArrow) {
               leftArrow.style.top = `${top}px`;
               leftArrow.style.height = `${imgRect.height}px`;
@@ -1053,7 +1056,7 @@ function initBeforeAfterSliders() {
             }
           });
         };
-        
+
         // Wait for image to load before positioning
         if (zoomedImg.complete) {
           positionImage();
@@ -1063,7 +1066,7 @@ function initBeforeAfterSliders() {
       });
     });
   }
-  
+
   // Initialize all sliders on the page
   document.querySelectorAll('.ba-slider').forEach(initSlider);
 }
@@ -1074,21 +1077,21 @@ function initBeforeAfterSliders() {
 function buildBackgroundLayers(site = {}, themeColors = {}) {
   if (!site.background_image) return null;
   const baseImage = `url('${site.background_image}')`;
-  
+
   // Derive pattern colors from theme if not explicitly provided
   let blackColor = site.background_color_black;
   let whiteColor = site.background_color_white;
-  
+
   // Auto-derive from theme colors if not specified
   if (!blackColor && !whiteColor && themeColors) {
     const bgDark = themeColors.bg_dark || '#0A0A0A';
     const brandPrimary = themeColors.brand_primary || '#FFFFFF';
-    
+
     // Use bg_dark for black, and a darkened version of brand_primary for white
     blackColor = bgDark;
     whiteColor = `color-mix(in srgb, ${brandPrimary} 20%, ${bgDark} 80%)`;
   }
-  
+
   if (!blackColor && !whiteColor) {
     return { backgroundImage: baseImage, blendMode: '' };
   }
@@ -1133,16 +1136,16 @@ function createBackgroundStyle(cfg) {
 function generateBackgroundShapes(cfg) {
   const container = document.querySelector('.bg-shapes');
   if (!container) return;
-  
+
   // Clean up previous styles
   const existingStyle = document.querySelector('style[data-bg-rotation]');
   if (existingStyle) existingStyle.remove();
-  
+
   // Handle background image
   if (cfg?.site?.background_image) {
     container.innerHTML = '';
     const rotationStyle = createBackgroundStyle(cfg);
-    
+
     if (rotationStyle) {
       // Use pseudo-element for rotation
       const style = document.createElement('style');
@@ -1155,7 +1158,7 @@ function generateBackgroundShapes(cfg) {
       const layers = buildBackgroundLayers(site) || { backgroundImage: `url('${site.background_image}')`, blendMode: '' };
       container.style.backgroundImage = layers.backgroundImage;
       container.style.backgroundBlendMode = layers.blendMode || '';
-      
+
       // If background repeats vertically, calculate size based on page height
       const bgRepeat = site.background_repeat || 'no-repeat';
       if (bgRepeat === 'repeat' || bgRepeat === 'repeat-y') {
@@ -1167,7 +1170,7 @@ function generateBackgroundShapes(cfg) {
           document.documentElement.scrollHeight,
           document.documentElement.offsetHeight
         );
-        
+
         // Change from fixed to absolute positioning to allow height control
         container.style.position = 'absolute';
         container.style.top = '0';
@@ -1176,16 +1179,16 @@ function generateBackgroundShapes(cfg) {
         container.style.height = `${pageHeight}px`;
         container.style.width = '100%';
       }
-      
+
       container.style.backgroundSize = site.background_size || 'cover';
       container.style.backgroundPosition = site.background_position || 'center';
       container.style.backgroundRepeat = bgRepeat;
     }
-    
+
     container.style.opacity = cfg?.site?.background_opacity || '0.3';
     return;
   }
-  
+
   // Generate animated shapes
   container.innerHTML = '';
   container.style.backgroundImage = '';
@@ -1193,20 +1196,20 @@ function generateBackgroundShapes(cfg) {
   const viewportWidth = utils.getViewportWidth();
   const shapeCount = viewportWidth < 600 ? 48 : 96;
   const sizeRange = viewportWidth < 600 ? { min: 18, max: 50 } : { min: 22, max: 60 };
-  
+
   // Create shapes efficiently
   const fragment = document.createDocumentFragment();
   for (let i = 0; i < shapeCount; i++) {
     const shape = document.createElement('span');
     const shapeType = utils.randomChoice(THEME_CONFIG.shapes.types);
-    
+
     shape.className = `shape ${shapeType}`;
-    
+
     const size = Math.round(sizeRange.min + Math.random() * (sizeRange.max - sizeRange.min));
     const top = Math.random() * 100;
     const left = Math.random() * 100;
     const rotation = Math.round(Math.random() * 360);
-    
+
     Object.assign(shape.style, {
       width: `${size}px`,
       height: `${size}px`,
@@ -1215,7 +1218,7 @@ function generateBackgroundShapes(cfg) {
       transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
       position: 'absolute'
     });
-    
+
     fragment.appendChild(shape);
   }
   container.appendChild(fragment);
@@ -1466,7 +1469,7 @@ async function loadTomlContent(url) {
   if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
   const text = await res.text();
   dbg('loadTomlContent: fetched bytes', text.length);
-  
+
   // Prefer robust external TOML parser (supports inline tables and nested structures)
   const externalParser = (window.TOML && window.TOML.parse) || (window.toml && window.toml.parse);
   if (externalParser) {
@@ -1479,7 +1482,7 @@ async function loadTomlContent(url) {
       dbgw('External TOML parser failed, falling back to lightweight parser:', e);
     }
   }
-  
+
   // Normalize known multiline literal strings for fallback parser (triple quotes)
   // Converts: content_html = '''...'''
   // Into:     content_html = "...\n..." (JSON-escaped)
@@ -1496,7 +1499,7 @@ async function loadTomlContent(url) {
   };
 
   const normalized = normalizeTomlForFallback(text);
-  
+
   // Fallback to local lightweight parser
   dbg('loadTomlContent: using lightweight parser');
   const fallback = parseTomlLight(normalized);
@@ -1536,24 +1539,24 @@ async function fetchMarkdownContent(url) {
 
 function parseMarkdownChangelog(markdown) {
   if (!markdown) return [];
-  
+
   const lines = markdown.split('\n');
   const versions = [];
   let currentVersion = null;
-  
+
   for (const line of lines) {
     const trimmed = line.trim();
-    
+
     // Check for version headers (e.g., >## 1.5.2 - INITIAL PUBLIC RELEASE)
     const versionMatch = trimmed.match(/^>##\s+(.+)$/);
     if (versionMatch) {
       if (currentVersion) {
         versions.push(currentVersion);
       }
-      
+
       const fullTitle = versionMatch[1];
       const { title, date } = parseVersionTitleAndDate(fullTitle);
-      
+
       currentVersion = {
         title: title,
         fullTitle: fullTitle,
@@ -1562,7 +1565,7 @@ function parseMarkdownChangelog(markdown) {
       };
       continue;
     }
-    
+
     // Check for bullet points (e.g., * Fixed broken imports)
     const bulletMatch = trimmed.match(/^\*\s+(.+)$/);
     if (bulletMatch && currentVersion) {
@@ -1570,12 +1573,12 @@ function parseMarkdownChangelog(markdown) {
       continue;
     }
   }
-  
+
   // Add the last version if it exists
   if (currentVersion) {
     versions.push(currentVersion);
   }
-  
+
   return versions;
 }
 
@@ -1588,10 +1591,10 @@ function parseVersionTitleAndDate(fullTitle) {
     /(\d{1,2}\s+\w+\s+\d{4})/g,                // DD Month YYYY
     /(\w+\s+\d{1,2},?\s+\d{4})/g               // Month DD, YYYY
   ];
-  
+
   let extractedDate = null;
   let cleanTitle = fullTitle;
-  
+
   for (const pattern of datePatterns) {
     const matches = fullTitle.match(pattern);
     if (matches && matches.length > 0) {
@@ -1603,7 +1606,7 @@ function parseVersionTitleAndDate(fullTitle) {
       break;
     }
   }
-  
+
   return {
     title: cleanTitle || fullTitle,
     date: extractedDate
@@ -1613,27 +1616,27 @@ function parseVersionTitleAndDate(fullTitle) {
 // Parse usage images using generic parser
 function parseUsageImages(introduction) {
   if (!introduction) return [];
-  
+
   // Use generic parser with usage-specific keys
   const images = parseMediaItems(introduction, {
     itemsKey: 'usage_images',
-    itemKey: 'usage_image', 
+    itemKey: 'usage_image',
     captionsKey: 'usage_images_captions',
     altKey: 'usage_images_alt',
     alignmentKey: 'usage_images_alignment'
   });
-  
+
   // Fallback to legacy single image format
   if (images.length === 0) {
     const singleImage = introduction.usage_image || introduction.usageImage;
     const singleAlt = introduction.usage_image_alt || introduction.usageImageAlt || 'Usage illustration';
     const singleCaption = introduction.usage_image_caption || introduction.usageImageCaption || '';
-    
+
     if (singleImage) {
       images.push({ src: singleImage, alt: singleAlt, caption: singleCaption });
     }
   }
-  
+
   return images;
 }
 
@@ -1654,14 +1657,14 @@ function createImageCarousel(images, cfg, className = 'image-carousel', options 
   if (options.sharedAlt) {
     images = images.map(img => ({ ...img, alt: String(options.sharedAlt) }));
   }
-  
-  const carousel = createMediaCarousel(images, cfg, { 
-    className, 
+
+  const carousel = createMediaCarousel(images, cfg, {
+    className,
     type: 'image',
     borderClass: 'media-border',
     ...options
   });
-  
+
   return carousel;
 }
 
@@ -1733,20 +1736,20 @@ function renderChangelogSection(cfg) {
   const changelogSection = document.getElementById('changelog');
   const changelogTitle = document.getElementById('changelog-title');
   const changelogContent = document.getElementById('changelog-content');
-  
+
   if (!changelogSection || !cfg?.changelog?.enabled) {
     if (changelogSection) changelogSection.style.display = 'none';
     return;
   }
-  
+
   // Set title
   if (changelogTitle && cfg.changelog.title) {
     changelogTitle.textContent = cfg.changelog.title;
   }
-  
+
   // Show the section
   changelogSection.style.display = '';
-  
+
   // Fetch and render changelog content
   if (cfg.changelog.url && changelogContent) {
     fetchMarkdownContent(cfg.changelog.url).then(markdown => {
@@ -1754,32 +1757,32 @@ function renderChangelogSection(cfg) {
         changelogContent.innerHTML = '<p>Unable to load changelog content.</p>';
         return;
       }
-      
+
       const versions = parseMarkdownChangelog(markdown);
       if (versions.length === 0) {
         changelogContent.innerHTML = '<p>No changelog entries found.</p>';
         return;
       }
-      
+
       // Reverse the order so newest versions appear first
       const reversedVersions = versions.reverse();
-      
+
       // Create scrollable container with collapsible versions
       const scrollContainer = document.createElement('div');
       scrollContainer.className = 'changelog-scroll-container';
-      
+
       // Render changelog versions with collapsible sections
       reversedVersions.forEach((version, index) => {
         const versionId = `changelog-version-${index}`;
         const isFirstVersion = index === 0;
         const { versionClass, badgeClass, titleColor, borderColor, iconColor } = getChangelogVariantStyles(version.title);
-        
-        const changesHtml = version.changes.map(change => 
+
+        const changesHtml = version.changes.map(change =>
           `<li class="changelog-change-item" style="--bullet-color: ${iconColor};">${mdInlineToHtmlBoldOnly(change)}</li>`
         ).join('');
-        
+
         const dateHtml = version.date ? `<span class="changelog-version-date">${version.date}</span>` : '';
-        
+
         const versionElement = document.createElement('div');
         versionElement.className = `changelog-version ${versionClass}`;
         versionElement.innerHTML = `
@@ -1799,23 +1802,23 @@ function renderChangelogSection(cfg) {
             </div>
           </div>
         `;
-        
+
         scrollContainer.appendChild(versionElement);
       });
-      
+
       changelogContent.innerHTML = '';
       changelogContent.appendChild(scrollContainer);
-      
+
       // Apply theme colors to strong elements
       colorizeStrongIn(changelogContent, cfg);
-      
+
       // Add event listeners for toggle icons
       changelogContent.querySelectorAll('.changelog-version-header').forEach(header => {
-        header.addEventListener('click', function() {
+        header.addEventListener('click', function () {
           const icon = this.querySelector('.changelog-toggle-icon');
           const target = this.getAttribute('data-bs-target');
           const collapse = document.querySelector(target);
-          
+
           // Toggle icon rotation
           setTimeout(() => {
             if (collapse.classList.contains('show')) {
@@ -1826,7 +1829,7 @@ function renderChangelogSection(cfg) {
           }, 10);
         });
       });
-      
+
     }).catch(error => {
       console.error('Error rendering changelog:', error);
       changelogContent.innerHTML = '<p>Error loading changelog content.</p>';
@@ -1905,9 +1908,9 @@ function renderCitationsSection(cfg) {
   // Check if citations are enabled and if there are citation items
   const citationsEnabled = cfg?.citations_config?.enabled !== false; // default to true for backward compatibility
   const items = Array.isArray(cfg?.citations) ? cfg.citations : [];
-  
+
   if (!citationsEnabled || !items.length) return;
-  
+
   const main = document.querySelector('main.content-container') || document.querySelector('main') || document.body;
   if (!main) return;
 
@@ -1946,8 +1949,8 @@ function applyThemeColors(cfg) {
   if (cfg?.theme_colors) {
     const root = document.documentElement;
     const colors = normalizeThemeColors(cfg.theme_colors);
-    const specialKeys = new Set(['brand_primary','brand_secondary','brand_tertiary','palette']);
-    
+    const specialKeys = new Set(['brand_primary', 'brand_secondary', 'brand_tertiary', 'palette']);
+
     // Set unified brand and link colors used by CSS
     if (colors.brand_primary) {
       root.style.setProperty('--brand-color', colors.brand_primary, 'important');
@@ -1973,7 +1976,7 @@ function applyThemeColors(cfg) {
   } else {
     // No theme colors block
   }
-  
+
   // Load preset keywords from config for colorizing quality preset names
   if (cfg?.preset_keywords) {
     // Strip quotes from keys (TOML parser may include them) and filter out non-keyword entries
@@ -1989,7 +1992,7 @@ function applyThemeColors(cfg) {
   } else {
     globalPresetKeywords = {};
   }
-  
+
   // Load preset keywords blacklist
   const blacklistPatterns = cfg?.preset_keywords?.blacklist?.patterns;
   dbg('applyThemeColors: blacklist patterns in config?', blacklistPatterns);
@@ -2005,7 +2008,7 @@ function applyThemeColors(cfg) {
 async function applyFontConfiguration(cfg) {
   // Apply font settings from TOML to CSS custom properties
   let fonts = cfg?.fonts;
-  
+
   // If fonts_config is specified, load fonts from external file
   if (cfg?.fonts_config && !fonts) {
     try {
@@ -2017,10 +2020,10 @@ async function applyFontConfiguration(cfg) {
       dbgw('applyFontConfiguration: failed to load external font config:', e);
     }
   }
-  
+
   if (fonts) {
     const root = document.documentElement;
-    
+
     // Apply each font setting with !important to override CSS defaults
     Object.entries(fonts).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -2036,11 +2039,11 @@ async function applyFontConfiguration(cfg) {
 async function renderContent(cfg) {
   // Store config globally for access by other functions
   window.globalConfig = cfg;
-  
+
   // Apply theme colors and fonts first
   applyThemeColors(cfg);
   await applyFontConfiguration(cfg);
-  
+
   // Header: banner + research paper link
   const siteLogo = document.querySelector('.site-logo');
   if (siteLogo) {
@@ -2095,11 +2098,11 @@ async function renderContent(cfg) {
   if (sections.length > 0) {
     // Process each section individually
     let insertAfter = document.querySelector('.intro');
-    
+
     sections.forEach(section => {
       const sectionType = section.type || 'content';
       const sectionTitle = section.title || '';
-      
+
       // Handle comparison-type sections
       if (sectionType === 'comparisons') {
         const comparisonItems = Array.isArray(section.items) ? section.items : [];
@@ -2108,7 +2111,7 @@ async function renderContent(cfg) {
           // Create standalone section element
           const mainSection = document.createElement('section');
           mainSection.className = 'section comparisons';
-          
+
           // Add section title as h2
           if (sectionTitle) {
             const h2 = document.createElement('h2');
@@ -2116,10 +2119,10 @@ async function renderContent(cfg) {
             h2.textContent = sectionTitle;
             mainSection.appendChild(h2);
           }
-          
+
           const comparisonsGrid = document.createElement('div');
           comparisonsGrid.className = 'grid grid--one-col';
-          
+
           comparisonItems.forEach((item, idx) => {
             dbg(`Processing comparison item ${idx}:`, item);
             const el = createComparisonElement(item, cfg);
@@ -2131,9 +2134,9 @@ async function renderContent(cfg) {
               dbg(`Failed to create comparison element ${idx}`);
             }
           });
-          
+
           mainSection.appendChild(comparisonsGrid);
-          
+
           // Insert after previous section
           if (insertAfter && insertAfter.parentNode) {
             insertAfter.parentNode.insertBefore(mainSection, insertAfter.nextSibling);
@@ -2143,12 +2146,12 @@ async function renderContent(cfg) {
           } else {
             dbg(`WARNING: Could not insert comparison section "${sectionTitle}" - no parent found`);
           }
-          
+
           // Initialize before/after sliders and carousels after DOM insertion
           setTimeout(() => {
             // Initialize sliders
             initBeforeAfterSliders();
-            
+
             // Initialize any Bootstrap carousels
             if (typeof bootstrap !== 'undefined') {
               mainSection.querySelectorAll('.carousel').forEach(carouselEl => {
@@ -2164,7 +2167,7 @@ async function renderContent(cfg) {
         }
         return; // Skip rest of processing for comparison sections
       }
-      
+
       // Handle content-type sections
       const sectionItems = Array.isArray(section.steps) ? section.steps : [];
       const sectionImages = parseMediaItems(section, {
@@ -2173,7 +2176,7 @@ async function renderContent(cfg) {
         altKey: 'images_alt',
         alignmentKey: 'images_alignment'
       });
-      
+
       // Check layout preference for this section
       const imageLayout = section.images_layout || 'vertical';
       const isWideLayout = imageLayout === 'wide' || imageLayout === '16:9' || imageLayout === 'horizontal';
@@ -2182,7 +2185,7 @@ async function renderContent(cfg) {
         // Create container for the section
         const sectionContainer = document.createElement('div');
         sectionContainer.className = 'intro__section-container';
-        
+
         // If no images, just render text without grid
         if (sectionImages.length === 0) {
           if (sectionTitle && sectionItems.length > 0) {
@@ -2251,12 +2254,12 @@ async function renderContent(cfg) {
             });
             sectionContainer.appendChild(ul);
           }
-          
+
           // Add media below text (full width)
           if (sectionImages.length > 0) {
             const mediaContainer = document.createElement('div');
             mediaContainer.className = 'intro__usage-media-wide';
-            
+
             const carousel = createMediaCarousel(sectionImages, cfg, {
               className: 'generic-section-carousel generic-section-carousel--wide',
               type: 'image',
@@ -2264,7 +2267,7 @@ async function renderContent(cfg) {
               objectFit: 'contain'
             });
             if (carousel) mediaContainer.appendChild(carousel);
-            
+
             sectionContainer.appendChild(mediaContainer);
           }
         } else {
@@ -2331,7 +2334,7 @@ async function renderContent(cfg) {
         // Create standalone section element
         const mainSection = document.createElement('section');
         mainSection.className = 'section generic-section';
-        
+
         // Add section title as h2
         if (sectionTitle) {
           const h2 = document.createElement('h2');
@@ -2339,13 +2342,13 @@ async function renderContent(cfg) {
           h2.textContent = sectionTitle;
           mainSection.appendChild(h2);
         }
-        
+
         // Wrap in grid for consistency
         const grid = document.createElement('div');
         grid.className = 'grid grid--one-col';
         grid.appendChild(sectionContainer);
         mainSection.appendChild(grid);
-        
+
         // Insert after previous section
         if (insertAfter && insertAfter.parentNode) {
           insertAfter.parentNode.insertBefore(mainSection, insertAfter.nextSibling);
@@ -2391,10 +2394,10 @@ async function renderContent(cfg) {
     if (cfg.support.link_text) supportLink.textContent = cfg.support.link_text;
     if (cfg.support.link_url) supportLink.href = cfg.support.link_url;
   }
-  
+
   // Changelog section
   renderChangelogSection(cfg);
-  
+
   // Citations (appended at the bottom)
   renderCitationsSection(cfg);
   // Final pass: colorize any remaining bold across the page
@@ -2420,9 +2423,9 @@ function getDocumentationPagesArray(cfg) {
 function renderIntroductionSection(introConfig, cfg, containerId, options = {}) {
   const introContent = document.getElementById(containerId);
   if (!introContent || !introConfig) return;
-  
+
   introContent.innerHTML = '';
-  
+
   // Render paragraphs
   const paras = introConfig.paragraphs || [];
   paras.forEach(t => {
@@ -2446,12 +2449,12 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
     ulp.className = 'intro__params-list';
     let currentLi = null;
     let nestedUl = null;
-    
+
     parameters.forEach(item => {
       const itemStr = String(item);
       // Check if this is an indented sub-item (starts with spaces + bullet)
       const isIndented = /^\s+[•·\-\*]/.test(itemStr);
-      
+
       if (isIndented) {
         // This is a sub-item
         if (!nestedUl) {
@@ -2494,12 +2497,12 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
     ul.className = 'intro__usage-list';
     let currentLi = null;
     let nestedUl = null;
-    
+
     usageItems.forEach(item => {
       const itemStr = String(item);
       // Check if this is an indented sub-item (starts with spaces + bullet)
       const isIndented = /^\s+[•·\-\*]/.test(itemStr);
-      
+
       if (isIndented) {
         // This is a sub-item
         if (!nestedUl) {
@@ -2529,21 +2532,21 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
 
   // Usage images
   const usageImages = parseUsageImages(introConfig);
-  
+
   // Check image layout preference (vertical/portrait or wide/16:9)
   const imageLayout = introConfig.usage_images_layout || introConfig.usage_image_layout || 'vertical'; // 'vertical' or 'wide'
   const isWideLayout = imageLayout === 'wide' || imageLayout === '16:9' || imageLayout === 'horizontal';
-  
+
   // Layout with images
   if (usageImages.length > 0) {
     if (isWideLayout) {
       // Wide layout: text above, image below (full width)
       usageNodes.forEach(node => introContent.appendChild(node));
       paramNodes.forEach(node => introContent.appendChild(node));
-      
+
       const mediaContainer = document.createElement('div');
       mediaContainer.className = 'intro__usage-media-wide';
-      
+
       if (usageImages.length === 1) {
         // Use unified carousel even for single image to keep behavior consistent
         const carousel = createMediaCarousel(usageImages, cfg, {
@@ -2562,7 +2565,7 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
         });
         if (carousel) mediaContainer.appendChild(carousel);
       }
-      
+
       introContent.appendChild(mediaContainer);
     } else {
       // Vertical layout: side-by-side grid (original behavior)
@@ -2577,7 +2580,7 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
 
       const mediaCol = document.createElement('div');
       mediaCol.className = 'intro__usage-media';
-      
+
       if (usageImages.length === 1) {
         // Use unified carousel for single image in vertical layout as well
         const carousel = createMediaCarousel(usageImages, cfg, {
@@ -2595,7 +2598,7 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
         });
         if (carousel) mediaCol.appendChild(carousel);
       }
-      
+
       grid.appendChild(mediaCol);
       introContent.appendChild(grid);
     }
@@ -2617,41 +2620,41 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
   if (quickstartTitle && quickstartImages.length > 0) {
     const quickstartSection = document.createElement('div');
     quickstartSection.className = 'intro__quickstart';
-    
+
     const h3 = document.createElement('h3');
     h3.className = 'intro__usage-title';
     h3.textContent = quickstartTitle;
     quickstartSection.appendChild(h3);
-    
+
     const carousel = createImageCarousel(quickstartImages, cfg, 'quickstart-carousel');
     quickstartSection.appendChild(carousel);
-    
+
     introContent.appendChild(quickstartSection);
   }
   // Optional: introduction-level video (parity with main view)
   const includeVideo = options.includeVideo !== false;
   if (includeVideo) {
     const videoTitle = introConfig.video_title || '';
-    
+
     // Parse videos using generic parser (supports both single video_url and videos array)
     const videos = parseMediaItems(introConfig, {
       itemsKey: 'videos',
-      urlsKey: 'video_urls', 
+      urlsKey: 'video_urls',
       urlKey: 'video_url',
       captionsKey: 'video_captions'
     });
-    
+
     if (videos.length > 0) {
       const videoSection = document.createElement('div');
       videoSection.className = 'intro__video';
-      
+
       if (videoTitle) {
         const h3 = document.createElement('h3');
         h3.className = 'intro__usage-title';
         h3.textContent = videoTitle;
         videoSection.appendChild(h3);
       }
-      
+
       // Use unified carousel for both single and multiple videos (DRY)
       const carousel = createVideoCarousel(videos, cfg, 'video-carousel');
       videoSection.appendChild(carousel);
@@ -2666,7 +2669,7 @@ function renderIntroductionSection(introConfig, cfg, containerId, options = {}) 
 // Helper function to create comparison elements (extracted from main renderContent)
 function createComparisonElement(comparison, cfg) {
   if (!comparison) return null;
-  
+
   // Handle different comparison types
   if (comparison.image) {
     // Single image card (unified markup with main page)
@@ -2698,21 +2701,21 @@ function createComparisonElement(comparison, cfg) {
     // Carousel card (unified markup with main page)
     const card = document.createElement('div');
     card.className = 'card card--compact';
-    
+
     const images = comparison.images.map((src, i) => ({
       src,
       alt: comparison.images_alt?.[i] || `Image ${i + 1}`,
       caption: comparison.images_captions?.[i] || ''
     }));
-    
+
     const carousel = createMediaCarousel(images, cfg, {
       className: 'comparison-carousel',
       type: 'image',
       borderClass: 'media-border'
     });
-    
+
     if (carousel) card.appendChild(carousel);
-    
+
     return card;
   } else if (comparison.before && comparison.after) {
     // Before/after slider - use same markup as main page for consistency
@@ -2742,7 +2745,7 @@ function createComparisonElement(comparison, cfg) {
 
     return card;
   }
-  
+
   return null;
 }
 
@@ -2752,19 +2755,19 @@ function toggleView() {
   const documentationView = document.getElementById('documentation-view');
   const toggleBtn = document.getElementById('view-toggle-btn');
   const supportToggleBtn = document.getElementById('support-view-toggle-btn');
-  
+
   if (!showcaseView || !documentationView || !toggleBtn || !globalConfig) return;
-  
+
   if (currentView === 'showcase') {
     // Switch to documentation
     showcaseView.style.display = 'none';
     documentationView.style.display = 'block';
     currentView = 'documentation';
-    
+
     const toggleText = globalConfig?.documentation?.toggle_text_documentation || 'View Product Showcase';
     toggleBtn.textContent = toggleText;
     if (supportToggleBtn) supportToggleBtn.textContent = toggleText;
-    
+
     // Show TOC, hide any open page
     showDocumentationTOC();
   } else {
@@ -2772,7 +2775,7 @@ function toggleView() {
     documentationView.style.display = 'none';
     showcaseView.style.display = 'block';
     currentView = 'showcase';
-    
+
     const toggleText = globalConfig?.documentation?.toggle_text_showcase || 'View Documentation';
     toggleBtn.textContent = toggleText;
     if (supportToggleBtn) supportToggleBtn.textContent = toggleText;
@@ -2783,10 +2786,10 @@ function toggleView() {
 function showDocumentationTOC() {
   const tocContainer = document.querySelector('.documentation-toc');
   const pageContainer = document.getElementById('documentation-page');
-  
+
   if (tocContainer) tocContainer.style.display = 'block';
   if (pageContainer) pageContainer.style.display = 'none';
-  
+
   currentDocPage = null;
 }
 
@@ -2794,10 +2797,10 @@ function showDocumentationTOC() {
 function showDocumentationPage(pageId) {
   const tocContainer = document.querySelector('.documentation-toc');
   const pageContainer = document.getElementById('documentation-page');
-  
+
   if (tocContainer) tocContainer.style.display = 'none';
   if (pageContainer) pageContainer.style.display = 'block';
-  
+
   currentDocPage = pageId;
   dbg('showDocumentationPage:', pageId);
   renderDocumentationPage(pageId);
@@ -2807,13 +2810,13 @@ function showDocumentationPage(pageId) {
 function renderDocumentationTOC(cfg) {
   if (!cfg?.documentation?.enabled) return;
   dbg('renderDocumentationTOC: enabled');
-  
+
   const titleEl = document.getElementById('documentation-title');
   const subtitleEl = document.getElementById('documentation-subtitle');
   const gridEl = document.getElementById('documentation-toc-grid');
-  
+
   if (!gridEl) return;
-  
+
   // Set title and subtitle
   if (titleEl && cfg.documentation.toc?.title) {
     titleEl.textContent = cfg.documentation.toc.title;
@@ -2822,7 +2825,7 @@ function renderDocumentationTOC(cfg) {
     subtitleEl.innerHTML = mdInlineToHtmlBoldOnly(cfg.documentation.toc.subtitle);
     colorizeStrongIn(subtitleEl, cfg);
   }
-  
+
   // Clear and populate TOC grid
   gridEl.innerHTML = '';
   const sections = Array.isArray(cfg.documentation.toc?.sections) ? cfg.documentation.toc.sections : [];
@@ -2836,7 +2839,7 @@ function renderDocumentationTOC(cfg) {
       item.className = 'documentation-toc-item';
       const sectionId = (section && section.id) ? section.id : '';
       const isUnderConstruction = section && section.under_construction === true;
-      
+
       if (isUnderConstruction) {
         item.classList.add('under-construction');
         item.style.cursor = 'not-allowed';
@@ -2844,14 +2847,14 @@ function renderDocumentationTOC(cfg) {
       } else {
         item.onclick = () => sectionId && showDocumentationPage(sectionId);
       }
-      
+
       const contentDiv = document.createElement('div');
       contentDiv.className = 'documentation-toc-content';
-      
+
       const titleDiv = document.createElement('h3');
       titleDiv.className = 'documentation-toc-title';
       titleDiv.textContent = (section && section.title) ? section.title : 'Untitled';
-      
+
       if (isUnderConstruction) {
         const badge = document.createElement('span');
         badge.className = 'under-construction-badge';
@@ -2871,18 +2874,18 @@ function renderDocumentationTOC(cfg) {
         `;
         titleDiv.appendChild(badge);
       }
-      
+
       contentDiv.appendChild(titleDiv);
-      
+
       if (section && section.description) {
         const descDiv = document.createElement('p');
         descDiv.className = 'documentation-toc-description';
         descDiv.textContent = section.description;
         contentDiv.appendChild(descDiv);
       }
-      
+
       item.appendChild(contentDiv);
-      
+
       if (section && section.image) {
         const img = document.createElement('img');
         img.src = section.image;
@@ -2890,7 +2893,7 @@ function renderDocumentationTOC(cfg) {
         img.className = 'documentation-toc-image';
         item.appendChild(img);
       }
-      
+
       gridEl.appendChild(item);
     });
   } else {
@@ -2908,7 +2911,7 @@ function renderDocumentationPage(pageId) {
   const cfgDoc = docsConfig || globalConfig;
   const pagesArr = getDocumentationPagesArray(cfgDoc);
   if (!pagesArr.length) return;
-  
+
   const page = pagesArr.find(p => p && p.id === pageId);
   dbg('renderDocumentationPage: target id', pageId, 'pages length', pagesArr.length, 'found?', !!page);
   if (!page) {
@@ -2921,13 +2924,13 @@ function renderDocumentationPage(pageId) {
     }
     return;
   }
-  
+
   // Set page title
   const titleEl = document.getElementById('doc-page-title');
   if (titleEl && page.title) {
     titleEl.textContent = page.title;
   }
-  
+
   // Render introduction section (reuse existing function)
   const introEl = document.getElementById('doc-page-intro');
   if (introEl) {
@@ -2944,24 +2947,24 @@ function renderDocumentationPage(pageId) {
   const cleanupDynamicSections = () => {
     const pageContainer = document.getElementById('documentation-page');
     if (!pageContainer) return;
-    
+
     // Remove all sections that match the pattern section--*
     const dynamicSections = pageContainer.querySelectorAll('section[class*="section--"]');
     dynamicSections.forEach(section => section.remove());
   };
-  
+
   // Clean up before rendering new page
   cleanupDynamicSections();
 
   // Dynamic section renderer - automatically detects and renders all sections from TOML
   const renderDynamicSections = () => {
     if (!page.introduction) return;
-    
+
     const introConfig = page.introduction;
-    
+
     // Get section order from TOML config, or use auto-detection as fallback
     let sectionOrder = introConfig.section_order;
-    
+
     // Fallback: auto-detect sections if not explicitly defined in TOML
     if (!Array.isArray(sectionOrder) || sectionOrder.length === 0) {
       sectionOrder = [];
@@ -2976,10 +2979,10 @@ function renderDocumentationPage(pageId) {
         }
       }
     }
-    
+
     // Get section ID prefix from config
     const sectionIdPrefix = introConfig.section_id_prefix || 'doc-page-';
-    
+
     // Helper function to create a section
     const createSection = (sectionKey, previousSectionKey) => {
       const titleKey = `${sectionKey}_title`;
@@ -2988,7 +2991,7 @@ function renderDocumentationPage(pageId) {
       const captionsKey = `${sectionKey}_images_captions`;
       const altKey = `${sectionKey}_images_alt`;
       const alignmentKey = `${sectionKey}_images_alignment`;
-      
+
       const title = introConfig[titleKey] || '';
       const steps = Array.isArray(introConfig[stepsKey]) ? introConfig[stepsKey] : [];
       const images = parseMediaItems(introConfig, {
@@ -2997,32 +3000,32 @@ function renderDocumentationPage(pageId) {
         altKey: altKey,
         alignmentKey: alignmentKey
       });
-      
+
       // Debug logging
       dbg(`Section ${sectionKey}: title="${title}", steps=${steps.length}, images=${images.length}`);
       if (images.length > 0) {
         dbg(`  Images for ${sectionKey}:`, images);
       }
-      
+
       // Remove existing section if it exists
       const sectionId = `${sectionIdPrefix}${sectionKey}`;
       const existingSection = document.getElementById(sectionId);
       if (existingSection) existingSection.remove();
-      
+
       // Only create section if it has content
       if (title && (steps.length > 0 || images.length > 0)) {
         const section = document.createElement('section');
         section.id = sectionId;
         section.className = `section section--${sectionKey}`;
-        
+
         const h2 = document.createElement('h2');
         h2.className = 'section__title';
         h2.textContent = title;
         section.appendChild(h2);
-        
+
         const card = document.createElement('div');
         card.className = 'card';
-        
+
         if (steps.length > 0) {
           const ul = document.createElement('ul');
           ul.className = 'intro__usage-list';
@@ -3034,12 +3037,12 @@ function renderDocumentationPage(pageId) {
           });
           card.appendChild(ul);
         }
-        
+
         if (images.length > 0) {
           const carousel = createImageCarousel(images, (cfgDoc || globalConfig), `${sectionKey}-carousel`);
           card.appendChild(carousel);
         }
-        
+
         // Check for video URL (single video)
         const videoUrlKey = `${sectionKey}_video_url`;
         const videoUrl = introConfig[videoUrlKey] || '';
@@ -3056,28 +3059,28 @@ function renderDocumentationPage(pageId) {
             card.appendChild(videoCarousel);
           }
         }
-        
+
         section.appendChild(card);
-        
+
         // Insert after previous section
         const pageContainer = document.getElementById('documentation-page');
         const previousSectionId = `${sectionIdPrefix}${previousSectionKey}`;
         const previousEl = document.getElementById(previousSectionId);
-        
+
         if (pageContainer && previousEl) {
           previousEl.parentNode.insertBefore(section, previousEl.nextSibling);
         }
       }
     };
-    
+
     // Render all sections in order with delays
     const initialSection = introConfig.initial_section || 'intro';
-    
+
     // Timing values are implementation details - hardcoded here
     let delay = 100;
     const delayIncrement = 50;
     let previousSection = initialSection;
-    
+
     sectionOrder.forEach((sectionKey) => {
       setTimeout(() => {
         createSection(sectionKey, previousSection);
@@ -3086,7 +3089,7 @@ function renderDocumentationPage(pageId) {
       delay += delayIncrement;
     });
   };
-  
+
   // Call the dynamic renderer
   renderDynamicSections();
 
@@ -3174,7 +3177,7 @@ function renderDocumentationPage(pageId) {
               }
             }
           });
-        } catch {}
+        } catch { }
       };
 
       const injectHtml = (html) => {
@@ -3186,7 +3189,7 @@ function renderDocumentationPage(pageId) {
           const doc = parser.parseFromString(html, 'text/html');
           const main = doc.querySelector('main');
           toInject = (main && main.innerHTML) || (doc.body && doc.body.innerHTML) || html;
-        } catch {}
+        } catch { }
         richContent.innerHTML = toInject;
         richSection.style.display = 'block';
         colorizeStrongIn(richContent, globalConfig);
@@ -3198,7 +3201,7 @@ function renderDocumentationPage(pageId) {
             }
             // Add fallback class for function calls after Prism tokenization
             tagFunctionCalls(richContent);
-          } catch {}
+          } catch { }
         });
       };
 
@@ -3223,21 +3226,21 @@ function renderDocumentationPage(pageId) {
   } catch (e) {
     console.warn('renderDocumentationPage: rich content render failed:', e);
   }
-  
+
   // Render comparisons if they exist
   const comparisonsSection = document.getElementById('doc-page-comparisons');
   const comparisonsGrid = document.getElementById('doc-page-comparisons-grid');
   if (page.comparisons && page.comparisons.length > 0 && comparisonsGrid) {
     comparisonsSection.style.display = 'block';
     comparisonsGrid.innerHTML = '';
-    
+
     page.comparisons.forEach(comparison => {
       const comparisonEl = createComparisonElement(comparison, globalConfig);
       if (comparisonEl) {
         comparisonsGrid.appendChild(comparisonEl);
       }
     });
-    
+
     // Re-initialize sliders for this page
     setTimeout(() => {
       initBeforeAfterSliders();
@@ -3245,7 +3248,7 @@ function renderDocumentationPage(pageId) {
   } else if (comparisonsSection) {
     comparisonsSection.style.display = 'none';
   }
-  
+
   // Render showcase if it exists
   const showcaseSection = document.getElementById('doc-page-showcase');
   const showcaseContainer = document.getElementById('doc-page-showcase-container');
@@ -3253,7 +3256,7 @@ function renderDocumentationPage(pageId) {
     dbg('renderDocumentationPage: showcase present');
     showcaseSection.style.display = 'block';
     showcaseContainer.innerHTML = '';
-    
+
     const videos = parseShowcaseVideos(page.showcase);
     if (videos.length > 0) {
       const carousel = createVideoCarousel(videos, (cfgDoc || globalConfig), 'video-carousel');
@@ -3324,10 +3327,10 @@ async function initDocumentation(cfg) {
     toggleBtn.style.display = 'inline-block';
     dbg('initDocumentation: toggle button ready');
   }
-  
+
   // Set up toggle button (support section) - only if support_toggle_enabled is not false
   const supportToggleBtn = document.getElementById('support-view-toggle-btn');
-  const supportToggleEnabled = activeDocCfg?.documentation?.support_toggle_enabled !== false 
+  const supportToggleEnabled = activeDocCfg?.documentation?.support_toggle_enabled !== false
     && cfg?.documentation?.support_toggle_enabled !== false;
   if (supportToggleBtn && supportToggleEnabled) {
     const toggleText = (activeDocCfg?.documentation?.toggle_text_showcase)
@@ -3368,36 +3371,36 @@ function initScrollUpIndicator() {
     user-select: none;
     transition: opacity 0.2s ease;
   `;
-  
+
   // Create three triangles
   const triangle1 = document.createElement('div');
   triangle1.className = 'scroll-triangle scroll-triangle-1';
   triangle1.innerHTML = '▲';
-  
+
   const triangle2 = document.createElement('div');
   triangle2.className = 'scroll-triangle scroll-triangle-2';
   triangle2.innerHTML = '▲';
-  
+
   const triangle3 = document.createElement('div');
   triangle3.className = 'scroll-triangle scroll-triangle-3';
   triangle3.innerHTML = '▲';
-  
+
   const triangleStyle = `
     color: var(--brand-color, #8A66D9);
     font-size: 1.5rem;
     line-height: 0.5;
     text-shadow: 0 0 8px var(--brand-color, #8A66D9);
   `;
-  
+
   triangle1.style.cssText = triangleStyle;
   triangle2.style.cssText = triangleStyle;
   triangle3.style.cssText = triangleStyle;
-  
+
   indicator.appendChild(triangle3); // Top
   indicator.appendChild(triangle2); // Middle
   indicator.appendChild(triangle1); // Bottom
   document.body.appendChild(indicator);
-  
+
   // Add flash animation
   const style = document.createElement('style');
   style.textContent = `
@@ -3423,42 +3426,42 @@ function initScrollUpIndicator() {
     }
   `;
   document.head.appendChild(style);
-  
+
   // Track mouse movement
   let lastMouseY = 0;
   let isVisible = false;
-  
+
   document.addEventListener('mousemove', (e) => {
     lastMouseY = e.clientY;
     updateIndicator();
   });
-  
+
   // Also check on scroll
   window.addEventListener('scroll', () => {
     updateIndicator();
   });
-  
+
   function updateIndicator() {
     // Find the active view (showcase or documentation)
     const showcaseView = document.getElementById('showcase-view');
     const documentationView = document.getElementById('documentation-view');
-    
+
     let activeView = null;
     if (showcaseView && showcaseView.style.display !== 'none') {
       activeView = showcaseView;
     } else if (documentationView && documentationView.style.display !== 'none') {
       activeView = documentationView;
     }
-    
+
     if (!activeView) {
       indicator.style.display = 'none';
       isVisible = false;
       return;
     }
-    
+
     // Get all sections in active view
     const sections = activeView.querySelectorAll('.section');
-    
+
     // Also check for citations section which may be outside the view container
     const citationsSection = document.getElementById('citations');
     const allSections = [...sections];
@@ -3469,13 +3472,13 @@ function initScrollUpIndicator() {
         allSections.push(citationsSection);
       }
     }
-    
+
     if (allSections.length === 0) {
       indicator.style.display = 'none';
       isVisible = false;
       return;
     }
-    
+
     // Find the last visible section
     let lastSection = null;
     for (let i = allSections.length - 1; i >= 0; i--) {
@@ -3485,19 +3488,19 @@ function initScrollUpIndicator() {
         break;
       }
     }
-    
+
     if (!lastSection) {
       indicator.style.display = 'none';
       isVisible = false;
       return;
     }
-    
+
     // Get the bottom position of the last card
     const lastCard = lastSection.querySelector('.card');
     const bottomElement = lastCard || lastSection;
     const rect = bottomElement.getBoundingClientRect();
     const bottomY = rect.bottom;
-    
+
     // Check if mouse is below the last card
     if (lastMouseY > bottomY && bottomY < window.innerHeight) {
       // Show indicator at mouse Y position
@@ -3533,18 +3536,18 @@ function initPageHeightIndicator() {
     opacity: 0;
     transition: opacity 0.2s ease;
   `;
-  
+
   // Show subtle hint on hover
   clickArea.addEventListener('mouseenter', () => {
     clickArea.style.opacity = '0.1';
     clickArea.style.background = 'var(--brand-color, #8A66D9)';
   });
-  
+
   clickArea.addEventListener('mouseleave', () => {
     clickArea.style.opacity = '0';
     clickArea.style.background = 'transparent';
   });
-  
+
   // Create the height display element
   const heightDisplay = document.createElement('div');
   heightDisplay.id = 'page-height-display';
@@ -3567,12 +3570,12 @@ function initPageHeightIndicator() {
     user-select: none;
     pointer-events: none;
   `;
-  
+
   document.body.appendChild(clickArea);
   document.body.appendChild(heightDisplay);
-  
+
   let hideTimeout = null;
-  
+
   clickArea.addEventListener('click', () => {
     // Calculate page height
     const pageHeight = Math.max(
@@ -3582,14 +3585,14 @@ function initPageHeightIndicator() {
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight
     );
-    
+
     // Show the height
     heightDisplay.textContent = `${pageHeight}px`;
     heightDisplay.style.display = 'block';
-    
+
     // Clear any existing timeout
     if (hideTimeout) clearTimeout(hideTimeout);
-    
+
     // Hide after 3 seconds
     hideTimeout = setTimeout(() => {
       heightDisplay.style.display = 'none';
@@ -3607,7 +3610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let tomlUrl = (window.CONTENT_TOML_URL)
     || (document.body && document.body.dataset && document.body.dataset.toml)
     || (new URLSearchParams(window.location.search).get('toml'));
-  
+
   // If no explicit TOML specified, determine from URL path or query params
   if (!tomlUrl) {
     const urlParams = new URLSearchParams(window.location.search);
