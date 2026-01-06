@@ -1,16 +1,25 @@
 # Site settings (UltiTools)
 [site]
   title = "UltiTools"
-  banner = "images/Banner.webp"
+  banner = "images/UltitoolsBanner.png"
   research_link_text = "Discord Support"
   research_link_url = "https://discord.gg/Xh7eB5Rn5b"
-  research_link_enabled = true
+  research_link_enabled = false
 
-# Theme colors (Monochrome theme)
+# Theme colors (Magenta theme)
 [theme_colors]
-  brand_primary = "#FFFFFF"
-  bg_dark = "#0F0F0F"
+  brand_primary = "#FF00FF"     # Magenta
+  bg_dark = "#1A0A1A"           # Very dark magenta
   text_white = "#FFFFFF"
+  # hyperlink_color optional; falls back to brand_primary when omitted
+  # Background pattern (black/white mask with color mapping)
+  background_image = "images/Pattern.svg"
+  background_size = "auto"
+  background_position = "center"
+  background_repeat = "repeat"
+  background_opacity = "0.15"
+  background_rotation = "45"            # Rotate pattern in degrees
+  # Pattern colors auto-derived from theme_colors
 
 # Font configuration (references shared font config)
 fonts_config = "content/fonts.toml"
@@ -33,60 +42,89 @@ fonts_config = "content/fonts.toml"
 [introduction]
   title = ""
   paragraphs = [
-    "This is an add-on that includes **various tools** for Blender, showcased below. Each tool is designed to streamline specific workflows and improve productivity.",
-    "From **Palette Management** to **Mesh Analysis**, **Portfolio Rendering** to **Game-Ready FBX Export**, UltiTools provides essential utilities for Blender artists."
+    "**UltiTools** is a collection of various tools made throughout the years for solving common Blender workflow issues, all bundled into a single add-on.",
+    "From **mesh operations** and **shape key management** to **game-ready FBX export** and **texture atlas creation**, UltiTools provides essential utilities for Blender artists working in **game development**, **asset creation**, and **3D production**."
   ]
 
-  # Tools overview
+  # Tools overview - organized by category
   parameters_title = "Tool Categories"
   parameters = [
-    "**Palette Manager** - Streamlined palette system with save/load functionality. Switching between colors made easy (Ctrl+Q for pie menu by default).",
-    "**Mesh Analysis** - See the state of your mesh with all its problems. Detects overlapping faces, non-manifold geometry, and more.",
-    "**Portfolio Renderer** - Automates wireframe render setup including text, font, size, and material settings for AO and wireframe renders.",
-    "**3D LUT Generator** - Create 3D LUTs for various engines and platforms. Includes 3D LUT visualizer for color space transformations.",
-    "**Sprite Sheet Creation** - Takes all camera frames and stitches them into a single texture. Perfect for sprite animations.",
-    "**Text Animation** - Toggle and keyframe different texts on your text object. Supports dynamic expressions and mathematical operations.",
-    "**UV++** - Better UV layer controls. Rearrange UV layers, create copies, and transfer UV layouts between objects.",
-    "**Game Ready FBX Exporter** - Reliable FBX export with game engine-friendly defaults, Unreal animation scale fix, and more."
+    "**Mesh Tools** - Capsule creation, smart merge (boolean + mesh cleanup), mesh splitting, reseam, and color attribute symmetrization.",
+    "**Shape Key Tools** - Link shape keys across objects with drivers, select shape key vertices, and bulk clear operations.",
+    "**Vertex Weight Tools** - Symmetrize vertex groups, average connected weights, and copy weights between vertices.",
+    "**Sculpt Tools** - Convert selections to sculpt masks, save/load masks to vertex groups for non-destructive workflows.",
+    "**Material Tools** - Export material textures, replace materials across scene, import materials from folder with auto-detection.",
+    "**Asset Library Exporter** - Export selections as reusable assets with preview thumbnails, categories, and license metadata.",
+    "**Sprite Sheet Creation** - Stitch camera frames into sprite sheets with configurable grid layout.",
+    "**Text Animation** - Dynamic text with keyframeable entries and math expressions ({frame}, {vertices}, etc).",
+    "**Portfolio Renderer** - Automated wireframe/AO renders with customizable text overlays, shadows, and backgrounds.",
+    "**3D LUT Generator** - Create identity 3D LUTs in strip or cube format with real-time color visualization.",
+    "**Vertex Measure Tool** - Measure distances and angles directly on mesh vertices.",
+    "**Game Ready FBX Exporter** - Reliable export with Unity/Unreal fixes, animation scale correction, and batch processing.",
+    "**Atlas Toolkit** - Create and manage texture atlases with tile editing and UV adjustment tools."
   ]
 
-  usage_title = "Tool Highlights"
-  usage_steps = [
-    "**Palette Manager:** Ctrl+Q for quick color switching with save/load presets",
-    "**Mesh Analysis:** Instantly identify mesh problems including overlapping faces",
-    "**Portfolio Renderer:** One-click wireframe and AO render setup",
-    "**FBX Exporter:** Game engine optimized with Unity/Unreal specific fixes"
+  # Multiple usage images with carousel
+  usage_images_layout = "vertical"  # "vertical" (9:16) or "wide" (16:9)
+  usage_images = [
+    "images/Logo.webp",
+    "images/Logo.webp",
+    "images/Logo.webp",
+    "images/Logo.webp"
   ]
-
-  usage_image = "images/Logo.webp"
-  usage_image_alt = "UltiTools interface"
-  usage_image_caption = "UltiTools - Essential Blender utilities"
+  
+  # Captions for the images (in order)
+  usage_images_captions = [
+    "3D Viewport > N > UltiTools",
+    "UV Editor > N > Atlas Toolkit",
+    "Shader Editor > N > UltiTools",
+    "Asset Library panels"
+  ]
+  
+  # Alignment for the images (in order)
+  usage_images_alignment = [
+    "top-right",
+    "top-right",
+    "top-right",
+    "top-right"
+  ]
 
   # Generic sections
   [[introduction.sections]]
-    type = "comparisons"
-    title = "Tool Comparisons"
-    
-    [[introduction.sections.items]]
-      initial = 0.5
-      before = "images/Logo.webp"
-      after  = "images/Logo2.webp"
-      caption = "**Standard Blender tools** vs **UltiTools enhanced workflow**"
-      handle_shape = "circle"
-
-    [[introduction.sections.items]]
-      initial = 0.6
-      before = "images/Logo.webp"
-      after  = "images/Logo2.webp"
-      caption = "**Manual mesh checking** vs **Automated mesh analysis**"
-      handle_shape = "circle"
-
-    [[introduction.sections.items]]
-      initial = 0.4
-      before = "images/Logo.webp"
-      after  = "images/Logo2.webp"
-      caption = "**Complex FBX setup** vs **Game-ready export presets**"
-      handle_shape = "circle"
+    type = "content"
+    title = "Feature Showcase"
+    images = [
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    images_captions = [
+      "**Mesh Tools** - Smart merge, capsule creation, mesh splitting, and reseaming utilities",
+      "**Shape Key Tools** - Link shape keys with drivers, select vertices, and bulk operations",
+      "**Vertex Weight Tools** - Symmetrize groups, average weights, and copy between vertices",
+      "**Sculpt Tools** - Selection to mask conversion, save/load masks to vertex groups",
+      "**Material Tools** - Texture export, material replacement, and folder-based importing",
+      "**Asset Library Exporter** - Export selections as assets with thumbnails and metadata",
+      "**Sprite Sheet Creation** - Stitch camera frames into sprite sheet textures",
+      "**Text Animation** - Keyframeable text entries with dynamic math expressions",
+      "**Portfolio Renderer** - Automated wireframe/AO renders with text overlays",
+      "**3D LUT Generator** - Create identity LUTs in strip or cube format",
+      "**Vertex Measure Tool** - Measure distances and angles on mesh vertices",
+      "**Game Ready FBX Exporter** - Unity/Unreal optimized export with scale fixes",
+      "**Atlas Toolkit** - Texture atlas creation with tile editing and UV tools"
+    ]
+    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
+    images_layout = "wide"
 
 # Showcase
 [showcase]
@@ -146,4 +184,25 @@ fonts_config = "content/fonts.toml"
       "Remove Materials Toggle",
       "Combine to Active"
     ]
+
+# Documentation configuration
+[documentation]
+  enabled = true
+  default_view = "showcase"  # "showcase" or "documentation"
+  toggle_text_showcase = "View Documentation"
+  toggle_text_documentation = "View Product Showcase"
+  support_toggle_enabled = false  # Hide the toggle in support section (already in header)
+  toml_url = "content/ultitools-docs.toml"
+  
+  [[documentation.sections]]
+    id = "various-tools"
+    title = "Various Tools"
+  
+  [[documentation.sections]]
+    id = "fbx-exporter"
+    title = "FBX Exporter"
+  
+  [[documentation.sections]]
+    id = "atlas-toolkit"
+    title = "Atlas Toolkit"
 

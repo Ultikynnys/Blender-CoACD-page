@@ -3325,9 +3325,11 @@ async function initDocumentation(cfg) {
     dbg('initDocumentation: toggle button ready');
   }
   
-  // Set up toggle button (support section)
+  // Set up toggle button (support section) - only if support_toggle_enabled is not false
   const supportToggleBtn = document.getElementById('support-view-toggle-btn');
-  if (supportToggleBtn) {
+  const supportToggleEnabled = activeDocCfg?.documentation?.support_toggle_enabled !== false 
+    && cfg?.documentation?.support_toggle_enabled !== false;
+  if (supportToggleBtn && supportToggleEnabled) {
     const toggleText = (activeDocCfg?.documentation?.toggle_text_showcase)
       || (cfg?.documentation?.toggle_text_showcase)
       || 'View Documentation';

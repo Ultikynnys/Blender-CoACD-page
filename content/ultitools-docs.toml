@@ -1,0 +1,526 @@
+# UltiTools Documentation
+[documentation]
+  enabled = true
+  default_view = "showcase"  # "showcase" or "documentation"
+  toggle_text_showcase = "View Documentation"
+
+  [documentation.toc]
+    title = "Documentation"
+    subtitle = "Complete guide to UltiTools features and workflows"
+    sections = [
+      { id = "various-tools", title = "Various Tools", description = "Mesh, Shape Key, Vertex Weight, Sculpt, Material, Asset Library, and utility tools", image = "images/Logo.webp" },
+      { id = "fbx-exporter", title = "FBX Exporter", description = "Game-ready FBX export with Unity and Unreal specific fixes", image = "images/Logo.webp" },
+      { id = "atlas-toolkit", title = "Atlas Toolkit", description = "Texture atlas creation and UV management tools", image = "images/Logo.webp" }
+    ]
+
+[[documentation.pages]]
+  id = "various-tools"
+  title = "Various Tools"
+
+  [documentation.pages.introduction]
+    title = "Utility Tools Overview"
+    paragraphs = [
+      "UltiTools provides a comprehensive collection of utility tools organized into categories. Each category can be enabled or disabled in addon preferences.",
+      "Access the main panel at: **3D Viewport > N > UltiTools**"
+    ]
+    video_title = "Various Small Tools"
+    video_url = "https://www.youtube.com/embed/wfx9gM5UDJs"
+    section_order = [
+      "meshtools",
+      "shapekeytools",
+      "vertexweighttools",
+      "sculpttools",
+      "materialtools",
+      "assetlibrary",
+      "spritesheet",
+      "textanimation",
+      "portfoliorenderer",
+      "lutgenerator",
+      "vertexmeasure"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-"
+    
+    # ==========================================
+    # MESH TOOLS
+    # ==========================================
+    meshtools_title = "Mesh Tools"
+    meshtools_steps = [
+      "**Capsule Creation** - Create capsule meshes with configurable radius, length, and resolution. Perfect for character collision volumes or placeholder geometry.",
+      "**Smart Merge** - Powerful mesh combining tool that uses boolean operations followed by automatic cleanup. Removes internal faces, recalculates normals, fills holes, and merges vertices by distance. Configurable iteration count and inflate amount for stubborn intersections.",
+      "**Mesh Splitting** - Split one mesh using another as a cutting boundary. Options include gap distance, preserve original toggle, and outline visualization. Select exactly two mesh objects - the active object gets split by the other.",
+      "**Reseam** - Automatically recreate UV seams based on sharp edges. Useful after mesh modifications that break existing seams.",
+      "**Color Attribute Symmetrize** - Mirror vertex colors across the mesh symmetry axis. Works with Blender's color attribute system."
+    ]
+    meshtools_images = [
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    meshtools_images_captions = [
+      "Mesh Tools panel in the UltiTools sidebar",
+      "Smart Merge settings with boolean solver options",
+      "Mesh splitting with gap and outline visualization"
+    ]
+    meshtools_images_alignment = ["center", "center", "center"]
+    
+    # ==========================================
+    # SHAPE KEY TOOLS
+    # ==========================================
+    shapekeytools_title = "Shape Key Tools"
+    shapekeytools_steps = [
+      "**Link Active Shape Key** - Create driver connections to link shape keys between multiple objects. When enabled, moving the active shape key slider on one object automatically drives the same shape key on other selected objects. Essential for face rigs where expressions need to sync across eyes, eyebrows, and face meshes.",
+      "**Select Shape Key Vertices** - Select all vertices that are affected by the currently active shape key. Useful for identifying which parts of the mesh are deformed by a specific shape key.",
+      "**Clear Active Shape Key** - Reset the active shape key's vertex positions back to the basis (original) position without deleting the shape key itself.",
+      "**Clear All Shape Keys** - Remove all shape key data from the object, leaving only the current deformed state as the base mesh."
+    ]
+    shapekeytools_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    shapekeytools_images_captions = [
+      "Shape Key Tools panel with link and selection options",
+      "Driver connections created between linked shape keys"
+    ]
+    shapekeytools_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # VERTEX WEIGHT TOOLS
+    # ==========================================
+    vertexweighttools_title = "Vertex Weight Tools"
+    vertexweighttools_steps = [
+      "**Symmetrize Vertex Groups** - Mirror vertex weights across the mesh symmetry axis (X, Y, or Z). Copies weights from one side to the other, respecting Blender's .L/.R naming convention for vertex groups.",
+      "**Average Connected Weights** - Smooth vertex weights by averaging the weight of each vertex with its connected neighbors. Useful for cleaning up noisy weight paint or soft-blending weight transitions.",
+      "**Copy Active Vertex Weights** - In edit mode, copy the vertex group weights from the active vertex to all selected vertices. Quick way to propagate weights to nearby vertices."
+    ]
+    vertexweighttools_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    vertexweighttools_images_captions = [
+      "Vertex Weight Tools panel",
+      "Before and after weight averaging"
+    ]
+    vertexweighttools_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # SCULPT TOOLS
+    # ==========================================
+    sculpttools_title = "Sculpt Tools"
+    sculpttools_steps = [
+      "**Selection to Sculpt Mask** - Convert your current vertex selection (from edit mode) into a sculpt mask. Three modes available: Replace (overwrites existing mask), Add (extends mask), and Subtract (removes from mask). Works in both edit and sculpt modes.",
+      "**Save Mask to Vertex Group** - Store the current sculpt mask as a vertex group. The mask values are preserved as weights, allowing you to save multiple masks and recall them later. Uses the active vertex group.",
+      "**Load Mask from Vertex Group** - Restore a sculpt mask from a previously saved vertex group. Converts vertex group weights back into mask values."
+    ]
+    sculpttools_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    sculpttools_images_captions = [
+      "Sculpt mask operations panel",
+      "Workflow: save mask to VG, sculpt, load different mask"
+    ]
+    sculpttools_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # MATERIAL TOOLS
+    # ==========================================
+    materialtools_title = "Material Tools"
+    materialtools_steps = [
+      "**Material Texture Exporter** - Export all textures from a material's node tree to external image files. Automatically detects connected textures and saves them with appropriate naming.",
+      "**Material Replacer** - Replace one material with another across all objects in the scene. Select the material to remove and the replacement material, then click Replace All Instances. Useful for cleaning up duplicate materials.",
+      "**Folder Material Importer** - Auto-detect and import PBR material textures from a folder. Scans for common naming patterns (diffuse, normal, roughness, etc.) and creates properly connected materials. Supports preview list with thumbnail display."
+    ]
+    materialtools_images = [
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    materialtools_images_captions = [
+      "Material Texture Exporter panel",
+      "Material Replacer with source and target selection",
+      "Folder Material Importer with preview list"
+    ]
+    materialtools_images_alignment = ["center", "center", "center"]
+    
+    # ==========================================
+    # ASSET LIBRARY EXPORTER
+    # ==========================================
+    assetlibrary_title = "Asset Library Exporter"
+    assetlibrary_steps = [
+      "Export selected objects as reusable Blender assets directly to your configured asset libraries.",
+      "**Preview System** - Automatic thumbnail capture with 1:1 aspect ratio guide overlay. Adjustable scale and center-view option for perfect framing.",
+      "**License Support** - Built-in Creative Commons license options: CC0 (public domain), CC-BY, CC-BY-SA, CC-BY-NC, CC-BY-NC-SA. Attribution text field for non-CC0 licenses.",
+      "**Category Management** - Select from existing categories or create new ones. Categories are stored as Blender asset catalogs.",
+      "**Export Options** - File compression toggle for smaller asset sizes. Automatic file save before export to ensure data integrity."
+    ]
+    assetlibrary_images = [
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    assetlibrary_images_captions = [
+      "Asset Library Exporter full panel",
+      "Preview guide overlay for thumbnail capture",
+      "Category selection and creation"
+    ]
+    assetlibrary_images_alignment = ["center", "center", "center"]
+    
+    # ==========================================
+    # SPRITE SHEET CREATION
+    # ==========================================
+    spritesheet_title = "Sprite Sheet Creation"
+    spritesheet_steps = [
+      "Render all frames from your scene's frame range into a single combined sprite sheet texture.",
+      "**Camera Required** - Uses the scene's active camera for rendering. Panel shows a camera selector if none is set.",
+      "**Configurable Output** - Set custom output name. Resolution per sprite is defined by scene render resolution (X and Y).",
+      "**Frame Range** - Uses scene start and end frames. Total sprites = (end - start + 1).",
+      "**Y-Axis Flip** - Toggle to flip the sprite sheet vertically for engines that expect different UV origins."
+    ]
+    spritesheet_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    spritesheet_images_captions = [
+      "Sprite Sheet Creation panel",
+      "Example sprite sheet output with 8x8 grid"
+    ]
+    spritesheet_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # TEXT ANIMATION
+    # ==========================================
+    textanimation_title = "Text Animation"
+    textanimation_steps = [
+      "Create animated text by switching between multiple text entries on a single text object. Each entry can be keyframed to appear at specific frames.",
+      "**Entry Management** - Add, remove, and reorder text entries in the list. Copy entries to other selected text objects for reuse.",
+      "**Dynamic Parameters** - Use #frame, #minf, #maxf to insert current frame, scene start, and scene end values directly.",
+      "**Math Expressions** - Use {expression} syntax for calculated values. Example: {frame / maxf * 100} for percentage progress.",
+      "**Available Functions** - dec(value, places) for decimal formatting, plus full math module: sin(), cos(), tan(), sqrt(), pow(), abs(), min(), max(), floor(), ceil(), round(), trunc(), pi, e."
+    ]
+    textanimation_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    textanimation_images_captions = [
+      "Text Animation panel with entry list",
+      "Dynamic expression examples in action"
+    ]
+    textanimation_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # PORTFOLIO RENDERER
+    # ==========================================
+    portfoliorenderer_title = "Portfolio Renderer"
+    portfoliorenderer_steps = [
+      "Generate professional wireframe and ambient occlusion renders with customizable overlays for portfolio presentations.",
+      "**Wireframe Material** - Toggle wireframe overlay with configurable color, thickness, and base mesh color. Optional AO (ambient occlusion) with adjustable power.",
+      "**Background Options** - Solid color or pattern image backgrounds. Pattern supports scale, offset, and color customization. Vignette effect with strength control.",
+      "**Object Effects** - Add stroke outlines and drop shadows to rendered objects. Configurable width, color, distance, and blur.",
+      "**Text Overlay System** - Add multiple text elements with individual position, font, size, and color. Text shadow and stroke effects.",
+      "**Dynamic Variables** - {DD}, {MM}, {YY}, {YYYY}, {Month}, {Mon}, {HH}, {Min} for dates/times. {file}, {scene}, {collection}, {vertices}, {objects} for scene info. Configure per-element target collection for stats."
+    ]
+    portfoliorenderer_images = [
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    portfoliorenderer_images_captions = [
+      "Portfolio Renderer main settings",
+      "Text elements list with position and style options",
+      "Example render output with wireframe and text overlay"
+    ]
+    portfoliorenderer_images_alignment = ["center", "center", "center"]
+    
+    # ==========================================
+    # 3D LUT GENERATOR
+    # ==========================================
+    lutgenerator_title = "3D LUT Generator"
+    lutgenerator_steps = [
+      "Generate identity 3D LUT (Look-Up Table) images for color grading workflows.",
+      "**Strip Mode** - Creates a horizontal strip LUT image. Common format for many color grading applications.",
+      "**Cube Mode** - Creates a cube-unwrapped LUT image. Alternative format for specific software requirements.",
+      "**Sample Size** - Configure LUT precision (common sizes: 17, 33, 65). Higher values = more accurate color mapping but larger files.",
+      "**Apply LUT** - Test LUT transformations on color reference images to preview the effect."
+    ]
+    lutgenerator_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    lutgenerator_images_captions = [
+      "3D LUT Generator panel with mode selection",
+      "Generated identity LUT in strip format"
+    ]
+    lutgenerator_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # VERTEX MEASURE TOOL
+    # ==========================================
+    vertexmeasure_title = "Vertex Measure Tool"
+    vertexmeasure_steps = [
+      "Measure distances and angles directly on mesh vertices in the 3D viewport.",
+      "**Distance Measurement** - Select two or more vertices to see distance between them displayed in the viewport.",
+      "**Angle Measurement** - Select three vertices to calculate and display the angle.",
+      "**Real-time Display** - Measurements update live as you modify the selection or transform vertices."
+    ]
+    vertexmeasure_images = [
+      "images/Logo.webp"
+    ]
+    vertexmeasure_images_captions = [
+      "Vertex Measure Tool showing distance and angle readouts"
+    ]
+    vertexmeasure_images_alignment = ["center"]
+    
+    quickstart_title = ""
+    quickstart_images = []
+    quickstart_images_captions = []
+    quickstart_images_alignment = []
+
+
+# ==========================================
+# FBX EXPORTER PAGE
+# ==========================================
+[[documentation.pages]]
+  id = "fbx-exporter"
+  title = "Game Ready FBX Exporter"
+
+  [documentation.pages.introduction]
+    title = "FBX Export Made Easy"
+    paragraphs = [
+      "A reliable FBX exporter designed specifically for game development workflows with Unity and Unreal Engine.",
+      "Fixes common export issues and provides sensible defaults for game-ready assets. No more struggling with Blender's built-in exporter settings."
+    ]
+    video_title = "FBX Exporter"
+    video_url = "https://www.youtube.com/embed/JWHu0HYKsWg"
+    section_order = [
+      "features",
+      "unrealfix",
+      "workflow",
+      "statsoverlay"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-"
+    parameters_title = "Key Features"
+    parameters = [
+      "**Game Engine-Friendly Defaults** - Pre-configured settings optimized for Unity and Unreal",
+      "**Unreal Animation Scale Fix** - Automatically corrects the 100x animation scale issue",
+      "**Move Objects to Origin** - Center objects before export for proper pivot placement",
+      "**Action Selector** - Choose which animation actions to include in the export",
+      "**Remove Materials Toggle** - Strip materials for geometry-only exports",
+      "**Combine to Active** - Merge multiple objects into one mesh for export",
+      "**Selection Stats Overlay** - Real-time vertex/face counts in viewport"
+    ]
+    
+    # ==========================================
+    # FEATURES
+    # ==========================================
+    features_title = "Feature Details"
+    features_steps = [
+      "**Batch Export** - Export multiple objects at once, each to their own FBX file or combined into one.",
+      "**Smart Naming** - Automatic file naming based on object names with configurable prefix/suffix options.",
+      "**Export Path** - Set custom export directories with subfolder creation support.",
+      "**Armature Support** - Proper handling of armatures, bones, and skinned meshes for character exports.",
+      "**Animation Export** - Include selected actions or all actions. Supports NLA strips and baked animations.",
+      "**Scale Handling** - Proper unit scale conversion between Blender and target engines."
+    ]
+    features_images = [
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    features_images_captions = [
+      "FBX Exporter main panel",
+      "Export settings and path configuration",
+      "Action selector for animation export"
+    ]
+    features_images_alignment = ["center", "center", "center"]
+    
+    # ==========================================
+    # UNREAL ANIMATION FIX
+    # ==========================================
+    unrealfix_title = "Unreal Animation Scale Fix"
+    unrealfix_steps = [
+      "**The Problem** - Unreal Engine applies a 100x scale factor to imported FBX files to convert from centimeters to Blender's meters.",
+      "**Animation Impact** - This scale factor also affects animation data, causing root motion to be 100 times larger than expected.",
+      "**The Solution** - The FBX Exporter automatically compensates for this scale difference in the animation export.",
+      "**Result** - Animations import into Unreal correctly without manual scale adjustments or retargeting fixes."
+    ]
+    unrealfix_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    unrealfix_images_captions = [
+      "Scale issue visualization in Unreal",
+      "Correct import after using UltiTools FBX Exporter"
+    ]
+    unrealfix_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # WORKFLOW
+    # ==========================================
+    workflow_title = "Typical Workflow"
+    workflow_steps = [
+      "**1. Select Objects** - Choose the meshes, armatures, and other objects you want to export.",
+      "**2. Open Panel** - Navigate to 3D Viewport > N > UltiTools > FBX Exporter section.",
+      "**3. Set Export Path** - Choose destination folder for your FBX files.",
+      "**4. Configure Options** - Enable/disable features: remove materials, move to origin, combine meshes.",
+      "**5. Select Actions** - If exporting animations, choose which actions to include.",
+      "**6. Export** - Click the Export button. Files are saved with automatic naming."
+    ]
+    workflow_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    workflow_images_captions = [
+      "Step-by-step export workflow",
+      "Exported FBX files in destination folder"
+    ]
+    workflow_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # STATS OVERLAY
+    # ==========================================
+    statsoverlay_title = "Selection Stats Overlay"
+    statsoverlay_steps = [
+      "Real-time display of mesh statistics for selected objects directly in the 3D viewport.",
+      "**Vertex Count** - Total vertices across all selected mesh objects.",
+      "**Face/Polygon Count** - Total faces for performance estimation.",
+      "**Non-intrusive** - Overlay appears in corner of viewport, doesn't interfere with modeling."
+    ]
+    statsoverlay_images = [
+      "images/Logo.webp"
+    ]
+    statsoverlay_images_captions = [
+      "Selection stats overlay showing vertex and face counts"
+    ]
+    statsoverlay_images_alignment = ["center"]
+    
+    quickstart_title = ""
+    quickstart_images = []
+    quickstart_images_captions = []
+    quickstart_images_alignment = []
+
+
+# ==========================================
+# ATLAS TOOLKIT PAGE
+# ==========================================
+[[documentation.pages]]
+  id = "atlas-toolkit"
+  title = "Atlas Toolkit"
+
+  [documentation.pages.introduction]
+    title = "Texture Atlas Management"
+    paragraphs = [
+      "The Atlas Toolkit provides powerful tools for creating and managing texture atlases directly in Blender's UV Editor.",
+      "Access at: **UV Editor > N > Atlas Toolkit**. Works seamlessly with UltiBake for baking to atlas textures."
+    ]
+    video_title = "Atlas Toolkit"
+    video_url = "https://www.youtube.com/embed/-vRYO7gYexQ"
+    section_order = [
+      "overview",
+      "tilemanagement",
+      "uvtools",
+      "workflow"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-"
+    parameters_title = "Key Features"
+    parameters = [
+      "**Atlas Creation** - Create new atlases with configurable tile grids",
+      "**Tile Management** - Add, remove, rename, and reorganize atlas tiles",
+      "**UV Adjustment** - Automatically fit UVs to atlas tile positions",
+      "**Preview Mode** - Visualize atlas layout with tile name overlays (toggleable for performance)",
+      "**Import/Export** - Save and load atlas configurations to external files"
+    ]
+    
+    # ==========================================
+    # OVERVIEW
+    # ==========================================
+    overview_title = "What is a Texture Atlas?"
+    overview_steps = [
+      "A texture atlas combines multiple textures into a single image file, with each texture occupying a specific tile/region.",
+      "**Performance Benefits** - Reduces draw calls in game engines by allowing multiple objects to share one material.",
+      "**Use Cases** - Tileable material libraries, sprite sheets, decal atlases, trim sheets, modular asset textures.",
+      "**Integration** - Works with UltiBake's atlas baking mode to bake multiple objects into a single atlas texture."
+    ]
+    overview_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    overview_images_captions = [
+      "Example texture atlas with multiple material tiles",
+      "Atlas used in game engine with single draw call"
+    ]
+    overview_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # TILE MANAGEMENT
+    # ==========================================
+    tilemanagement_title = "Tile Management"
+    tilemanagement_steps = [
+      "**Create Tiles** - Add new tiles with custom names. Tiles automatically position in the grid.",
+      "**Rename Tiles** - Double-click tile names to edit. Names appear as overlays when preview mode is enabled.",
+      "**Reorganize** - Drag and drop tiles to change their order and grid position.",
+      "**Duplicate** - Copy tiles for creating variations with similar settings.",
+      "**Delete** - Remove unused tiles to optimize atlas space and simplify management.",
+      "**Toggle Name Display** - Enable/disable tile name overlays in the UV editor. Disable for better performance with many tiles."
+    ]
+    tilemanagement_images = [
+      "images/Logo.webp",
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    tilemanagement_images_captions = [
+      "Tile list in Atlas Toolkit panel",
+      "Adding and renaming tiles",
+      "Tile name overlay visualization in UV Editor"
+    ]
+    tilemanagement_images_alignment = ["center", "center", "center"]
+    
+    # ==========================================
+    # UV TOOLS
+    # ==========================================
+    uvtools_title = "UV Tools"
+    uvtools_steps = [
+      "**Fit to Tile** - Automatically scale and position selected UV islands to fit within a specific atlas tile.",
+      "**Proportional Scaling** - Maintain UV aspect ratio when fitting to tiles.",
+      "**Multi-Object Support** - Adjust UVs across multiple selected objects simultaneously.",
+      "**Snap Options** - Snap UV islands to tile corners, edges, or center positions.",
+      "**Island Detection** - Automatic UV island detection for per-island operations."
+    ]
+    uvtools_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    uvtools_images_captions = [
+      "UV fitting to atlas tile",
+      "Before and after UV adjustment"
+    ]
+    uvtools_images_alignment = ["center", "center"]
+    
+    # ==========================================
+    # WORKFLOW
+    # ==========================================
+    workflow_title = "Typical Atlas Workflow"
+    workflow_steps = [
+      "**1. Create Atlas** - Open UV Editor > N > Atlas Toolkit. Create a new atlas with your desired grid size.",
+      "**2. Define Tiles** - Add tiles for each texture region. Name them descriptively (e.g., 'Wood_Planks', 'Metal_Rust').",
+      "**3. Assign UVs** - Select objects/UV islands and use 'Fit to Tile' to position them on the correct atlas region.",
+      "**4. Bake (Optional)** - Use UltiBake with atlas mode to bake textures directly to atlas positions.",
+      "**5. Export** - Save your atlas configuration for reuse in other projects."
+    ]
+    workflow_images = [
+      "images/Logo.webp",
+      "images/Logo.webp"
+    ]
+    workflow_images_captions = [
+      "Complete atlas workflow from creation to export",
+      "Final atlas texture with multiple materials"
+    ]
+    workflow_images_alignment = ["center", "center"]
+    
+    quickstart_title = ""
+    quickstart_images = []
+    quickstart_images_captions = []
+    quickstart_images_alignment = []
+
