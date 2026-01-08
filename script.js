@@ -101,8 +101,8 @@ function createMediaCarousel(items, cfg, options = {}) {
 
     let content;
     if (isVideoFile) {
-      // Native video file with autoplay
-      content = `<video autoplay loop muted playsinline class="d-block w-100 ${borderClass}" style="object-fit: ${objectFit};">
+      // Native video file with controls for user interaction
+      content = `<video autoplay loop muted playsinline controls class="d-block w-100 ${borderClass}" style="object-fit: ${objectFit};">
         <source src="${src}" type="video/${src.match(/\.(\w+)$/)?.[1] || 'mp4'}">
         Your browser does not support the video tag.
       </video>`;
@@ -132,9 +132,14 @@ function createMediaCarousel(items, cfg, options = {}) {
   if (className) {
     className.split(/\s+/).filter(Boolean).forEach(cls => wrapper.classList.add(cls));
   }
-  // Add navigation arrows only for non-video carousels with multiple items
-  // Videos use only center indicators to avoid interfering with YouTube controls
-  const navArrowsHtml = (items.length > 1 && type !== 'video') ? `
+  // Add navigation arrows for carousels with multiple items
+  // Hide arrows only for embedded videos (YouTube, Vimeo) to avoid interfering with their controls
+  // Native video files (mp4, webm) should have arrows for navigation
+  const hasEmbeddedVideos = type === 'video' && items.some(item => {
+    const src = item.src || item.url || '';
+    return !/\.(mp4|webm|ogg|mov)$/i.test(src);
+  });
+  const navArrowsHtml = (items.length > 1 && !hasEmbeddedVideos) ? `
     <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
@@ -274,6 +279,7 @@ function initImageZoom() {
     zoomedVideo.loop = true;
     zoomedVideo.muted = true;
     zoomedVideo.playsInline = true;
+    zoomedVideo.controls = true;
     zoomedVideo.style.cssText = `
       max-width: 100%;
       max-height: 95vh;
@@ -284,7 +290,7 @@ function initImageZoom() {
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      pointer-events: none;
+      pointer-events: auto;
       display: none;
     `;
 
@@ -459,13 +465,40 @@ function initImageZoom() {
 
       const newItem = items[newIndex];
       const newImg = newItem.querySelector('img');
+      const newVideo = newItem.querySelector('video');
 
       if (newImg) {
+        // Handle image navigation
         zoomedImg.src = newImg.src;
         zoomedImg.alt = newImg.alt;
+        zoomedImg.style.display = 'block';
+        zoomedVideo.style.display = 'none';
+        zoomedVideo.pause();
         zoomOverlay.dataset.currentIndex = newIndex;
 
         // Keep caption hidden during navigation (DRY - no captions in focus mode)
+        captionOverlay.style.display = 'none';
+
+        // Also update the carousel position
+        const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+        if (bsCarousel) {
+          bsCarousel.to(newIndex);
+        }
+      } else if (newVideo) {
+        // Handle video navigation
+        const videoSrc = newVideo.querySelector('source')?.src || newVideo.src;
+        zoomedVideo.innerHTML = '';
+        const source = document.createElement('source');
+        source.src = videoSrc;
+        source.type = 'video/mp4';
+        zoomedVideo.appendChild(source);
+        zoomedVideo.load();
+        zoomedVideo.play();
+        zoomedVideo.style.display = 'block';
+        zoomedImg.style.display = 'none';
+        zoomOverlay.dataset.currentIndex = newIndex;
+
+        // Keep caption hidden during navigation
         captionOverlay.style.display = 'none';
 
         // Also update the carousel position
@@ -3043,12 +3076,30 @@ function renderDocumentationPage(pageId) {
           card.appendChild(carousel);
         }
 
-        // Check for video URL (single video)
+        // Check for video URL (single video) or video_urls array (multi-video carousel)
         const videoUrlKey = `${sectionKey}_video_url`;
+        const videoUrlsKey = `${sectionKey}_video_urls`;
+        const videoCaptionsKey = `${sectionKey}_video_captions`;
         const videoUrl = introConfig[videoUrlKey] || '';
-        if (videoUrl) {
-          const items = [{ url: videoUrl, caption: title || '' }];
-          const videoCarousel = createMediaCarousel(items, (cfgDoc || globalConfig), {
+        const videoUrls = Array.isArray(introConfig[videoUrlsKey]) ? introConfig[videoUrlsKey] : [];
+        const videoCaptions = Array.isArray(introConfig[videoCaptionsKey]) ? introConfig[videoCaptionsKey] : [];
+
+        // Build items array - support both single and multi-video
+        let videoItems = [];
+        if (videoUrls.length > 0) {
+          // Multi-video from array
+          videoItems = videoUrls.map((url, i) => ({
+            url: typeof url === 'object' ? (url.url || url.src || '') : url,
+            caption: typeof url === 'object' ? (url.caption || videoCaptions[i] || '') : (videoCaptions[i] || '')
+          }));
+        } else if (videoUrl) {
+          // Single video fallback
+          const captionKey = `${sectionKey}_video_caption`;
+          videoItems = [{ url: videoUrl, caption: introConfig[captionKey] || title || '' }];
+        }
+
+        if (videoItems.length > 0) {
+          const videoCarousel = createMediaCarousel(videoItems, (cfgDoc || globalConfig), {
             className: 'video-carousel',
             type: 'video',
             borderClass: 'interactive-border'

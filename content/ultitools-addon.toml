@@ -60,7 +60,7 @@ fonts_config = "content/fonts.toml"
     "**Portfolio Renderer** - Automated wireframe/AO renders with customizable text overlays, shadows, and backgrounds.",
     "**3D LUT Generator** - Create identity 3D LUTs in strip or cube format with real-time color visualization.",
     "**Vertex Measure Tool** - Measure distances and angles directly on mesh vertices.",
-    "**Game Ready FBX Exporter** - Reliable export with Unity/Unreal fixes, animation scale correction, and batch processing.",
+    "**Game Ready FBX Exporter** - Reliable export with Unity/Unreal fixes, animation scale correction, and batch processing. Pairs well with [AnimationPlus](https://superhivemarket.com/products/animation) for shape key animations.",
     "**Atlas Toolkit** - Create and manage texture atlases with tile editing and UV adjustment tools."
   ]
 
@@ -97,36 +97,42 @@ fonts_config = "content/fonts.toml"
     type = "content"
     title = "Feature Showcase"
     images = [
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp",
-      "images/Logo.webp"
+      "images/Ultitools/FeatureImages/MeshCutter.mp4",
+      "images/Ultitools/FeatureImages/Reseam.mp4",
+      "images/Ultitools/FeatureImages/ShapekeySync.mp4",
+      "images/Ultitools/FeatureImages/MaskTools.mp4",
+      "images/Ultitools/FeatureImages/FolderMaterialImport.mp4",
+      "images/Ultitools/FeatureImages/AssetLibraryTools.mp4",
+      "images/Ultitools/FeatureImages/SpriteSheetGenerator.mp4",
+      "images/Ultitools/FeatureImages/TextAnimation.mp4",
+      "images/Ultitools/FeatureImages/PortfolioRenderer.mp4",
+      "images/Ultitools/FeatureImages/ATLAS_PREVIEW.mp4",
+      "images/Ultitools/FeatureImages/FBX_BATCH_LOD_COLLISION_PREVIEW.mp4",
+      "images/Ultitools/FeatureImages/FBX_Multi_Animationn_Preview.mp4",
+      "images/Ultitools/FeatureImages/FBX_Multi_Shapekey_Animations_Preview.mp4",
+      "images/Ultitools/FeatureImages/HierarcyToolPreview.mp4",
+      "images/Ultitools/FeatureImages/LUTGenerator.mp4",
+      "images/Ultitools/FeatureImages/SmartMerge.mp4"
     ]
     images_captions = [
-      "**Mesh Tools** - Smart merge, capsule creation, mesh splitting, and reseaming utilities",
-      "**Shape Key Tools** - Link shape keys with drivers, select vertices, and bulk operations",
-      "**Vertex Weight Tools** - Symmetrize groups, average weights, and copy between vertices",
-      "**Sculpt Tools** - Selection to mask conversion, save/load masks to vertex groups",
-      "**Material Tools** - Texture export, material replacement, and folder-based importing",
-      "**Asset Library Exporter** - Export selections as assets with thumbnails and metadata",
-      "**Sprite Sheet Creation** - Stitch camera frames into sprite sheet textures",
-      "**Text Animation** - Keyframeable text entries with dynamic math expressions",
-      "**Portfolio Renderer** - Automated wireframe/AO renders with text overlays",
-      "**3D LUT Generator** - Create identity LUTs in strip or cube format",
-      "**Vertex Measure Tool** - Measure distances and angles on mesh vertices",
-      "**Game Ready FBX Exporter** - Unity/Unreal optimized export with scale fixes",
-      "**Atlas Toolkit** - Texture atlas creation with tile editing and UV tools"
+      "**Mesh Cutter** - Split meshes into clean pieces",
+      "**Reseam** - Clear and recreate boundary seams from selection",
+      "**Shape Key Tools** - Link shape keys across objects with drivers",
+      "**Sculpt Mask Tools** - Selection to mask, save/load masks to vertex groups",
+      "**Material Tools** - Folder import with auto-detection, batch material replace",
+      "**Asset Library Tools** - Batch asset creation, auto thumbnails, assets from selection/materials",
+      "**Sprite Sheet** - Stitch camera frames into sprite sheets",
+      "**Text Animation** - Keyframeable text with dynamic expressions",
+      "**Portfolio Renderer** - Wireframe/AO renders with text, stats, and custom backgrounds",
+      "**Atlas Toolkit** - Create and manage texture atlases",
+      "**FBX Exporter** - Unity/Unreal/Godot batch export with LOD and collision",
+      "**FBX Exporter** - Export multiple animations",
+      "**FBX Exporter** - Export shapekey animations",
+      "**Object Sanitizer** - Set origins to floor, arrange in grid for export preprocessing",
+      "**3D LUT Generator** - Create identity LUTs with color visualization",
+      "**Smart Merge** - Boolean + mesh cleanup in one operation"
     ]
-    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
+    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
     images_layout = "wide"
 
 # Showcase
