@@ -110,6 +110,12 @@ fonts_config = "content/fonts.toml"
   link_text = "Support Discord"
   link_url = "https://discord.gg/J7kWSfM4jw"
 
+# Changelog
+[changelog]
+  enabled = true
+  url = "changelogs/ultibridge-changelog.md"
+  title = "Changelog"
+
 # Citations configuration - disabled for UltiBridge Unreal
 [citations_config]
   enabled = false
@@ -122,3 +128,12 @@ fonts_config = "content/fonts.toml"
 # [[citations]]
 #   id = "advanced2023"
 #   bibtex = "@inproceedings{advanced2023,\n  title={Advanced Collision Detection in Real-time Applications},\n  author={Smith, John and Doe, Jane},\n  booktitle={Proceedings of Computer Graphics International},\n  pages={123--135},\n  year={2023},\n  publisher={IEEE}\n}"
+
+# Documentation configuration
+[documentation]
+  enabled = true
+  default_view = "showcase"  # "showcase" or "documentation"
+  toggle_text_showcase = "View Documentation"
+  toggle_text_documentation = "View Product Showcase"
+  toml_url = "content/ultibridge-docs.toml"
+

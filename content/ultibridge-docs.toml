@@ -1,0 +1,179 @@
+# UltiBridge Documentation
+[documentation]
+  enabled = true
+  default_view = "showcase"
+  toggle_text_showcase = "View Documentation"
+
+  [documentation.toc]
+    title = "Documentation"
+    subtitle = "Complete guide to UltiBridge integration"
+    sections = [
+      { id = "general-usage", title = "General Usage", description = "Core features and workflow common to all engines", image = "images/UltiBridge/DocsThumbnails/GeneralThumbnail.png" },
+      { id = "unity", title = "Unity", description = "Unity-specific setup and edge cases", image = "images/UltiBridge/DocsThumbnails/UnityThumbnail.png" },
+      { id = "godot", title = "Godot", description = "Godot-specific setup and edge cases", image = "images/UltiBridge/DocsThumbnails/GodotThumbnail.png" },
+      { id = "unreal", title = "Unreal", description = "Unreal-specific setup and edge cases", image = "images/UltiBridge/DocsThumbnails/UnrealThumbnail.png" }
+    ]
+
+# ==========================================
+# GENERAL USAGE PAGE
+# ==========================================
+[[documentation.pages]]
+  id = "general-usage"
+  title = "General Usage"
+
+  [documentation.pages.introduction]
+    title = "Core Workflow"
+    paragraphs = [
+      "UltiBridge bridges the gap between Blender and your game engine. This section covers the core workflow that applies to all supported engines.",
+      "Whether you use Unity, Godot, or Unreal, the fundamental process of selecting, configuring, and exporting assets remains consistent."
+    ]
+    section_order = [
+      "interface",
+      "export_process",
+      "common_features"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-general-"
+    
+    interface_title = "Interface Overview"
+    interface_steps = [
+      "**Bridge Panel** - Located in the N-Panel under the 'UltiBridge' tab.",
+      "**Target Engine** - Select your target engine (Unity, Godot, Unreal) from the dropdown at the top.",
+      "**Export Settings** - Configure global export settings like texture format and mesh processing."
+    ]
+    interface_images = []
+
+    export_process_title = "Export Process"
+    export_steps = [
+      "**1. Select Assets** - Select the Mesh objects, Armatures, or Materials you want to export in the 3D Viewport.",
+      "**2. Validate** - Check the status indicators in the panel. UltiBridge warns you of potential issues (e.g., missing UVs, unapplied transforms).",
+      "**3. Bridge It!** - Click the main **Export to [Engine]** button. UltiBridge processes the assets and sends them directly to your project."
+    ]
+
+    common_features_title = "Common Features"
+    common_features_steps = [
+      "**Material Conversion** - Automatically converts Blender material nodes to their engine equivalents.",
+      "**Colliders** - Create custom collision meshes using `UCX_` (Convex) or `UBX_` (Box) prefixes, or let UltiBridge auto-generate them.",
+      "**LOD Generation** - Automatically generate and setup Level of Detail models if enabled.",
+      "**Origin Point** - Options to export with scene origin or object origin."
+    ]
+
+# ==========================================
+# UNITY PAGE
+# ==========================================
+[[documentation.pages]]
+  id = "unity"
+  title = "Unity"
+
+  [documentation.pages.introduction]
+    title = "Unity Specifics"
+    paragraphs = [
+      "Specific setup and advanced configuration for the Unity integration.",
+      "Please refer to the **General Usage** section for the core workflow."
+    ]
+    section_order = [
+      "setup",
+      "hdrp_urp",
+      "prefabs"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-unity-"
+    
+    setup_title = "First Time Setup"
+    setup_steps = [
+      "**Package Install** - You must install the `com.ultibridge.unity` package in your Unity project via the Package Manager.",
+      "**Plugin Connection** - Ensure the UltiBridge server is running in Unity (Tools > UltiBridge > Start Server)."
+    ]
+    setup_images = []
+    
+    hdrp_urp_title = "RP Support (HDRP/URP)"
+    hdrp_urp_steps = [
+      "UltiBridge detects your specific Render Pipeline (Built-in, URP, or HDRP) and selects the appropriate material shader automatically.",
+      "**Manual Override** - You can force a specific material preset in the export settings if detection fails."
+    ]
+    
+    prefabs_title = "Prefab Generation"
+    prefabs_steps = [
+      "**Auto-Prefabs** - UltiBridge creates Prefabs for exported meshes by default.",
+      "**Nested Prefabs** - Supports hierarchical export where child objects become child nodes in the Prefab."
+    ]
+
+# ==========================================
+# GODOT PAGE
+# ==========================================
+[[documentation.pages]]
+  id = "godot"
+  title = "Godot"
+
+  [documentation.pages.introduction]
+    title = "Godot Specifics"
+    paragraphs = [
+      "Specific setup and advanced configuration for the Godot integration.",
+      "Refer to **General Usage** for the basic export workflow."
+    ]
+    section_order = [
+      "setup",
+      "scene_format",
+      "godot_4"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-godot-"
+    
+    setup_title = "First Time Setup"
+    setup_steps = [
+      "**Project Path** - Ideally, set your Blender export path to the root of your Godot project.",
+      "**No Plugin Required** - Godot support relies on standard GLTF 2.0 export, adjusted for Godot's coordinate system."
+    ]
+    setup_images = []
+    
+    scene_format_title = "Scenes vs Resources"
+    scene_format_steps = [
+      "**GLTF vs TSCN** - UltiBridge exports GLTF files. Godot imports these as Scenes.",
+      "**Inherited Scenes** - You can create inherited scenes in Godot from the exported GLTF files to add game logic."
+    ]
+    
+    godot_4_title = "Godot 4 Support"
+    godot_4_steps = [
+      "**Blend Files** - Godot 4 can import .blend files directly. UltiBridge offers a 'Direct Blend' mode for Godot 4 users.",
+      "**Materials** - Standard Material 3D support is fully mapped from Blender Principled BSDF."
+    ]
+
+# ==========================================
+# UNREAL PAGE
+# ==========================================
+[[documentation.pages]]
+  id = "unreal"
+  title = "Unreal"
+
+  [documentation.pages.introduction]
+    title = "Unreal Specifics"
+    paragraphs = [
+      "Specific setup and advanced configuration for the Unreal Engine integration.",
+      "Refer to **General Usage** for the basic export workflow."
+    ]
+    section_order = [
+      "setup",
+      "skeletal_meshes",
+      "nanite"
+    ]
+    initial_section = "intro"
+    section_id_prefix = "doc-page-unreal-"
+    
+    setup_title = "First Time Setup"
+    setup_steps = [
+      "**Python Plugin** - Unreal requires the 'Python Editor Script Plugin' to be enabled.",
+      "**Remote Execution** - Enable 'remote execution' in Unreal project settings to allow Blender to communicate."
+    ]
+    setup_images = []
+    
+    skeletal_meshes_title = "Skeletal Meshes"
+    skeletal_meshes_steps = [
+      "**Armature Export** - Select the Armature object. UltiBridge will export it as a Skeletal Mesh.",
+      "**Animation Baking** - Animations are automatically baked to the skeleton."
+    ]
+    
+    nanite_title = "Nanite & Lumen"
+    nanite_steps = [
+      "**Enable Nanite** - Specific toggle in export settings to enable Nanite on imported meshes.",
+      "**High Poly** - UltiBridge is optimized to handle high-poly exports for Nanite workflows."
+    ]

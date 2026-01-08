@@ -528,7 +528,9 @@ Time formats supported: seconds (30), MM:SS (1:30), HH:MM:SS (1:30:00)
     parser.add_argument("--images-only", action="store_true", help="Only process image files (skip videos)")
     parser.add_argument("--start", type=str, default=None, help="Video start time (e.g., 30, 1:30, or 0:01:30)")
     parser.add_argument("--end", type=str, default=None, help="Video end time (e.g., 60, 2:00, or 0:02:00)")
+    parser.add_argument("--end", type=str, default=None, help="Video end time (e.g., 60, 2:00, or 0:02:00)")
     parser.add_argument("--no-seek", action="store_true", help="Skip interactive video seeking (use --start/--end or full video)")
+    parser.add_argument("--replace", action="store_true", help="Replace original files instead of saving to processed folder")
     
     args = parser.parse_args()
     
@@ -618,9 +620,18 @@ Time formats supported: seconds (30), MM:SS (1:30), HH:MM:SS (1:30:00)
         )
         
         # Save result
-        output_path = output_folder / f"{image_path.stem}_processed{image_path.suffix}"
-        cv2.imwrite(str(output_path), result)
-        print(f"  ✓ Saved: {output_path.name} ({result.shape[1]}x{result.shape[0]})")
+        # Save result
+        if args.replace:
+            output_path = image_path
+            # Save to temp then replace
+            temp_path = image_path.with_name(f"{image_path.stem}_temp{image_path.suffix}")
+            cv2.imwrite(str(temp_path), result)
+            os.replace(temp_path, output_path)
+            print(f"  ✓ Replaced original: {output_path.name} ({result.shape[1]}x{result.shape[0]})")
+        else:
+            output_path = output_folder / f"{image_path.stem}_processed{image_path.suffix}"
+            cv2.imwrite(str(output_path), result)
+            print(f"  ✓ Saved: {output_path.name} ({result.shape[1]}x{result.shape[0]})")
         processed_count += 1
     
     # Process videos
@@ -659,7 +670,13 @@ Time formats supported: seconds (30), MM:SS (1:30), HH:MM:SS (1:30:00)
                 print(f"  Crop region: ({crop_rect[0]}, {crop_rect[1]}) to ({crop_rect[2]}, {crop_rect[3]})")
         
         # Process video
-        output_path = output_folder / f"{video_path.stem}_processed.mp4"
+        # Process video
+        if args.replace:
+            # Create a temp output file first
+            output_path = video_path.with_name(f"{video_path.stem}_processed_temp{video_path.suffix}")
+        else:
+            output_path = output_folder / f"{video_path.stem}_processed.mp4"
+            
         process_video(
             video_path,
             output_path,
@@ -671,7 +688,20 @@ Time formats supported: seconds (30), MM:SS (1:30), HH:MM:SS (1:30:00)
             blur_radius=args.blur
         )
         
-        print(f"  ✓ Saved: {output_path.name}")
+        if args.replace:
+            # Overwrite original
+            try:
+                os.replace(output_path, video_path)
+                print(f"  ✓ Replaced original: {video_path.name}")
+            except OSError as e:
+                print(f"  ✗ Error replacing original: {e}")
+                # Try to clean up
+                if output_path.exists():
+                     final_fallback = video_path.with_name(f"{video_path.stem}_processed{video_path.suffix}")
+                     os.replace(output_path, final_fallback)
+                     print(f"    Saved as: {final_fallback.name}")
+        else:
+            print(f"  ✓ Saved: {output_path.name}")
         processed_count += 1
     
     # Summary

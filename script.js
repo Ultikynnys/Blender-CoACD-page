@@ -3673,6 +3673,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       tomlUrl = 'content/ultibridge-unity.toml';
     } else if (page === 'unreal') {
       tomlUrl = 'content/ultibridge-unreal.toml';
+    } else if (page === 'ultibridge') {
+      tomlUrl = 'content/ultibridge-main.toml';
     } else if (page === 'ultibake') {
       tomlUrl = 'content/ultibake-main.toml';
     } else if (page === 'ultitools') {

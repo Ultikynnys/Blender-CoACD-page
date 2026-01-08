@@ -295,7 +295,6 @@
       "features",
       "fbx_shape_keys",
       "whyuse",
-      "unrealfix",
       "workflow",
       "statsoverlay"
     ]
@@ -304,12 +303,10 @@
     parameters_title = "Key Features"
     parameters = [
       "**Game Engine-Friendly Defaults** - Pre-configured settings optimized for Unity, Unreal, and **Godot**",
-      "**Unreal Animation Scale Fix** - Automatically corrects the 100x animation scale issue",
       "**Move Objects to Origin** - Center objects before export for proper pivot placement",
       "**Action Selector** - Choose which animation actions to include in the export",
-      "**Remove Materials Toggle** - Strip materials for geometry-only exports",
       "**Combine to Active** - Merge multiple objects into one mesh for export",
-      "**Selection Stats Overlay** - Real-time vertex/face counts in viewport"
+      "**Selection Stats Overlay** - Real-time object statistics in viewport"
     ]
     
     # ==========================================
@@ -373,7 +370,7 @@
       "**Correct Axis Conversion** - Blender uses Z-Up, but game engines use Y-Up. The native exporter's axis conversion often fails with armatures (adding extra root bones). This exporter handles axis space transformations cleanly for Unity, Unreal, and Godot.",
       "**Origin Management** - **Move to Origin** automatically centers objects at (0,0,0) during export and returns them to their scene position afterwards. Critical for modular kits to have correct pivot points in-engine without messing up your Blender scene layout.",
       "**Clean Hierarchy** - Automatically avoids exporting the entire scene hierarchy (cameras, lights, hidden collections) when you only want the selected mesh.",
-      "**Scale Fixing** - The **Unreal Animation Scale** fix solves the infamous 'tiny character / 100x node' issue when importing animations to Unreal Engine."
+
     ]
     whyuse_video_url = ""
     whyuse_video_caption = ""
@@ -381,19 +378,6 @@
     whyuse_images_captions = []
     whyuse_images_alignment = []
     
-    # ==========================================
-    # UNREAL ANIMATION FIX
-    # ==========================================
-    unrealfix_title = "Unreal Animation Scale Fix"
-    unrealfix_steps = [
-      "**The Problem** - Unreal Engine applies a 100x scale factor to imported FBX files to convert from centimeters to Blender's meters.",
-      "**Animation Impact** - This scale factor also affects animation data, causing root motion to be 100 times larger than expected.",
-      "**The Solution** - The FBX Exporter automatically compensates for this scale difference in the animation export.",
-      "**Result** - Animations import into Unreal correctly without manual scale adjustments or retargeting fixes."
-    ]
-    unrealfix_images = []
-    unrealfix_images_captions = []
-    unrealfix_images_alignment = []
     
     # ==========================================
     # WORKFLOW
@@ -403,7 +387,7 @@
       "**Select Objects** - Choose the meshes, armatures, and other objects you want to export.",
       "**Open Panel** - Navigate to 3D Viewport > N > UltiTools > FBX Exporter section.",
       "**Set Export Path** - Choose destination folder for your FBX files.",
-      "**Configure Options** - Enable/disable features: remove materials, move to origin, combine meshes.",
+      "**Configure Options** - Enable/disable features: move to origin, combine meshes.",
       "**Select Actions** - If exporting animations, choose which actions to include.",
       "**Export** - Click the Export button. Files are saved with automatic naming."
     ]
@@ -416,10 +400,13 @@
     # ==========================================
     statsoverlay_title = "Selection Stats Overlay"
     statsoverlay_steps = [
-      "Real-time display of mesh statistics for selected objects directly in the 3D viewport.\n\n**How to use:**\n- Enable the overlay in **UltiTools > FBX Exporter** panel\n- Select any mesh objects\n- Statistics appear in the viewport corner automatically\n- Updates in real-time as selection changes",
-      "**Vertex Count** - Shows total vertices across all selected mesh objects. Useful for checking if you're within game engine limits.",
-      "**Face/Polygon Count** - Total triangle/quad count for performance estimation. Most game engines convert quads to triangles, so triangle count is usually shown.",
-      "**Tips** - The overlay is non-intrusive and appears in the viewport corner. Disable when not needed to keep the viewport clean."
+      "Real-time display of information about selected objects directly in the 3D viewport.\n\n**How to use:**\n- Enable the overlay in **UltiTools > FBX Exporter** panel\n- Select any objects\n- Information appears in the viewport corner automatically",
+      "**UV Maps** - Shows the amount of UV maps (channels) on the object.",
+      "**Vertex Colors** - Shows the amount of Color Attributes (Vertex Colors).",
+      "**FBX Generation** - Shows how many FBX files will be generated from the current selection.",
+      "**Colliders** - Detecting and showing collider objects.",
+      "**LODs** - Detecting and showing Level of Detail meshes.",
+      "**Armatures** - Displays how many animation actions will be embedded per FBX file."
     ]
     statsoverlay_images = [
       "images/Ultitools/DocsImages/FBXExporter/StatVisualizer.png"

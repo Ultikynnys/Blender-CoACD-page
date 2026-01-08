@@ -837,8 +837,10 @@ class MediaProcessorGUI:
         self.output_folder = tk.StringVar()
         self.blur_radius = tk.IntVar(value=10)
         self.file_type_filter = tk.StringVar(value="all")  # "all", "images", "videos"
+        self.file_type_filter = tk.StringVar(value="all")  # "all", "images", "videos"
         self.include_audio = tk.BooleanVar(value=True)  # Include audio in output video
         self.video_speed = tk.DoubleVar(value=1.0)  # Playback speed multiplier
+        self.replace_original = tk.BooleanVar(value=False)  # Replace original file instead of saving to output folder
         
         # Resolution presets
         self.resolution_presets = {
@@ -913,9 +915,16 @@ class MediaProcessorGUI:
         # Output folder
         ttk.Label(left_panel, text="Output Folder:", style="Heading.TLabel").pack(anchor=tk.W)
         output_frame = ttk.Frame(left_panel)
-        output_frame.pack(fill=tk.X, pady=(5, 10))
-        ttk.Entry(output_frame, textvariable=self.output_folder, state="readonly").pack(side=tk.LEFT, fill=tk.X, expand=True)
-        ttk.Button(output_frame, text="Browse", command=self._browse_output).pack(side=tk.RIGHT, padx=(5, 0))
+        output_frame.pack(fill=tk.X, pady=(5, 5))
+        self.output_entry = ttk.Entry(output_frame, textvariable=self.output_folder, state="readonly")
+        self.output_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self.output_browse_btn = ttk.Button(output_frame, text="Browse", command=self._browse_output)
+        self.output_browse_btn.pack(side=tk.RIGHT, padx=(5, 0))
+        
+        # Replace original checkbox
+        self.replace_checkbox = ttk.Checkbutton(left_panel, text="Replace Original File", 
+                                               variable=self.replace_original, command=self._on_replace_toggle)
+        self.replace_checkbox.pack(anchor=tk.W, pady=(0, 10))
         
         # Separator
         ttk.Separator(left_panel, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=15)
@@ -1072,6 +1081,15 @@ class MediaProcessorGUI:
         self.image_canvas.bind("<Configure>", lambda e: self._on_canvas_resize())
         self.video_canvas.bind("<Configure>", lambda e: self._on_video_canvas_resize())
         
+    def _on_replace_toggle(self):
+        """Handle replace original toggle."""
+        if self.replace_original.get():
+            self.output_entry.configure(state=tk.DISABLED)
+            self.output_browse_btn.configure(state=tk.DISABLED)
+        else:
+            self.output_entry.configure(state="readonly")
+            self.output_browse_btn.configure(state=tk.NORMAL)
+            
     def _on_mode_change(self):
         """Handle input mode change."""
         mode = self.input_mode.get()
@@ -1395,8 +1413,20 @@ For videos:
         result = self._apply_processing(cropped)
         
         # Save
-        output_path = Path(self.output_folder.get()) / f"{self.current_media_path.stem}_processed{self.current_media_path.suffix}"
-        result.save(output_path, quality=95)
+        try:
+            if self.replace_original.get():
+                output_path = self.current_media_path
+                # Create a temp file first to avoid reading/writing same file issues if format changes or crash
+                temp_path = output_path.with_name(f"{output_path.stem}_temp{output_path.suffix}")
+                result.save(temp_path, quality=95)
+                # Replace original
+                os.replace(temp_path, output_path)
+            else:
+                output_path = Path(self.output_folder.get()) / f"{self.current_media_path.stem}_processed{self.current_media_path.suffix}"
+                result.save(output_path, quality=95)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to save image:\n{e}")
+            return
         
         self.processed_count += 1
         self.progress_bar["value"] = self.current_index + 1
@@ -1760,7 +1790,17 @@ For videos:
             out.release()
             
             # Output path
-            output_path = Path(self.output_folder.get()) / f"{video_path.stem}_processed.mp4"
+            if self.replace_original.get():
+                # For video, we can't overwrite in place because ffmpeg might read from it (audio source)
+                # We already have a temp video `temp_output`.
+                # We need another temp for the final ffmpeg output if we are replacing.
+                # Actually run_ffmpeg_encode writes to a target.
+                # Let's write to a temp final file, then replace original.
+                output_path = video_path.with_name(f"{video_path.stem}_processed_temp{video_path.suffix}")
+                is_replace = True
+            else:
+                output_path = Path(self.output_folder.get()) / f"{video_path.stem}_processed.mp4"
+                is_replace = False
             
             # Re-encode with ffmpeg (required for output)
             if progress_callback:
@@ -1779,6 +1819,20 @@ For videos:
                 include_audio=include_audio,
                 speed=video_speed
             )
+            
+            if is_replace:
+                try:
+                    # Overwrite original
+                    # If include_audio is True, ffmpeg read from video_path.
+                    # run_ffmpeg_encode finished, so handles should be closed.
+                    os.replace(output_path, video_path)
+                except OSError as e:
+                    print(f"Error replacing original file: {e}")
+                    # Try to keep the processed file at least
+                    final_fallback = video_path.with_name(f"{video_path.stem}_processed{video_path.suffix}")
+                    if output_path.exists():
+                        os.replace(output_path, final_fallback)
+                    raise e
             
             return True
             
