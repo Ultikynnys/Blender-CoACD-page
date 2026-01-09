@@ -8,10 +8,10 @@
     title = "Documentation"
     subtitle = "Complete guide to UltiBridge integration"
     sections = [
-      { id = "general-usage", title = "General Usage", description = "Core features and workflow common to all engines", image = "images/UltiBridge/DocsThumbnails/GeneralThumbnail.png" },
-      { id = "unity", title = "Unity", description = "Unity-specific setup and edge cases", image = "images/UltiBridge/DocsThumbnails/UnityThumbnail.png" },
-      { id = "godot", title = "Godot", description = "Godot-specific setup and edge cases", image = "images/UltiBridge/DocsThumbnails/GodotThumbnail.png" },
-      { id = "unreal", title = "Unreal", description = "Unreal-specific setup and edge cases", image = "images/UltiBridge/DocsThumbnails/UnrealThumbnail.png" }
+      { id = "general-usage", title = "General Usage", description = "Core workflow, feature comparison, and naming conventions", image = "images/UltiBridge/DocsThumbnails/GeneralThumbnail.png" },
+      { id = "unity", title = "Unity", description = "HLSL shaders, Prefabs, LOD Groups, HDRP/URP/Built-in support", image = "images/UltiBridge/DocsThumbnails/UnityThumbnail.png" },
+      { id = "godot", title = "Godot", description = "GDShader generation, native TSCN scenes, visibility_range LODs", image = "images/UltiBridge/DocsThumbnails/GodotThumbnail.png" },
+      { id = "unreal", title = "Unreal", description = "Material expressions, Level creation, LOD screen sizes (UE 5.1+)", image = "images/UltiBridge/DocsThumbnails/UnrealThumbnail.png" }
     ]
 
 # ==========================================
@@ -30,7 +30,8 @@
     section_order = [
       "interface",
       "export_process",
-      "common_features"
+      "common_features",
+      "engine_differences"
     ]
     initial_section = "intro"
     section_id_prefix = "doc-page-general-"
@@ -52,10 +53,23 @@
 
     common_features_title = "Common Features"
     common_features_steps = [
-      "**Material Conversion** - Automatically converts Blender material nodes to their engine equivalents.",
-      "**Colliders** - Create custom collision meshes using `UCX_` (Convex) or `UBX_` (Box) prefixes, or let UltiBridge auto-generate them.",
-      "**LOD Generation** - Automatically generate and setup Level of Detail models if enabled.",
-      "**Origin Point** - Options to export with scene origin or object origin."
+      "**Material Conversion** - Principled BSDF node graphs are converted to engine-native shaders (HLSL, GDShader, Material Expressions).",
+      "**Colliders** - Use `UCX_MeshName_00` naming convention for convex collision meshes, automatically set up in each engine.",
+      "**LOD Generation** - Use `MeshName_LOD0`, `_LOD1`, etc. naming to create automatic Level of Detail groups (up to 7 levels).",
+      "**Lights & Cameras** - Point, Spot, Area, and Sun lights plus cameras are converted to engine equivalents.",
+      "**Scene Hierarchy** - Parent-child relationships from Blender are preserved in the target engine.",
+      "**Object Types** - Meshes, Curves, Text objects, and NURBS surfaces are all supported and converted to meshes."
+    ]
+    
+    engine_differences_title = "Engine Differences"
+    engine_differences_steps = [
+      "**Materials:** Unity uses HLSL shaders → Godot uses GDShader (.gdshader) → Unreal uses Material Expression nodes.",
+      "**LOD System:** Unity uses LODGroup component → Godot uses visibility_range distances → Unreal uses LOD screen size percentages.",
+      "**Colliders:** Unity creates MeshCollider (convex) → Godot creates StaticBody3D + ConvexPolygonShape3D → Unreal embeds UCX collision in StaticMesh.",
+      "**Lights:** Unity uses Light component → Godot uses OmniLight3D/SpotLight3D/DirectionalLight3D → Unreal uses PointLight/SpotLight/RectLight/DirectionalLight actors.",
+      "**Scene Output:** Unity creates Prefabs + scene hierarchy → Godot creates .tscn scenes with PackedScene prefabs → Unreal creates a Level with placed actors.",
+      "**Setup:** Unity/Godot require 'Inject Tools' to install plugins → Unreal requires Python Editor Script Plugin enabled first.",
+      "**Area Lights:** Unity/Unreal support Area lights natively → Godot approximates as SpotLight3D."
     ]
 
 # ==========================================
@@ -73,6 +87,8 @@
     ]
     section_order = [
       "setup",
+      "scene_support",
+      "materials",
       "hdrp_urp",
       "prefabs"
     ]
@@ -81,21 +97,43 @@
     
     setup_title = "First Time Setup"
     setup_steps = [
-      "**Package Install** - You must install the `com.ultibridge.unity` package in your Unity project via the Package Manager.",
-      "**Plugin Connection** - Ensure the UltiBridge server is running in Unity (Tools > UltiBridge > Start Server)."
+      "**Inject Tools** - Use the 'Inject Tools' button in the UltiBridge panel to automatically install the Unity Editor scripts.",
+      "**Auto-Detection** - UltiBridge auto-detects Unity projects when you set the export path to your project's Assets folder."
     ]
     setup_images = []
     
-    hdrp_urp_title = "RP Support (HDRP/URP)"
+    scene_support_title = "Scene Support"
+    scene_support_steps = [
+      "**Meshes** - Full support for meshes, curves, text objects, and NURBS surfaces (converted to mesh on export).",
+      "**Scene Hierarchy** - Complete parent-child relationships preserved from Blender to Unity.",
+      "**Lights** - Point, Spot, Area, and Directional lights with color, intensity, and range settings.",
+      "**Cameras** - Camera nodes with FOV, near/far clip planes preserved.",
+      "**Empties** - Empty objects become GameObjects for organizing hierarchies.",
+      "**LOD Groups** - Automatic LOD setup using `_LOD0`, `_LOD1`, etc. naming convention (up to 7 LOD levels).",
+      "**Colliders** - UCX_ prefixed meshes become convex MeshColliders automatically."
+    ]
+    
+    materials_title = "Material System"
+    materials_steps = [
+      "**HLSL Shader Generation** - Full Principled BSDF node graph is converted to Unity HLSL shaders.",
+      "**Texture Channels** - Albedo, Normal, Metallic, Roughness, Emission, and Occlusion textures supported.",
+      "**Node Support** - Math nodes, Mix RGB, Color Ramp, Separate/Combine XYZ, and Image Texture nodes are converted.",
+      "**Fallback** - Materials without node graphs use standard Unity Lit/Standard shaders."
+    ]
+    
+    hdrp_urp_title = "Render Pipeline Support"
     hdrp_urp_steps = [
-      "UltiBridge detects your specific Render Pipeline (Built-in, URP, or HDRP) and selects the appropriate material shader automatically.",
-      "**Manual Override** - You can force a specific material preset in the export settings if detection fails."
+      "**Built-in RP** - Standard shader with full PBR support.",
+      "**URP** - Universal Render Pipeline Lit shader.",
+      "**HDRP** - High Definition Render Pipeline Lit shader with advanced features.",
+      "**Auto-Detection** - UltiBridge detects your active render pipeline and generates appropriate shaders."
     ]
     
     prefabs_title = "Prefab Generation"
     prefabs_steps = [
-      "**Auto-Prefabs** - UltiBridge creates Prefabs for exported meshes by default.",
-      "**Nested Prefabs** - Supports hierarchical export where child objects become child nodes in the Prefab."
+      "**Auto-Prefabs** - Each exported mesh becomes a reusable Prefab asset.",
+      "**Nested Prefabs** - Hierarchical exports preserve parent-child relationships in Prefabs.",
+      "**Material Assignment** - Materials are automatically assigned to mesh surfaces by slot index."
     ]
 
 # ==========================================
@@ -108,34 +146,50 @@
   [documentation.pages.introduction]
     title = "Godot Specifics"
     paragraphs = [
-      "Specific setup and advanced configuration for the Godot integration.",
+      "Specific setup and advanced configuration for the Godot 4 integration.",
       "Refer to **General Usage** for the basic export workflow."
     ]
     section_order = [
       "setup",
-      "scene_format",
-      "godot_4"
+      "scene_support",
+      "materials",
+      "output_format"
     ]
     initial_section = "intro"
     section_id_prefix = "doc-page-godot-"
     
     setup_title = "First Time Setup"
     setup_steps = [
-      "**Project Path** - Ideally, set your Blender export path to the root of your Godot project.",
-      "**No Plugin Required** - Godot support relies on standard GLTF 2.0 export, adjusted for Godot's coordinate system."
+      "**Inject Plugin** - Use 'Inject Tools' to install the UltiBridge EditorImportPlugin into your Godot project.",
+      "**Enable Plugin** - Enable 'UltiBridge' in Project Settings > Plugins after injection.",
+      "**Auto-Detection** - UltiBridge auto-detects Godot 4 projects via the `project.godot` file."
     ]
     setup_images = []
     
-    scene_format_title = "Scenes vs Resources"
-    scene_format_steps = [
-      "**GLTF vs TSCN** - UltiBridge exports GLTF files. Godot imports these as Scenes.",
-      "**Inherited Scenes** - You can create inherited scenes in Godot from the exported GLTF files to add game logic."
+    scene_support_title = "Scene Support"
+    scene_support_steps = [
+      "**Meshes** - Full support for meshes, curves, text objects, and NURBS surfaces (as MeshInstance3D nodes).",
+      "**Scene Hierarchy** - Complete parent-child relationships preserved as Node3D trees.",
+      "**Lights** - OmniLight3D (Point), SpotLight3D, DirectionalLight3D (Sun), Area approximated as SpotLight3D.",
+      "**Cameras** - Camera3D nodes with FOV, near/far clip planes preserved.",
+      "**Empties** - Empty objects become Node3D for organizing hierarchies.",
+      "**LOD Support** - Automatic LOD setup using visibility_range (up to 7 LOD levels with halving distance pattern).",
+      "**Colliders** - UCX_ prefixed meshes become StaticBody3D with ConvexPolygonShape3D."
     ]
     
-    godot_4_title = "Godot 4 Support"
-    godot_4_steps = [
-      "**Blend Files** - Godot 4 can import .blend files directly. UltiBridge offers a 'Direct Blend' mode for Godot 4 users.",
-      "**Materials** - Standard Material 3D support is fully mapped from Blender Principled BSDF."
+    materials_title = "Material System"
+    materials_steps = [
+      "**GDShader Generation** - Full Principled BSDF node graph is converted to Godot .gdshader files.",
+      "**Texture Channels** - Albedo, Normal, Metallic, Roughness, Emission, and Occlusion textures supported.",
+      "**Node Support** - Math nodes, Mix RGB, Separate/Combine XYZ, Image Texture, and more are converted.",
+      "**StandardMaterial3D Fallback** - Materials without node graphs use StandardMaterial3D with PBR textures."
+    ]
+    
+    output_format_title = "Output Format"
+    output_format_steps = [
+      "**Native TSCN** - UltiBridge generates native Godot .tscn scene files (not GLTF intermediates).",
+      "**Prefab System** - Each mesh becomes a reusable packed scene (.scn) for instancing.",
+      "**Organized Structure** - Assets organized into Meshes/, Materials/, Shaders/, and Textures/ folders."
     ]
 
 # ==========================================
@@ -148,32 +202,49 @@
   [documentation.pages.introduction]
     title = "Unreal Specifics"
     paragraphs = [
-      "Specific setup and advanced configuration for the Unreal Engine integration.",
+      "Specific setup and advanced configuration for the Unreal Engine 5 integration.",
       "Refer to **General Usage** for the basic export workflow."
     ]
     section_order = [
       "setup",
-      "skeletal_meshes",
-      "nanite"
+      "scene_support",
+      "materials",
+      "lod_system"
     ]
     initial_section = "intro"
     section_id_prefix = "doc-page-unreal-"
     
     setup_title = "First Time Setup"
     setup_steps = [
-      "**Python Plugin** - Unreal requires the 'Python Editor Script Plugin' to be enabled.",
-      "**Remote Execution** - Enable 'remote execution' in Unreal project settings to allow Blender to communicate."
+      "**Python Plugin** - Enable 'Python Editor Script Plugin' in Unreal's plugin settings.",
+      "**Inject Tools** - Use 'Inject Tools' to install UltiBridge Python scripts into Content/Python.",
+      "**Auto-Import** - Place .ultibridge files in your Content folder; they import automatically on editor focus."
     ]
     setup_images = []
     
-    skeletal_meshes_title = "Skeletal Meshes"
-    skeletal_meshes_steps = [
-      "**Armature Export** - Select the Armature object. UltiBridge will export it as a Skeletal Mesh.",
-      "**Animation Baking** - Animations are automatically baked to the skeleton."
+    scene_support_title = "Scene Support"
+    scene_support_steps = [
+      "**Static Meshes** - Full support for meshes, curves, text, and NURBS surfaces (as StaticMesh assets).",
+      "**Level Creation** - UltiBridge can create a new Level with actors placed according to your Blender scene.",
+      "**Lights** - PointLight, SpotLight, RectLight (Area), and DirectionalLight (Sun) with intensity scaling.",
+      "**Cameras** - CineCamera actors with FOV and clip plane settings.",
+      "**Empties** - Empty objects become target point actors for organizing hierarchies.",
+      "**Actor Parenting** - Scene hierarchy preserved via actor attachment in Unreal.",
+      "**Colliders** - UCX_ prefixed meshes are imported as complex collision within the StaticMesh."
     ]
     
-    nanite_title = "Nanite & Lumen"
-    nanite_steps = [
-      "**Enable Nanite** - Specific toggle in export settings to enable Nanite on imported meshes.",
-      "**High Poly** - UltiBridge is optimized to handle high-poly exports for Nanite workflows."
+    materials_title = "Material System"
+    materials_steps = [
+      "**Material Expression Nodes** - Principled BSDF node graphs are converted to Unreal material expressions.",
+      "**Texture Channels** - Base Color, Normal, Metallic, Roughness, Emissive, and AO textures supported.",
+      "**Node Support** - Math, Mix RGB, Separate/Combine, Image Texture, Invert, and Normal Map nodes.",
+      "**Blender 4.0+ Compatibility** - Input name aliases handle renamed Principled BSDF sockets."
+    ]
+    
+    lod_system_title = "LOD System"
+    lod_system_steps = [
+      "**LOD Groups** - Use `_LOD0`, `_LOD1`, etc. naming convention in Blender for automatic LOD setup.",
+      "**Screen Size Config** - LOD screen sizes are automatically configured using a halving pattern.",
+      "**UE 5.1+ Required** - LOD screen size API requires Unreal Engine 5.1 or later.",
+      "**Up to 7 LOD Levels** - Supports LOD0 through LOD6 with automatic distance falloff."
     ]

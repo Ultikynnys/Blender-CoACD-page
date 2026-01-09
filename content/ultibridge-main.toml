@@ -34,28 +34,27 @@ fonts_config = "content/fonts.toml"
   title = ""
   paragraphs = [
     "Accelerate your **Blender to Unreal Engine** pipeline with UltiBridge.",
-    "Export meshes, materials, and animations with **one-click** directly into Unreal's Content Browser.",
-    "Maintain **fidelity** and project structure with automation tailored for Unreal."
+    "Export complete scenes with meshes, materials, lights, cameras, and hierarchies directly into Unreal's Content Browser.",
+    "Maintain **fidelity** with full Principled BSDF material support and automatic LOD/collision setup."
   ]
 
   # Parameters and Usage sections
   parameters_title = "Unreal Features"
   parameters = [
-    "**Direct Export** - Send assets straight to Unreal's Content Browser.",
-    "**Material Instances** - Map Blender materials to Unreal material instances.",
-    "**LOD Groups** - Generate and assign LODs compatible with Unreal import.",
-    "**Collision Meshes** - Export UCX/UBX-style colliders for Unreal physics.",
-    "**Animation Export** - Transfer rigs and actions compatible with Unreal's animation system.",
-    "**Project Structure** - Organize assets into Unreal-friendly folder layouts."
+    "**Scene Export** - Full scene hierarchy with meshes, lights, cameras, and empties.",
+    "**Material System** - Principled BSDF node graphs converted to Unreal Material Expressions.",
+    "**LOD Groups** - Automatic LOD setup using `_LOD0`, `_LOD1`... naming (up to 7 levels).",
+    "**Collision Meshes** - UCX_ prefixed meshes become StaticMesh complex collision.",
+    "**Level Creation** - Create Unreal Levels with actors placed matching your Blender scene.",
+    "**Asset Organization** - Meshes, Materials, and Textures organized in project folders."
   ]
 
   usage_title = "Unreal Workflow"
   usage_steps = [
-    "**Configure** your Unreal project path in UltiBridge settings.",
-    "**Select** Blender assets (meshes, materials, animations).",
-    "**Choose** export options: LODs, materials, collisions, etc.",
-    "**Export to Unreal** - assets appear in the Content Browser.",
-    "**Iterate** quickly with a streamlined Blender ⇄ Unreal loop."
+    "**Configure** - Set export path and inject tools into your Unreal project.",
+    "**Select** - Choose objects in Blender (meshes, curves, text, lights, cameras).",
+    "**Export** - Click 'Bridge to Unreal'. Assets import automatically on editor focus.",
+    "**Iterate** - Re-export anytime; UltiBridge updates existing assets in place."
   ]
 
   usage_image = "images/UltiBridge2_Unreal.webp"
@@ -65,43 +64,34 @@ fonts_config = "content/fonts.toml"
   usage_image_2_alt = "Batch processing interface"
   usage_image_2_caption = "Batch processing tools for production workflows"
 
-  # Generic sections
+  # Video showcase in introduction (appears at beginning)
+  video_title = "Video Showcase"
+  videos = [
+    { title = "UltiBridge Overview", url = "https://www.youtube.com/embed/YOUR_VIDEO_ID" }
+  ]
+
+  # Engine showcase carousel - same scene in Blender and each game engine
   [[introduction.sections]]
-    type = "comparisons"
-    title = "Workflow Comparisons"
-    
-    [[introduction.sections.items]]
-      initial = 0.3
-      before = "images/Logo.webp"
-      after  = "images/UltiBridge2_Unreal.webp"
-      caption = "**Traditional workflow** vs **UltiBridge Unreal integration**"
-      handle_shape = "circle"
+    type = "content"
+    title = "One Scene, Three Engines"
+    images = [
+      "images/UltiBridge/Carousel/Scene_Blender.webp",
+      "images/UltiBridge/Carousel/Scene_Unreal.webp",
+      "images/UltiBridge/Carousel/Scene_Unity.webp",
+      "images/UltiBridge/Carousel/Scene_Godot.webp"
+    ]
+    images_captions = [
+      "**Blender** - Original scene with materials, lights, and hierarchy",
+      "**Unreal Engine** - Same scene with Material Expressions and Level actors",
+      "**Unity** - Same scene with HLSL shaders and Prefabs",
+      "**Godot 4** - Same scene with GDShader materials and native TSCN"
+    ]
+    images_alignment = ["center", "center", "center", "center"]
+    images_layout = "wide"
 
-    [[introduction.sections.items]]
-      initial = 0.6
-      before = "images/Logo.webp"
-      after  = "images/UltiBridge2_Unreal.webp"
-      caption = "**Manual export process** vs **automated Unreal pipeline**"
-      handle_shape = "circle"
-
-    [[introduction.sections.items]]
-      initial = 0.4
-      before = "images/Logo.webp"
-      after  = "images/UltiBridge2_Unreal.webp"
-      caption = "**Material recreation** vs **automatic Unreal material mapping**"
-      handle_shape = "circle"
-
-    [[introduction.sections.items]]
-      initial = 0.6
-      before = "images/Logo.webp"
-      after  = "images/UltiBridge2_Unreal.webp"
-      caption = "**Multiple steps** vs **streamlined Content Browser import**"
-      handle_shape = "circle"
-
-# Showcase video
+# Showcase section (can be used for additional content or removed)
 [showcase]
-  # video_url = "https://www.youtube.com/embed/UNREAL_DEMO_VIDEO_ID"
-  placeholder = "Unreal integration demo video coming soon"
+  # Left empty - video is now in introduction section
 
 # Support / Community
 [support]
