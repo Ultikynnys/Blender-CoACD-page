@@ -512,3 +512,4 @@
 
 >## 2.0.64 - Hotfix 09/1/2026
     * Fixed small various issues with baking
+    * Added material sanitize panel(ensures all materials use Principled BSDF)
