@@ -509,3 +509,6 @@
 
 >## 2.0.60 - Hotfix 16/12/2025
     * GLTF and Finalize fixed on Linux
+
+>## 2.0.64 - Hotfix 09/1/2026
+    * Fixed small various issues with baking
