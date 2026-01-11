@@ -22,7 +22,7 @@
     title = "UltiBridge Manual"
     paragraphs = [
       "UltiBridge bridges the gap between Blender and your game engine. This unified workflow applies to **Godot**, **Unity**, and **Unreal Engine**.",
-      "The fundamental process of selecting, configuring, and exporting assets is consistent across all platforms."
+      "The fundamental process of configuring and exporting assets is consistent across all platforms."
     ]
     section_order = [
       "installation",
