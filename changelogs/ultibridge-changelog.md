@@ -8,4 +8,4 @@
     * Panel is more style consistent
 
 >## 1.0.5 - HOTFIX  12/1/2026
-    * fixed read-only library assets failing to export
+    * fixed readonly library assets failing to export
