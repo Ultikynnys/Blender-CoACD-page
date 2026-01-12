@@ -2,3 +2,7 @@
 
 >## 1.0.3 - HOTFIX
     * Removed debug code
+
+>## 1.0.4 - UI improvement  12/1/2026
+    * Added proper logos to each engine
+    * Panel is more style consistent
