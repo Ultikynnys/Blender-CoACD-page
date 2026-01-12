@@ -41,9 +41,17 @@
       "**3. Inject Tools** - Click the **Inject Tools** button. This installs necessary scripts into your game engine project.",
       "**4. Enable Plugin** - **Godot/Unreal only**: Open your game project settings and enable the installed UltiBridge plugin. (Unity does this automatically)."
     ]
-    installation_images = []
-    installation_images_captions = []
-    installation_images_alignment = []
+    installation_images = [
+      "images/UltiBridge/UIPanel.png",
+      "images/UltiBridge/GodotPluginEnable.png",
+      "images/UltiBridge/UnrealEnginePluginEnable.png"
+    ]
+    installation_images_captions = [
+      "**Blender** - UltiBridge Panel",
+      "**Godot** - Project Settings > Plugins",
+      "**Unreal Engine** - Edit > Plugins"
+    ]
+    installation_images_alignment = ["center", "center", "center"]
 
     workflow_title = "Detailed Workflow"
     workflow_steps = [
