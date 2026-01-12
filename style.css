@@ -452,6 +452,14 @@ strong {
   font-variant-ligatures: none;
 }
 
+/* Configurable text glow for bold text */
+.text-glow strong,
+.text-glow b,
+.text-glow .intro__usage-caption strong {
+  color: #ffffff !important;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
 .intro__usage-media {
   display: grid;
   gap: 0.75rem;

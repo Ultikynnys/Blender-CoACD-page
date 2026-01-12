@@ -2005,7 +2005,15 @@ function applyThemeColors(cfg) {
       if (/^primary_/i.test(key)) return; // skip deprecated keys
       const cssVar = `--${key.replace(/_/g, '-')}`;
       root.style.setProperty(cssVar, value, 'important');
+      root.style.setProperty(cssVar, value, 'important');
     });
+
+    // Apply text glow if enabled in config
+    if (colors.text_glow) {
+      document.body.classList.add('text-glow');
+    } else {
+      document.body.classList.remove('text-glow');
+    }
   } else {
     // No theme colors block
   }

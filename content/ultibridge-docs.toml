@@ -28,6 +28,7 @@
       "installation",
       "workflow",
       "features",
+      "combine_objects",
       "materials"
     ]
     initial_section = "intro"
@@ -52,7 +53,7 @@
       "**Export** - The 'Send to [Engine]' button becomes available in Blender. Click to start export.",
       "**Wait** - For big scenes, export may take time. Once Blender becomes responsive, focus the game engine editor.",
       "**Troubleshoot** - If the exporter gets stuck, try unfocusing and refocusing the editor window. If importing completely fails, restarting both Blender and the game engine can help.",
-      "**Multiple Scenes** - If importing multiple scenes causes issues: Import one scene, move its assets (Meshes, Materials, Textures) to a separate folder, then import the next scene."
+      "**Multiple Scenes** - If importing multiple scenes causes issues: Import one scene, move the whole folder containing the level and its assets to a separate folder, then import the next scene."
     ]
     workflow_images = []
     workflow_images_captions = []
@@ -64,11 +65,11 @@
       "**Material System** - Principled BSDF materials from Blender get converted to the appropriate engine equivalent.",
       "**LOD Groups** - Parent `objectname_LOD1`...`objectname_LOD6` meshes to the base object. Note: **Do not use `_LOD0` suffix**, as the base object is implicitly LOD0.",
       "**Collision Meshes** - Parent `UCX_objectname_XX` meshes to the base object for automatic native collision.",
-      "**Instance Handling** - Blender instances are automatically converted to Prefabs (Unity) or Packed Scenes (Godot), eliminating duplicated assets and reusing linked materials/meshes.",
+      "**Instance Handling** - Blender instances are automatically converted to Prefabs (Unity) or Packed Scenes (Godot), eliminating duplicated assets and reusing linked materials/meshes. Importantly, instanced objects only require a single set of LODs and Colliders on any of the instances.",
       "**Asset Organization** - Meshes, Materials, and Textures organized in project folders.",
       "**Armatures** - Armatures are automatically converted to static meshes. For advanced armature export, consider the [UltiTools FBX Exporter](https://superhivemarket.com/products/ultitools).",
       "**Export Preview** - The Blender UI provides a real-time preview showing exactly how many FBX files, LODs, and Colliders will be exported per object.",
-      "**LOD Distances** - Configure Global LOD distances based on screen size (100% to 0%). **Note:** 0% disables the override (using engine defaults); use 0.1% for minimum visibility."
+  "**LOD Distances** - Configure Global LOD distances based on screen size (100% to 0%). **Note:** 0% disables the override (using engine defaults); use 0.1% for minimum visibility."
     ]
     features_images = [
       "images/UltiBridge/NamingScheme.png",
@@ -81,6 +82,20 @@
       "Global LOD Distances panel. Note: Use 0.1% instead of 0% to avoid resetting to defaults."
     ]
     features_images_alignment = ["center", "center", "center"]
+
+    combine_objects_title = "Combine Root Objects"
+    combine_objects_steps = [
+         "Located in the Utilities panel, this collapses each selected root object hierarchy into a single mesh. This drastically reduces unique FBX files and is crucial for generating colliders and LODs (as each FBX requires its own unique set), effectively simplifying the scene structure."
+    ]
+    combine_objects_images = [
+      "images/UltiBridge/CombineRootObjectsPre.png",
+      "images/UltiBridge/CombineRootObjectsPost.png"
+    ]
+    combine_objects_images_captions = [
+      "Before: Complex hierarchy with multiple objects",
+      "After: Combined into a single mesh object for optimized export"
+    ]
+    combine_objects_images_alignment = ["center", "center"]
 
     materials_title = "Shader Conversion"
     materials_steps = [

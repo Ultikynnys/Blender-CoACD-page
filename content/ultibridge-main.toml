@@ -11,6 +11,7 @@
   brand_primary = "#FFFFFF"
   bg_dark = "#0F0F0F"
   text_white = "#FFFFFF"
+  text_glow = true
 
 # Font configuration (references shared font config)
 fonts_config = "content/fonts.toml"
@@ -33,9 +34,8 @@ fonts_config = "content/fonts.toml"
 [introduction]
   title = ""
   paragraphs = [
-    "Accelerate your **Blender to Game Engine** pipeline with UltiBridge.",
     "Export complete scenes with meshes, materials, lights, cameras, and hierarchies directly into **Godot, Unity, and Unreal Engine**.",
-    "Maintain **fidelity** with full material support and automatic LOD/collision setup for all major engines.",
+    "Maintain **fidelity** with full material support and automatic LOD/collision setup for Unity, Godot and Unreal.",
     "**Supported Versions**: Unreal (5.1-5.7), Godot (4.3-4.6), and Unity (2021-6000). Versions outside this range may work but are not officially supported."
   ]
 
