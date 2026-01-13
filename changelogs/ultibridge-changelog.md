@@ -9,3 +9,6 @@
 
 >## 1.0.5 - HOTFIX  12/1/2026
     * fixed readonly library assets failing to export
+
+>## 1.0.6 - HOTFIX  13/1/2026
+    * Removed unused import panels from Unity and Unreal
