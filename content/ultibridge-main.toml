@@ -55,9 +55,8 @@ fonts_config = "content/fonts.toml"
   usage_title = "Simple Workflow"
   usage_steps = [
     "**1. Configure** - Select your target engine project.",
-    "**2. Select** - Choose assets to export in Blender.",
-    "**3. Bridge** - Click **Send to [Engine]**.",
-    "**4. Done** - Assets appear automatically in your engine."
+    "**2. Bridge** - Click **Send to [Engine]**.",
+    "**3. Done** - Assets appear automatically in your engine."
   ]
 
   usage_images = [
