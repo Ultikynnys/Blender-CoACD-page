@@ -26,7 +26,6 @@
     ]
     section_order = [
       "installation",
-      "workflow",
       "features",
       "combine_objects",
       "materials"
@@ -34,12 +33,15 @@
     initial_section = "intro"
     section_id_prefix = "doc-page-"
 
-    installation_title = "Installation & Setup"
+    installation_title = "Installation & Workflow"
     installation_steps = [
       "**1. Blender Addon** - Install the UltiBridge addon in Blender (Preferences > Add-ons).",
       "**2. Target Project** - In the UltiBridge panel, select your target engine (Godot, Unity, Unreal) and set the export path.",
       "**3. Inject Tools** - Click the **Inject Tools** button. This installs necessary scripts into your game engine project.",
-      "**4. Enable Plugin** - **Godot/Unreal only**: Open your game project settings and enable the installed UltiBridge plugin. (Unity does this automatically)."
+      "**4. Enable Plugin** - **Godot/Unreal only**: Open your game project settings and enable the installed UltiBridge plugin. (Unity does this automatically).",
+      "**5. Export** - The 'Send to [Engine]' button is now available. Click to start export. Large scenes may take time.",
+      "**6. Import** - Once Blender finishes, open/focus the target engine window to trigger the import process.",
+      "**Troubleshooting** - If the process gets stuck, try clicking into (focusing) the target engine editor again. If importing fails completely, restart Blender and the target engine editor.",
     ]
     installation_images = [
       "images/UltiBridge/UIPanel.png",
@@ -53,16 +55,9 @@
     ]
     installation_images_alignment = ["center", "center", "center"]
 
-    workflow_title = "Detailed Workflow"
-    workflow_steps = [
-      "**Setup** - Set the location of the game engine project. The addon automatically detects the engine.",
-      "**Install** - Click the **Install Tools Button** to inject necessary files into the engine for automatic reception.",
-      "**Enable Plugin** - Open the project. **Godot/Unreal**: Enable the tool in the plugins list. **Unity**: Automatic.",
-      "**Export** - The 'Send to [Engine]' button becomes available in Blender. Click to start export.",
-      "**Wait** - For big scenes, export may take time. Once Blender becomes responsive, focus the game engine editor.",
-      "**Troubleshoot** - If the exporter gets stuck, try unfocusing and refocusing the editor window. If importing completely fails, restarting both Blender and the game engine can help.",
-      "**Multiple Scenes** - If importing multiple scenes causes issues: Import one scene, move the whole folder containing the level and its assets to a separate folder, then import the next scene."
-    ]
+    # workflow section removed (merged into installation)
+    workflow_title = ""
+    workflow_steps = []
     workflow_images = []
     workflow_images_captions = []
     workflow_images_alignment = []
