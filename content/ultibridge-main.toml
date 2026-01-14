@@ -36,6 +36,7 @@ fonts_config = "content/fonts.toml"
   paragraphs = [
     "Export complete scenes with meshes, materials, lights, cameras, hierarchies, and automatic LOD/collision setup directly into **Godot, Unity, and Unreal Engine**.",
     "**Built for Level Designers**: UltiBridge is designed for **static scene reconstruction** and exporting full multi-object scenes.",
+    "**1:1 Parity**: Faithfully respects Blender object origins—often lost during export—creating 1:1 parity between the Blender scene and the target engine level.",
     "**Not for Characters**: This addon is **not** for character exporting, as it does not support animations, shape keys, or rigged meshes.",
     "**Supported Versions**: Unreal (5.1-5.7), Godot (4.3-4.6), and Unity (2021-6000). Versions outside this range may work but are not officially supported."
   ]
