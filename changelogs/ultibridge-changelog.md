@@ -12,3 +12,8 @@
 
 >## 1.0.6 - HOTFIX  13/1/2026
     * Removed unused import panels from Unity and Unreal
+
+>## 1.0.10 - Improvement  14/1/2026
+    * Better material support
+    * exr normal support
+    * Implicit Normal y flip for Unreal engine
