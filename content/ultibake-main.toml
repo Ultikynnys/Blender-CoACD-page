@@ -87,7 +87,7 @@ fonts_config = "content/fonts.toml"
   # Captions for the images (in order)
   usage_images_captions = [
     "Panel location: 3D Viewport > N > Ultibake",
-    "Decal Tools - Various toosl to help you use Decal Baking",
+    "Decal Tools - Various tools to help you use Decal Baking",
     "UV Tools - Manage UV maps with built-in tools",
     "Settings - Configure your global parameters",
     "Profiles - Create and manage reusable baking profiles",
@@ -105,12 +105,9 @@ fonts_config = "content/fonts.toml"
   ]
 
   # Video showcase in introduction
-  video_title = "Video Showcase"
-  videos = [
-    { title = "Baking Basics", url = "https://www.youtube.com/embed/ml9_cHWFPtg" },
-    { title = "Decal Baking", url = "https://www.youtube.com/embed/o7HeKuUa624" },
-    { title = "ATLAS Baking", url = "https://www.youtube.com/embed/N9TwSyBMqZ8" },
-  ]
+  # Video showcase in introduction - Moved to Documentation
+  video_title = ""
+  videos = []
   # Generic sections
   [[introduction.sections]]
     type = "content"
@@ -161,7 +158,7 @@ fonts_config = "content/fonts.toml"
 
 # Documentation configuration
 [documentation]
-  enabled = false
+  enabled = true
   default_view = "showcase"  # "showcase" or "documentation"
   toggle_text_showcase = "View Documentation"
   toggle_text_documentation = "View Product Showcase"

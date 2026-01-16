@@ -3368,6 +3368,12 @@ async function initDocumentation(cfg) {
       dbg('initDocumentation: external docs loaded from', docUrl);
     } catch (e) {
       console.warn('initDocumentation: failed to load documentation TOML:', e);
+      // Display error visibly on page for documentation loading
+      const errorContainer = document.createElement('div');
+      errorContainer.className = 'toml-error-display';
+      errorContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:20px;background:#dc3545;color:#fff;font-family:monospace;z-index:10000;white-space:pre-wrap;max-height:50vh;overflow:auto;';
+      errorContainer.innerHTML = `<strong>⚠ Documentation TOML Load Error</strong>\n\nFile: ${docUrl}\nError: ${e.message}\n\n<small>Check browser console for details. Fix the TOML file and refresh.</small>`;
+      document.body.insertBefore(errorContainer, document.body.firstChild);
       docsConfig = null;
     }
   }
@@ -3707,6 +3713,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initDocumentation(cfg);
   } catch (err) {
     console.error('Content load failed:', err);
+    // Display error visibly on page
+    const errorContainer = document.createElement('div');
+    errorContainer.className = 'toml-error-display';
+    errorContainer.style.cssText = 'position:fixed;top:0;left:0;right:0;padding:20px;background:#dc3545;color:#fff;font-family:monospace;z-index:10000;white-space:pre-wrap;max-height:50vh;overflow:auto;';
+    errorContainer.innerHTML = `<strong>⚠ TOML Load Error</strong>\n\nFile: ${tomlUrl}\nError: ${err.message}\n\n<small>Check browser console for details. Fix the TOML file and refresh.</small>`;
+    document.body.insertBefore(errorContainer, document.body.firstChild);
     console.warn('Using defaults due to error');
   }
   // Initialize interactive/visual features after content is in the DOM

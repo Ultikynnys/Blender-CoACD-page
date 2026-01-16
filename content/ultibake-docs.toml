@@ -1,344 +1,386 @@
-# UltiBake Documentation (separated from ultibake-main.toml)
+# UltiBake Documentation
 [documentation]
   enabled = true
-  default_view = "showcase"  # "showcase" or "documentation"
+  default_view = "showcase"
   toggle_text_showcase = "View Documentation"
 
   [documentation.toc]
     title = "Documentation"
-    subtitle = "Complete guide to UltiBake features and workflows"
+    subtitle = ""
     sections = [
-      { id = "getting-started", title = "Getting Started", description = "Learn the basics of UltiBake including bake sets, profiles, and your first baking project", image = "images/Ultibake/Ultibake_Bake1.webp" }
+      { id = "basics", title = "Basics", description = "Standard baking workflow", image = "images/Ultibake/UltibakeSettingsnew/MainPanel.png" },
+      { id = "advanced", title = "Advanced Baking", description = "Multi object, High to low, Decal and Atlas Baking", image = "images/Ultibake/UltibakeSettingsnew/SettingsPanel.png" },
+      { id = "extras", title = "Extras", description = "Quality of Life features & Specific Workflows", image = "images/Ultibake/Docs/Extras/ObjectScaleNormalize.png" },
+      { id = "troubleshooting", title = "Troubleshooting", description = "Common Issues & Solutions", image = "images/Ultibake/Docs/Extras/Stability.png" }
     ]
 
+# ==========================================
+# USER MANUAL
+# ==========================================
 [[documentation.pages]]
-  id = "getting-started"
-  title = "Getting Started with UltiBake"
+  id = "basics"
+  title = "Basics"
 
   [documentation.pages.introduction]
-    title = "Welcome to UltiBake"
+    title = "UltiBake Basics"
+    video_title = "Baking Basics"
+    video_url = "https://www.youtube.com/embed/ml9_cHWFPtg"
     paragraphs = [
-      "This guide will walk you through the essential concepts and help you get started with your first baking project."
+        "The **Quick Start** below covers the simplest setup possible. To get everything out of UltiBake, it is recommended to watch the videos and read the full documentation.",
+        "UltiBake is targeted at professionals who need to bake Blender materials to textures, offering full support for even the most obscure and advanced configurations and texture maps."
     ]
-    # Define the order of dynamic sections to render (quickstart is rendered separately in intro)
+    
+    usage_title = "Quick Start"
+    usage_steps = [
+        "**1. Setup:** Create a **Bake Set** and assign your **Low Poly object** (in a collection).",
+        "**2. Configure Bake Set:** Set your **Bake Set UV Map** and assign a **Profile**.",
+        "**3. Set Output:** Set your **Bake Folder**.",
+        "**4. Bake:** Click **Bake All** to process textures in the background.",
+        "**5. Finalize & Export:** Use **Finalize** to prepare your asset and export effortlessly to GLTF or FBX.",
+        "**6. Direct GLTF Export:** (Optional) Use the GLTF button (3rd button at top) for faster export. Note: Supports limited texture types."
+    ]
+    usage_images = ["images/Ultibake/Docs/ValidConfigurationFast.png"]
+    usage_images_captions = ["Complete Valid Bake Configuration"]
+    usage_images_layout = "wide"
     section_order = [
-      "profiles",
-      "suffixgen",
-      "bakesetgen",
-      "bakevisualizer",
-      "multiuv",
-      "collectionbake",
-      "environmentcollection",
-      "decals",
-      "hightolow",
-      "advancedbaking",
-      "advanceduvcontrols"
+      "usage_basics",
+      "usage_profiles",
+      "usage_baking",
+      "usage_finalize",
+      "usage_export"
     ]
-    # Section configuration (names and order only - no implementation details)
-    initial_section = "intro"  # The section to insert after initially
-    section_id_prefix = "doc-page-"  # Prefix for section DOM IDs
-    parameters_title = "Key Concepts"
-    parameters = [
-      "**Bake Sets** - The primary container for organizing your work. A Bake Set groups multiple Bake Units and instructs them to be combined into a single, unified texture set",
-      "**Bake Units** - Defines the 'what' of your bake. Each Bake Unit specifies the individual objects to be processed in a baking operation",
-      "**Profiles** - Defines the 'how' of your bake. Profiles are powerful presets that control all output settings, including texture resolution, file formats, and more",
-      "**Unified Workflow** - Replaces the traditional Blender process with a single, centralized panel where all baking operations are managed, simplifying your entire workflow"
+    initial_section = "intro"
+    section_id_prefix = "doc-page-"
+
+    # Usage: Basics
+    usage_basics_title = "Usage Guide: Basics"
+    usage_basics_steps = [
+       "**1. Setup** - Ensure your addon is updated and located in the UI.",
+       "**2. Bake Set** - Create a Bake Set and assign your Low Poly collection. A collection is required (even for single objects) to enable baking multiple objects to the same texture.",
+       "**3. Pre-Checks** - Use the Visualizers to check UVs and ensure materials use Principled BSDF.",
+       "**4. Sanitize Materials** - (Optional) Enable in settings. Click the button to try and auto-convert materials to Principled BSDF. This does not happen automatically during baking.",
+       "**5. Color IDs** - (Optional) Configure Color IDs for object groupings in the Bake Set 'Object Relationships' sub-panel. Click the refresh button if the list is outdated.",
+       "**6. Refresh UVs** - **Important:** If you change UV maps on your objects, click the **refresh button** next to the **Bake Set UVs** dropdown to update the list."
     ]
-    profiles_title = "Profiles"
-    profiles_steps = [
-      "After the quick start we will dive deeper into specific topics, let's start with the profiles",
-      "As mentioned before, it defines how many textures we will create. Each texture is called a **Texture Unit** contained in the single **Texture Set** defined in each Profile, just like with the Bake Sets and Bake Units",
-      "The **Texture Unit** corresponds to a single texture and a **Texture Set** is all the textures in the profile",
-      "A Texture Unit can have up to 4 bake types: R, G, B, A - one for each channel"
+    usage_basics_images = [
+        "images/Ultibake/Docs/Step0_UpdateTheAddonFromtheUI.png",
+        "images/Ultibake/Docs/Step1_FindTheUI.png",
+        "images/Ultibake/Docs/Step2_CreateBakeSetAndSetLowCollection.png",
+        "images/Ultibake/Docs/Step3_UV_VIZ_CheckYourObjectUVsBeforeBaking.png",
+        "images/Ultibake/Docs/Step4_EnsureYourMaterialIsUsingPrincipledBSDF.png",
+        "images/Ultibake/Docs/Step4_1_UseSanitizeMaterialsButtontoTrytofixmaterials.png",
+        "images/Ultibake/Docs/Step_5_6_ColorIDPerObject.png"
     ]
-    profiles_images = [
-      "images/Ultibake/BasicUsage/EasyChannelPack.webp",
-      "images/Ultibake/BasicUsage/Profile Creation.webp",
-      "images/Ultibake/BasicUsage/ProfileCreation2.webp",
-      "images/Ultibake/BasicUsage/Choose BSDF inputs and custom bake types.webp"
+    usage_basics_images_captions = [
+        "Update the Addon - Ensure you have the latest version.",
+        "Find the UI Panel - Located in the 3D Viewport side bar.",
+        "Create Bake Set & Set Collection - Assign your Low Poly collection. A collection is required to bake multiple objects to the same texture.",
+        "Check UVs with Visualizer - Use the visualizer to find overlaps.",
+        "Ensure Principled BSDF Usage - Ensure materials use Principled BSDF.",
+        "Use Sanitize Materials - Attempt to auto-fix materials. Enable in Settings.",
+        "Color ID Config - Set Color IDs in the Bake Set Object Relationships panel."
     ]
-    profiles_images_captions = [
-      "Image of a 3 texture Profile, where ORM is a channel packed texture",
-      "Manual Profile creation",
-      "Creating default profiles",
-      "All 23 Bake Types - most are directly on the Principled BSDF inputs, some are unique to this addon to keep things industry standard"
+    usage_basics_images_alignment = ["center", "center", "center", "center", "center", "center", "center"]
+
+    # Usage: Profiles
+    usage_profiles_title = "Usage Guide: Profiles"
+    usage_profiles_steps = [
+        "**Profiles** create reusable bake configurations, similar to **Substance Painter** presets. Start with the built-in **Unreal** or **Unity** presets as templates.",
+        "**Assignment:** Each Bake Set can be assigned its own unique Profile.",
+        "**Definition:** A profile defines the number of textures per Bake Set, channel packing configuration, and automatic texture naming.",
+        "**Per-Channel Options:** Configure specific settings for each channel, such as choosing between DirectX or OpenGL for Normal maps.",
+        "**Additional Settings:** Control Finalize naming patterns, bake Samples (affects AO/BentNormals speed), and Margins (resolution-based or manual).",
+        "**Note:** Resolution is defined in the Bake Set containing the objects you want to bake, not in the Profile."
     ]
-    profiles_images_alignment = [
-      "center",
-      "center",
-      "center",
-      "center"
+    usage_profiles_images = [
+        "images/Ultibake/Docs/Step5_1_SetYourProfile.png",
+        "images/Ultibake/Docs/Step5_2_CustomizeYourProfile.png",
+        "images/Ultibake/Docs/Step_5_3_ProfileUI.png",
+        "images/Ultibake/Docs/Step_5_4_TexturePostProcessing.png",
+        "images/Ultibake/Docs/Step_5_5_AddingMoreTextures.png"
     ]
-    suffixgen_title = "Texture Suffixes"
-    suffixgen_steps = [
-      "Manually specify the texture suffixes that are generated",
-      "This information is stored per scene, so to permanently set new suffixes, you must save the blend file as a new startup file",
-      "The reason it's done this way is because the suffixes are stored on the .blend file which isolates the standards there. This allows you to have for example Unity and Unreal suffixes per file"
+    usage_profiles_images_captions = [
+        "Set Profile - Choose your bake configuration.",
+        "Enable Profiles Panel - Shows how to enable the profiles panel.",
+        "Profile UI - Overview of profile settings.",
+        "Texture Post Processing - Add effects: Antialias, Kuwahara, Sharpen, Denoise.",
+        "Adding More Textures - Bake Sets using this profile will generate these additional textures."
     ]
-    suffixgen_images = [
-      "images/Ultibake/BasicUsage/SuffixGenNaming.webp",
-      "images/Ultibake/BasicUsage/AutomaticSuffixGen.webp"
+    usage_profiles_images_alignment = ["center", "center", "center", "center", "center"]
+
+    # Usage: Baking
+    usage_baking_title = "Usage Guide: Baking Process"
+    usage_baking_steps = [
+        "**Bake UV** - Configured in the Bake Set list (next to the Profile). Defines how the texture is laid out in UV space.",
+        "**Render Target** - Defines what the bake will look like on the object. Set via the camera icon next to the UV map on each object.",
+        "Baking happens in the background, keeping Blender responsive."
     ]
-    suffixgen_images_captions = [
-      "SuffixGenNaming configuration",
-      "Suffixes applied to textures"
+    usage_baking_images = [
+        "images/Ultibake/Docs/Step6_1_SetYourRenderTarget.png",
+        "images/Ultibake/Docs/BakeSetUVSelectionLocation.png",
+        "images/Ultibake/Docs/Step_7_BakeAll.png",
+        "images/Ultibake/Docs/Step_7_1_BakingIsDoneIntheBackground.png"
     ]
-    suffixgen_images_alignment = [
-      "center",
-      "center"
+    usage_baking_images_captions = [
+        "Set Render Target - Defines the visual appearance (Camera Icon).",
+        "Set Bake UV - Configured in Bake Set list (Highlighted Red). Overrides Active UV.",
+        "Bake All - Start the baking process.",
+        "Background Baking - Process runs in background."
     ]
-    bakesetgen_title = "Bake Set Generator"
-    bakesetgen_steps = [
-      "An automatic way of generating Bake Sets. This is useful if you have a lot of props"
+    usage_baking_images_alignment = ["center", "center", "center", "center"]
+
+    # Usage: Finalize
+    usage_finalize_title = "Usage Guide: Finalize"
+    usage_finalize_steps = [
+        "**Standard Workflow:** Finalize duplicates the baked mesh with a **single material** applied. This gives you full control over the result.",
+        "**Remove Other UVs:** (Setting) If enabled, the mesh will only keep your desired UV map. This ensures proper mapping in engines like Unity/Unreal/Godot which default to UV Index 0.",
+        "**Export Loop:** Export mesh (FBX/GLTF) → Import to Engine → Import Textures → Create & Assign Material.",
+        "**Pros:** Slower than direct GLTF export, but offers maximum compatibility and control."
     ]
-    bakesetgen_images = [
-      "images/Ultibake/BasicUsage/BakeSetGenerator.webp"
+    usage_finalize_images = [
+        "images/Ultibake/Docs/Step_8_Finalize.png",
+        "images/Ultibake/Docs/RemoveOtheUVsSetting.png"
     ]
-    bakesetgen_images_captions = [
-      "BakeSetGenerator for automatic Bake Set creation"
+    usage_finalize_images_captions = [
+        "Finalize Output - Prepare assets for export.",
+        "Remove Other UVs - Toggle in Settings to clean up UV maps."
     ]
-    bakesetgen_images_alignment = [
-      "center"
+    usage_finalize_images_alignment = ["center", "center"]
+
+    # Usage: Export
+    usage_export_title = "Usage Guide: GLTF Export"
+    usage_export_steps = [
+        "Export directly to GLTF/GLB for use in engines like Godot."
     ]
-    bakevisualizer_title = "Bake Visualizer"
-    bakevisualizer_steps = [
-      "A useful tool that shows exactly how the channels are split and how they will look",
-      "The button is highlighted red in the image"
+    usage_export_images = [
+        "images/Ultibake/Docs/Step_9_GLTF_ExportSupportNOCOLORID.png",
+        "images/Ultibake/Docs/Step_9_1_Remove_ColorID_From_Profile.png",
+        "images/Ultibake/Docs/Step_9_2_GLTF_Export_Working.png",
+        "images/Ultibake/Docs/Step_9_3_GLTF_INGODOT_Example.png"
     ]
-    bakevisualizer_images = [
-      "images/Ultibake/BasicUsage/BakeVisualization.webp"
+    usage_export_images_captions = [
+        "Export Support - Shows what happens when using an invalid profile with unsupported textures.",
+        "Remove Color ID (if needed). The GLTF exporter only supports a limited set of textures, using the defaults like UE5 Standard will cover most of the important ones",
+        "GLTF Export - Export directly to GLTF/GLB.",
+        "Result in Godot - Asset running in engine."
     ]
-    bakevisualizer_images_captions = [
-      "Bake Visualizer showing channel splits"
+    usage_export_images_alignment = ["center", "center", "center", "center"]
+
+[[documentation.pages]]
+  id = "advanced"
+  title = "Advanced Baking"
+
+  [documentation.pages.introduction]
+    title = "Advanced Baking"
+    paragraphs = [
+        "This section covers advanced features and deep dives into specific functionalities of UltiBake."
     ]
-    bakevisualizer_images_alignment = [
-      "center"
+    section_order = [
+      "usage_multiobject",
+      "usage_uvtools",
+      "usage_highlow",
+      "usage_decal",
+      "usage_atlas"
     ]
-    multiuv_title = "Baking With Multiple UVmaps"
-    multiuv_steps = [
-      "This is a very common use case. There are many cases where the UVmap is only used for the material, but it cannot be used for unwrapping",
-      "For clarity, the UV for baking has been renamed as **UVMap** (the default name) and **ProjectionUV** as the UV used only for the material",
-      "To properly do this, simply set your target as the correctly unwrapped UV",
-      "Enable **Active Render** on your desired material UVmap. You can also define it with a UV node on the material instead of setting the Active Render",
-      "The **Bake Unit UV Target** automates the baking workflow. Forget manually selecting the **UV map** in the bottom-right corner before baking; this is now automatic. Manual UV map selection is only needed when you unwrap your model. Be aware that the active render (camera icon) is different; it sets the **Source UV map** that the material uses by default, not the target for your bake."
+
+    # Usage: Multi Object Baking
+    usage_multiobject_title = "Multi Object Baking"
+    usage_multiobject_steps = [
+        "**Identical Setup, Critical UVs:** The setup is identical to Basic Mode thanks to collections. The main difference is that **UV Management** becomes critical.",
+        "**Unified Texture Space:** All objects bake to the same texture. They MUST share at least one UV map with the same name (Target UV) and have no overlapping islands.",
+        "**Ready to Bake:** Once UVs are validated (see below), the process is identical to the Basic Setup.",
+        "**Performance & Fast Mode:** Baking multiple objects individually can be slow. Enable **Fast Mode** on the Bake Set to internally combine objects for faster baking (Note: May affect materials using Object Coordinates).",
+        "**Result:** After baking and finalizing, you get a clean, single-mesh result with unified textures."
     ]
-    multiuv_images = [
-      "images/Ultibake/BasicUsage/BakingWithMultipleUV.webp",
-      "images/Ultibake/BasicUsage/BakingWithMultiplEUV2.webp",
-      "images/Ultibake/BasicUsage/UVDIFF.webp"
+    usage_multiobject_images = [
+        "images/Ultibake/Docs/Advanced/MultiObjectSetup.png",
+        "images/Ultibake/Docs/Advanced/SlowBake.png",
+        "images/Ultibake/Docs/Advanced/FastModeToggleLocation.png",
+        "images/Ultibake/Docs/Advanced/Multiobjectbakeafterfinalize.png"
     ]
-    multiuv_images_captions = [
-      "Setting up multiple UVmaps for baking",
-      "Final result with multiple UVmaps",
-      "Difference between UVmaps"
+    usage_multiobject_images_captions = [
+        "Multi Object Setup - Collections allow multiple objects to share one texture set.",
+        "Standard Speed - Individual object baking can be slow for many objects.",
+        "Fast Mode - Toggle to combine objects internally for significantly faster baking.",
+        "Final Result - Clean mesh with unified textures after Finalize."
     ]
-    multiuv_images_alignment = [
-      "center",
-      "center",
-      "center"
+    usage_multiobject_images_alignment = ["center", "center", "center", "center"]
+
+    # Usage: UV Tools
+    usage_uvtools_title = "UV Tools"
+    usage_uvtools_steps = [
+        "**Avoid Overlaps:** Overlapping UVs are a major issue in multi-object baking. Use the **UV Tools** (enable in Settings) to solve this.",
+        "**Batch UV Creation (Add):** Selecting a UV and clicking **Add** creates a duplicate UV on ALL objects in the collection. Useful for creating batch UVs.",
+        "**Batch UV Removal (Remove):** Removes the selected UV from ALL objects in the Bake Set.",
+        "**Sync UVs (Double Arrow):** If a UV is missing from some objects, clicking **Sync** recreates it by name on those objects only. **Tip:** Sync from the bottom of the list up, as UV hierarchy can be fragile.",
+        "**Fix Indices:** Game engines rely on UV Index order (0-7). If UltiBake detects index mismatches, use the **Fix Indices** button to automatically reorder them.",
+        "**Unwrap & Pack:** Use **Unwrap & Pack Uvs** to fix the **Active BakeSet UV**. Note: The tool uses the Bake Set's active UV, ignoring the tool's own selection.",
+        "**Visualizer:** Enable the **UVVisualizer** toggle (Main Panel) to see exactly which UVs are being modified and to verify the packed result.",
+        "**Validation:** A correct setup (as shown below) has no detected overlaps in the visualizer and displays checkmarks for all UVs, indicating no index or count mismatches."
     ]
-    collectionbake_title = "Collection Baking"
-    collectionbake_steps = [
-      "This is an optional workflow, but it's another way to bake a lot of objects. Unlike the Bake Set Generator, these objects will be baked together, so we must ensure non-overlapping UVs since they share the same Bake Set",
-      "You can have 1 Bake Unit per object, but this can be tedious to setup, especially when there are hundreds of objects",
-      "Another benefit is that this method bakes faster, but since it combines all the objects, any non-UV texture coordinates change, so it's not perfect for everything",
-      "Basically use it if you have a lot of objects and it doesn't break the materials. Otherwise, create a Bake Unit per object"
+    usage_uvtools_images = [
+        "images/Ultibake/Docs/Advanced/OverlappingUVS.png",
+        "images/Ultibake/Docs/Advanced/HighlightedAddSyncRemove.png",
+        "images/Ultibake/Docs/Advanced/FixIndices.png",
+        "images/Ultibake/Docs/Advanced/UVUnwrappingTools.png",
+        "images/Ultibake/Docs/Advanced/UVVISLocation.png",
+        "images/Ultibake/Docs/Advanced/FixedUVS.png"
     ]
-    collectionbake_images = [
-      "images/Ultibake/BasicUsage/CollectionBake.webp"
+    usage_uvtools_images_captions = [
+        "Overlapping UVs - Visualizer showing overlaps (Red) which cause bake errors.",
+        "Batch UV Tools - Add, Sync, or Remove UV maps across the entire collection.",
+        "Fix Indices - Auto-correction for UV Index mismatches critical for game engines.",
+        "UV Tools - Unwrap & Pack with UVVis open to verify results.",
+        "UV Visualizer Toggle - Located in the Main Panel.",
+        "Valid UV Setup - No overlaps detected and all UVs valid (checkmarks)."
     ]
-    collectionbake_images_captions = [
-      "Collection Baking setup"
+    usage_uvtools_images_alignment = ["center", "center", "center", "center", "center", "center"]
+
+    # Usage: High to Low Baking
+    usage_highlow_title = "High to Low Baking"
+    usage_highlow_steps = [
+        "**Setup:** Create TWO collections: one for **Low** objects and one for **High** objects.",
+        "**Name Pairing:** Objects are paired by NAME. The Low object uses the base name (e.g., 'Suzanne'), and the High object must have a suffix: `_HP`, `_HighPoly`, or `_High` (e.g., 'Suzanne_HP').",
+        "**Verification:** Check the 'Object Relationship' subpanel to verify successful pairing.",
+        "**Refresh:** If the list is empty or incorrect, click the **refresh button** on the Object Relationship panel.",
+        "**Material Source:** The Low object's material is ignored. Baking uses the mesh normals and materials from the High object.",
+        "**Exploded View:** Object transforms are ignored/reset during baking. You can keep High and Low objects separated ('exploded') in the viewport to avoid visual overlap.",
+        "**Multiple Objects & UVs:** When baking multiple High-to-Low pairs to the same Bake Set, they share the same texture space. **Always use the UVVisualizer** to check for overlaps (shown below) before baking."
     ]
-    collectionbake_images_alignment = [
-      "center"
+    usage_highlow_images = [
+        "images/Ultibake/Docs/Advanced/HighToLowBakingValidSetup.png",
+        "images/Ultibake/Docs/Advanced/HightoLowresults.png",
+        "images/Ultibake/Docs/Advanced/MultipleHightoLowUVOverlapFail.png",
+        "images/Ultibake/Docs/Advanced/MultipleHightoLowUVOverlapCorrect.png"
     ]
-    environmentcollection_title = "Environment Collection"
-    environmentcollection_steps = [
-      "This is a parameter on each Bake Unit. It's basically asking a simple question: What objects are allowed to affect this object in terms of AO/Lighting?",
-      "The difference is noticeable where we darken the edges of the lights based on AO. Without the environment they are pure white, but with it we get a nice gradient"
+    usage_highlow_images_captions = [
+        "High to Low Setup - Low/High collections populated and properly name-paired.",
+        "Baked Result - Details transferred from 'exploded' High poly to Low poly.",
+        "UV Overlap Warning - Visualizer showing overlaps (Red) when multiple objects share the same texture space.",
+        "Fixed Texture Space - Visualizer confirms valid setup after using UV Tools to fix overlaps."
     ]
-    environmentcollection_images = [
-      "images/Ultibake/BasicUsage/CollectionBake.webp",
-      "images/Ultibake/BasicUsage/EnvironmentCollection.webp"
+    usage_highlow_images_alignment = ["center", "center", "center", "center"]
+
+    # Usage: Decal Baking
+    usage_decal_title = "Decal Baking"
+    usage_decal_steps = [
+        "**Collection Setup:** Requires at least a **Low** collection and a **Decal** collection (assigned to the **Decals** slot).",
+        "**Decal Placement:** Place decals (any mesh object) on your geometry. **Ensure Normals Face UP** (outwards) so they project correctly towards the target.",
+        "**Cage Visualizer:** Enable the **Cage Visualizer** (next to UV Visualizer) to see the ray distance (Green). The cage MUST envelop the decal for it to be projected.",
+        "**Decals with Depth:** If your decal has depth (is 3D, not just a plane), disable **'Use Normal Data Transfer'** in the decal's material settings to prevent artifacts.",
+        "**Baking:** The baker will project the decals onto the Low poly mesh's texture."
     ]
-    environmentcollection_images_captions = [
-      "Without Environment Collection - pure white edges",
-      "With Environment Collection - nice gradient from AO"
+    usage_decal_video_url = "https://www.youtube.com/embed/o7HeKuUa624"
+    usage_decal_images = [
+        "images/Ultibake/Docs/Advanced/DecalBakingSetupValid.png",
+        "images/Ultibake/Docs/Advanced/Maxraydistancevisualizerfordecals.png",
+        "images/Ultibake/Docs/Advanced/DepthDecalFix.png",
+        "images/Ultibake/Docs/Advanced/DecalBakeSimpleResult.png"
     ]
-    environmentcollection_images_alignment = [
-      "center",
-      "center"
+    usage_decal_images_captions = [
+        "Decal Setup - Valid setup with Low and Decal collections.",
+        "Cage Visualizer - Ensure the Green cage (Max Ray Distance) fully covers the decals.",
+        "Depth Fix - Disable 'Use Normal Data Transfer' for 3D/non-flat decals.",
+        "Baked Result - Decals projected seamlessly onto the Low poly geometry."
     ]
-    decals_title = "Decals"
-    decals_steps = [
-      "Decals are just meshes. Under the hood, UltiBake manipulates objects in unique ways to force high-to-low baking to work additively",
-      "You can use mesh fonts, planes, planes with images, materials, or anything really. Only your Texture Set will limit what kind of information you can project to your low object from your decal collection",
-      "The placement of the decals should be slightly above the low mesh. The maximum distance is defined by the **Max Ray Distance** as shown in Step 4",
-      "There are two main types of decals: **3D decals** (like the cones in Step 3) and **2D decals** (flat quads with a material or image applied)",
-      "The way decals get added on top of the low object is defined by its alpha transparency",
-      "**Broken Normals Issue:** Sometimes the material does something strange to the normal map and its direction gets malformed. This probably isn't visible in most cases, but when it is, Step 9 shows how to fix it",
-      "The fix is to flip the normals of the 3D decal when needed (Step 8). If you bake in DirectX, it will invert the green channel. Note that Blender expects Normal maps to be OpenGL, and all Unreal profile presets bake in DirectX, so if you see broken normals, this is normal - it will be fixed in Unreal",
-      "Steps 6-7 show the OpenGL/DirectX issue comparison",
-      "With 2D decals that are too close to each other, there is one post-processing step using the **Alpha Stack GeoNode** as shown in Step 10, otherwise they stay broken like in Step 11. This is rarely needed unless you plan to stack decals"
+    usage_decal_images_alignment = ["center", "center", "center", "center"]
+
+    # Usage: Manual Atlas Baking
+    usage_atlas_title = "Atlas Baking"
+    usage_atlas_steps = [
+        "**Atlas Mode:** To enable Atlas Mode, assign your collection to the **Decals** slot while ensuring no other collections are assigned. The slot label will automatically change to **Atlas**, indicating that the mode is active.",
+        "**Functionality:** All objects in the collection are automatically arranged in a flat square grid and baked from above (Top-Down).",
+        "**Workflow & Result:** The baking workflow is identical to other modes. **Finalize** will create a single plane with the baked atlas applied.",
+        "**Use Cases:** Ideal for creating texture atlases for hotspot texturing, decals, fonts, or UI elements."
     ]
-    decals_images = [
-      "images/Ultibake/BasicUsage/Decal1.webp",
-      "images/Ultibake/BasicUsage/Decal2.webp",
-      "images/Ultibake/BasicUsage/Decal3.webp",
-      "images/Ultibake/BasicUsage/Decal4.webp",
-      "images/Ultibake/BasicUsage/Decal5.webp",
-      "images/Ultibake/BasicUsage/Decal6.webp",
-      "images/Ultibake/BasicUsage/Decal7.webp",
-      "images/Ultibake/BasicUsage/Decal8.webp",
-      "images/Ultibake/BasicUsage/Decal9.webp",
-      "images/Ultibake/BasicUsage/DecalStackFixed.webp",
-      "images/Ultibake/BasicUsage/DecalStackBreak.webp"
+    usage_atlas_video_url = "https://www.youtube.com/embed/N9TwSyBMqZ8"
+    usage_atlas_images = [
+        "images/Ultibake/Docs/Advanced/AtlasBakingSetup.png",
+        "images/Ultibake/Docs/Advanced/AtlasBakeResult.png"
     ]
-    decals_images_captions = [
-      "Decal workflow step 1 - All decals must be in the decal collection, either directly or in a subcollection",
-      "Decal workflow step 2 - Baking follows like normal, the only difference is that on top of the low object, the decal will be applied based on the alpha value",
-      "Decal workflow step 3 - 3D decals (cones)",
-      "Decal workflow step 4 - Max Ray Distance setting",
-      "Decal workflow step 5 - The backface of 3D mesh decals must be directed towards the surface of the low object. Rays shoot from the negative side of the decal to the surface. Enable Backface visualization to see which side is the backface",
-      "Decal workflow step 6 - OpenGL/DirectX normal map issue",
-      "Decal workflow step 7 - OpenGL/DirectX normal map comparison",
-      "Decal workflow step 8 - How to flip normals on 3D decal mesh",
-      "Decal workflow step 9 - Fixed broken normals issue",
-      "2D decals with Alpha Stack GeoNode - fixed",
-      "2D decals without Alpha Stack GeoNode - broken"
+    usage_atlas_images_captions = [
+        "Atlas Setup - Defining the collection in the Atlas slot triggers Atlas Mode.",
+        "Baked Result - Finalize generates a plane with the atlas texture applied. Note that the voronoi texture looks different, this is because by default that node uses generated coordinates, this will be overwritten since in atlas mode all objects are combined into one, to prevent this use other texture coordinate methods"
     ]
-    decals_images_alignment = [
-      "center",
-      "center",
-      "center",
-      "center",
-      "center",
-      "center",
-      "center",
-      "center",
-      "center",
-      "center",
-      "center"
+    usage_atlas_images_alignment = ["center", "center"]
+
+[[documentation.pages]]
+  id = "extras"
+  title = "Extras"
+
+  [documentation.pages.introduction]
+    title = "UltiBake Extras"
+    paragraphs = [
+        "This section covers **Quality of Life** features of UltiBake. These tools are not required for every workflow but are excellent additions to your toolkit.",
+        "They may also cover very specific workflow functionalities that don't fit into the standard baking categories."
     ]
-    hightolow_title = "High to Low Baking"
-    hightolow_steps = [
-      "As long as the initial pose of the objects is overlapping perfectly, you can move the high and low objects as you wish",
-      "The bake will reset the locations, rotations, and scaling for the duration of the bake. This is great for environment isolation, like is shown with our Lights",
-      "This unapplied transform agnostic behavior is shown in the first image",
-      "**Most Common Issue:** Not having enough extrusion distance. If you get surface artifacts on the low object, this is a sign to increase it",
-      "This method has served well, so this is all you need to remember. The artifacts are shown in image 2, and the fix is shown in image 3"
+    section_order = [
+      "usage_scale_normalize",
+      "usage_mof_unwrapper",
+      "usage_uv_sync"
     ]
-    hightolow_images = [
-      "images/Ultibake/BasicUsage/HightoLow2.webp",
-      "images/Ultibake/BasicUsage/HightoLow3.webp",
-      "images/Ultibake/BasicUsage/HightoLow4.webp"
+
+    # Usage: Object Scale Normalize
+    usage_scale_normalize_title = "Object Scale Normalize"
+    usage_scale_normalize_steps = [
+        "**Atlas Mode Toggle:** This setting is specifically for **Atlas Mode**.",
+        "**Functionality:** It normalizes the scale of the atlas during baking.",
+        "**Purpose:** Ensures consistent baking of normals. In Blender, normal map strength can be heavily affected by object scale differences; this feature prevents those inconsistencies."
     ]
-    hightolow_images_captions = [
-      "Unapplied transform agnostic behavior - objects can be moved freely as long as initial pose overlaps",
-      "Surface artifacts caused by insufficient extrusion distance",
-      "Fixed - increased extrusion distance resolves the artifacts"
+    usage_scale_normalize_images = ["images/Ultibake/Docs/Extras/ObjectScaleNormalize.png"]
+    usage_scale_normalize_images_captions = ["Object Scale Normalize - Ensures consistent normal strength in Atlas Mode."]
+    usage_scale_normalize_images_alignment = ["center"]
+
+    # Usage: MOF Unwrapper
+    usage_mof_unwrapper_title = "MOF Unwrapper"
+    usage_mof_unwrapper_steps = [
+        "**MOF Unwrapper:** Hidden selection in UVTools for the **[MOF Unwrapper](https://github.com/Ultikynnys/MOF-Blender)**.",
+        "**Better Unwrapping:** Handles unwrapping significantly better than Blender's default Smart Unwrapper.",
+        "**Installation:** Requires installing the **MOF-Blender** addon and ensuring the **MOF engine** is installed."
     ]
-    hightolow_images_alignment = [
-      "center",
-      "center",
-      "center"
+    usage_mof_unwrapper_images = ["images/Ultibake/Docs/Extras/UVToolsMOF.png"]
+    usage_mof_unwrapper_images_captions = ["MOF Unwrapper - Advanced unwrapping integration."]
+    usage_mof_unwrapper_images_alignment = ["center"]
+
+    # Usage: UV Editor Sync
+    usage_uv_sync_title = "UV Editor Sync"
+    usage_uv_sync_steps = [
+        "**The Problem:** In Blender, managing multiple objects with multiple UV maps is difficult because the UV Editor only shows the active UV map per object. Ensuring you are editing the correct UV map across multiple objects can be a nightmare.",
+        "**The Solution:** UltiBake automatically syncs the active UV map for all objects in a Bake Set to the **Bake Set UV Map**.",
+        "**UV Editor Sync Toggle:** Located next to the UV refresh button in the Bake Set list, this toggle opens a **synced UV Editor**. This allows you to unwrap and pack your objects with confidence, knowing that the correct UV map is active for every object in the set.",
+        "**Desynced Status:** If it says **Desynced**, you likely changed the active UV map via the mesh properties (the old way). **Do not do this.** Instead, change the UV map from the **Bake Set list** to automatically sync it across all objects in the Low collection."
     ]
-    advancedbaking_title = "Advanced Baking"
-    advancedbaking_steps = [
-      "Let's combine what we've learned with **Mixed Workflows**",
-      "We have 3 lights, each has a high-to-low and a single low for the fluorescent tubes",
-      "The tubes get darker on the edges thanks to our Environment Collection, which uses the low poly objects as the AO occluder (shown in first image)",
-      "Here we are baking the high poly light bodies to a low poly representation (shown in first image)",
-      "**Bake Set Behavior:** If there are two Bake Sets that share the same Texture name, it will act as a single Bake Set",
-      "This is great since now we can have slightly different parameters for different objects. As long as the generated texture suffixes are the same, they will combine together (shown in image 2)",
-      "We can also combine the covers into a single Bake Unit since they only have a low object. This combining is doable thanks to the **Collection Mode** toggle (shown in image 3)",
-      "We can see our result in image 4, but we forgot to set the Environment Collection so the lights look white at the edges",
-      "We finally fix this by setting the collection (shown in image 5)"
+    usage_uv_sync_images = [
+        "images/Ultibake/Docs/Extras/UVEditorSync.png",
+        "images/Ultibake/Docs/Extras/UVEditorSyncView.png"
     ]
-    advancedbaking_images = [
-      "images/Ultibake/BasicUsage/HightoLow.webp",
-      "images/Ultibake/BasicUsage/MultiBakeSet3.webp",
-      "images/Ultibake/BasicUsage/CollectionBakeADV.webp",
-      "images/Ultibake/BasicUsage/MultiBakeSet5.webp",
-      "images/Ultibake/BasicUsage/MultiBakeSet6.webp"
+    usage_uv_sync_images_captions = [
+        "UV Editor Sync - Opens a UV Editor synced to the Bake Set's active UV map.",
+        "UV Editor Sync View - Inspecting shared UVs across objects."
     ]
-    advancedbaking_images_captions = [
-      "High-to-low baking with Environment Collection - tubes get darker on edges from AO",
-      "Multiple Bake Sets with same texture name combine into single Bake Set",
-      "Combining covers into a single Bake Unit - only low objects needed",
-      "Result without Environment Collection - lights have white edges",
-      "Fixed result with Environment Collection set"
+    usage_uv_sync_images_alignment = ["center", "center"]
+
+[[documentation.pages]]
+  id = "troubleshooting"
+  title = "Troubleshooting"
+
+  [documentation.pages.introduction]
+    title = "Troubleshooting"
+    paragraphs = [
+        "Here you will find a list of **common issues** faced by customers and their solutions.",
+        "If you cannot find the answer you are looking for here, please join our **[Discord Server](https://discord.gg/Pm7TDf2rV5)** for direct support and community help."
     ]
-    advancedbaking_images_alignment = [
-      "center",
-      "center",
-      "center",
-      "center",
-      "center"
+    section_order = [
+      "usage_stability"
     ]
-    quickstart_title = "Quick Start"
-    quickstart_images = [
-      "images/Ultibake/BasicUsage/Step1.webp",
-      "images/Ultibake/BasicUsage/Step2.webp",
-      "images/Ultibake/BasicUsage/Step3.webp",
-      "images/Ultibake/BasicUsage/Step4.webp",
-      "images/Ultibake/BasicUsage/Step5.webp",
-      "images/Ultibake/BasicUsage/Step6.webp",
-      "images/Ultibake/BasicUsage/Step7.webp",
-      "images/Ultibake/BasicUsage/Step8.webp",
-      "images/Ultibake/BasicUsage/step9.webp",
-      "images/Ultibake/BasicUsage/Step10.webp",
-      "images/Ultibake/BasicUsage/Step11.webp",
-      "images/Ultibake/BasicUsage/Step12.webp",
-      "images/Ultibake/BasicUsage/Step13.webp"
+
+    # Usage: Stability & Performance
+    usage_stability_title = "Bake Failures & Performance"
+    usage_stability_steps = [
+        "**System Instability:** If your bakes keep failing, it may be due to system instability (hardware specs or OS issues). **Solution:** Enable **CPU Only Mode** and reduce the number of **Max CPU** and **GPU workers** in the settings.",
+        "**Long Bake Times:** Bakes can take a long time due to system specs or extreme resolutions (4k-8k). **Solution:** Increase the **Job Timeout** setting to prevent premature failure.",
+        "**Resolution vs. UVs:** Increasing texture resolution is often a bad idea. Most texture-related quality issues are **UV related**. Fixing your UVs (better unwrapping, packing, and texel density) is usually preferred over simply increasing resolution, though it requires more expertise."
     ]
-    quickstart_images_captions = [
-      "**Step 1:** Load default baking profiles, add a Bake Set, and set the target location for baked textures (circled in red)",
-      "**Step 2:** Select the object you want to bake as the LOW object in the newly created Bake Set",
-      "**Step 3:** Set the UVmap on the Bake Unit to match your unwrapped UVmap. Verify that the UVMap is inside the UV Bounds (shown on the left). No need to worry about UVmap selection in the bottom right corner (old Blender method) - UltiBake handles this automatically with this new parameter",
-      "**Step 4:** The outlined box shows the base texture name. Elements on the right are separated by | as suffixes. You can see it will bake 3 textures as defined by our profile",
-      "**Step 5:** Ready to bake!",
-      "**Step 6:** Once the bake is finished, use **Finalize** to create a copy of your mesh with a generated material that uses the baked textures. Perfect for exporting and previewing results. **Ctrl + Left Click** on Finalize will finalize all Bake Sets that share the same texture name",
-      "**Step 7:** This prop has 3 parts: the gate frame and its doors. To bake all parts into the same texture, assign 1 Bake Unit per object. Ensure the combined UVmaps don't overlap by checking in the UV Editor with the correct UVmap selected (highlighted in blue). This isn't a problem if your object has only a single UVmap",
-      "**Step 8:** The top left corner shows the current UVmap for the **Active object**. Check each object to ensure they all have the correct UV selected (UVMap in this case). Verify there's no overlap with UV islands and they fit within the UV tile bounds",
-      "**Step 9:** After baking and finalizing, multiple objects are created instead of one. Finalize keeps track of your exportables and automatically creates the right number of objects for export. Hassle-free!",
-      "**Step 10:** Notice a difference? This is expected since our original gate uses emission color. Simply switch to the second profile which has Emission already configured, then bake again",
-      "**Step 11:** Here's the exported result - looks nice, but it's missing something. We've added **Decals** to our gate. This is what other bake tools cannot do - it's the unique selling point of UltiBake",
-      "**Step 12:** Decal setup is simple: put your decals in a collection and assign it to your Bake Unit. Any mesh object can be a decal. We're using decalMACHINE here for high-quality alpha-masked decals, but you can use your own",
-      "**Step 13:** After baking, the decals are now part of the texture itself. This is one way to do it. To preserve decals as separate elements, put them in their own Bake Unit as LOW, but stack the UVs for higher resolution since they're identical"
-    ]
-    quickstart_images_alignment = [
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right",
-      "top-right"
-    ]
-    advanceduvcontrols_title = "Advanced UV Controls"
-    advanceduvcontrols_steps = [
-      "Normally in Blender we are forced to change the UVs for an object one at a time. We do this because for unwrapping to work we must select the correct UVmap for each object... now this is insane when we have more than a few objects",
-      "Now with Ultibake we can finally select multiple object UVs at the same time. With the button next to Finalize on each Bake Set, it will select the correct UVmap defined by the bake unit itself for the low objects or low collections",
-      "**Ctrl + Left Click** will also select all Bake Sets that share the same texture name. This is important since Bake Sets that have the same texture name will be implicitly combined texturewise, this means we must correct for UV overlapping, unless we are using stacked UVs which are the only exception",
-      "Here we can see how simple fixing UVs for multiple objects is now"
-    ]
-    advanceduvcontrols_images = [
-      "images/Ultibake/BasicUsage/UltibakeDefaultUV.webp",
-      "images/Ultibake/BasicUsage/UltibakeFixedUV.webp"
-    ]
-    advanceduvcontrols_images_captions = [
-      "Default UV state - selecting UVs one at a time is tedious with multiple objects",
-      "Fixed UVs - easily manage multiple object UVs simultaneously with Ultibake"
-    ]
-    advanceduvcontrols_images_alignment = [
-      "center",
-      "center"
-    ]
+    usage_stability_images = ["images/Ultibake/Docs/Extras/Stability.png"]
+    usage_stability_images_captions = ["Performance Settings - Adjust workers and timeouts to fix stability issues."]
+    usage_stability_images_alignment = ["center"]
