@@ -1819,7 +1819,7 @@ function renderChangelogSection(cfg) {
         const versionElement = document.createElement('div');
         versionElement.className = `changelog-version ${versionClass}`;
         versionElement.innerHTML = `
-          <div class="changelog-version-header" data-bs-toggle="collapse" data-bs-target="#${versionId}" aria-expanded="${isFirstVersion}" aria-controls="${versionId}" style="border-left-color: ${borderColor};">
+          <div class="changelog-version-header" role="button" tabindex="0" data-bs-toggle="collapse" data-bs-target="#${versionId}" aria-expanded="${isFirstVersion}" aria-controls="${versionId}" style="border-left-color: ${borderColor};">
             <div class="changelog-version-title-container">
               <h4 class="changelog-version-title" style="color: ${titleColor} !important;">${mdInlineToHtmlBoldOnly(version.title)}</h4>
               <span class="badge ${badgeClass} changelog-version-badge">${version.changes.length} change${version.changes.length !== 1 ? 's' : ''}</span>
@@ -1859,7 +1859,15 @@ function renderChangelogSection(cfg) {
             } else {
               icon.style.transform = 'rotate(0deg)';
             }
-          }, 10);
+          }, 350); // Match Bootstrap collapse transition time
+        });
+
+        // Add keyboard support for role="button"
+        header.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+          }
         });
       });
 
