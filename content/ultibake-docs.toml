@@ -45,6 +45,7 @@
     section_order = [
       "usage_basics",
       "usage_profiles",
+      "usage_baketypes",
       "usage_baking",
       "usage_finalize",
       "usage_export"
@@ -107,6 +108,20 @@
         "Adding More Textures - Bake Sets using this profile will generate these additional textures."
     ]
     usage_profiles_images_alignment = ["center", "center", "center", "center", "center"]
+
+    # Usage: Bake Types
+    usage_baketypes_title = "Usage Guide: Bake Types"
+    usage_baketypes_steps = [
+        "**The Core Concept:** Bake Types are the most important concept in UltiBake. They define exactly what data is being baked into your textures.",
+        "**Principled BSDF Parity:** The addon utilizes the **Principled BSDF** node to ensure consistency and parity with game engines like Unity, Unreal, and Godot. It is the only shader node in Blender fully comparable to PBR standards required by these engines.",
+        "**Requirement:** All inputs on the Principled BSDF node exist in game engines, which is why your materials **MUST** use this node. It doesn't matter how deep it is nested in node groups; it just has to exist.",
+        "**Profile Integration:** Profile textures are composed of these bake types. A single texture can hold up to 4 bake types (one for each channel: R, G, B, A).",
+        "**Standard vs. Special:** Standard types (Base Color, Metallic, Normal) come directly from the Principled BSDF. **Special Bake Types** (ColorID, Ambient Occlusion, Bent Normals) do not exist on the node but are generated procedurally during the bake.",
+        "**Sanitize Materials:** If your materials don't use Principled BSDF, enable the **Material Preprocessing** panel in Settings. It contains tools to auto-convert them."
+    ]
+    usage_baketypes_images = ["images/Ultibake/BasicUsage/BakeTypes.png"]
+    usage_baketypes_images_captions = ["Bake Types - Ensuring PBR parity with game engines."]
+    usage_baketypes_images_alignment = ["center"]
 
     # Usage: Baking
     usage_baking_title = "Usage Guide: Baking Process"
