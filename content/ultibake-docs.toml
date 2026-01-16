@@ -317,7 +317,10 @@
     section_order = [
       "usage_scale_normalize",
       "usage_mof_unwrapper",
-      "usage_uv_sync"
+      "usage_uv_sync",
+      "usage_environment",
+      "usage_profile_management",
+      "usage_stacked_decals"
     ]
 
     # Usage: Object Scale Normalize
@@ -359,6 +362,61 @@
         "UV Editor Sync View - Inspecting shared UVs across objects."
     ]
     usage_uv_sync_images_alignment = ["center", "center"]
+
+    # Usage: Environment Collection
+    usage_environment_title = "Environment Collection"
+    usage_environment_steps = [
+        "**Understanding the Slot:** The Environment collection slot is important if you want additional AO or light contribution from lights or objects to your baked objects.",
+        "**Default Behavior:** By default, everything unrelated to the bake is blacklisted. If you don't define this slot, the scene is baked with ONLY the Low, High, and Decals collections.",
+        "**Usage:** Assignment to the Environment slot inserts those objects into the baking scene. This is useful if your materials utilize AO for effects like dust or grime and you need other objects (like the cube in the image) to affect it.",
+        "**Lightmaps:** Note that the Sky will ALWAYS affect the lightmap bake regardless of this setting."
+    ]
+    usage_environment_images = [
+        "images/Ultibake/Docs/Extras/WithoutEnviromentCol.png",
+        "images/Ultibake/Docs/Extras/WithEnviromentCol.png"
+    ]
+    usage_environment_images_captions = [
+        "Environment Collection - Including external objects in the bake calculation.",
+        "With Environment - Red light contribution and extra Cube AO affecting the bake."
+    ]
+    usage_environment_images_alignment = ["center", "center"]
+
+    # Usage: Profile Management
+    usage_profile_management_title = "Profile Management"
+    usage_profile_management_steps = [
+        "**Global Profiles:** Profiles are global, meaning they persist across projects.",
+        "**Save/Load:** You can save profiles to share with other users or verify backups. This creates a `.ub2` file which can be loaded back in.",
+        "**Defaults:** Use 'Save to Default' and 'Load from Default' to embed the profile into the addon itself. This ensures it stays persistent with your Blender installation or when migrating to a newer Blender version."
+    ]
+    usage_profile_management_images = ["images/Ultibake/Docs/Extras/ProfileSaveLoad.png"]
+    usage_profile_management_images_captions = ["Profile Management - Save, Load, and Manage Defaults."]
+    usage_profile_management_images_alignment = ["center"]
+
+    # Usage: Stacked Decals
+    usage_stacked_decals_title = "Stacked Decals"
+    usage_stacked_decals_steps = [
+        "**The Problem:** Decals that overlap will be clipped using the mesh boundary instead of the image alpha. This causes the visual issue shown in the image.",
+        "**The Solution:** Enable the **Decal Tools** panel from the Settings.",
+        "**Decal Stencil:** This tool applies a geometry node modifier to your decals. Given an image and a channel, it creates a **mesh stencil** so that the mesh boundary accurately matches the alpha of the image.",
+        "**Usage:** Select the image with the alpha mask, then select the channel and UV to correctly create the stencil.",
+        "**Stencilize:** Use the **Stencilize Selected** button to fix the selected decals. You can also optionally shrinkwrap or reparent decals between low/high objects.",
+        "**Adjustments:** You will also need to adjust the subdivision and threshold to get the desired mesh shape. Once satisfied, you can rebake.",
+        "**Result:** The resulting bake with stencilize applied shows overlapping decals correctly stacked.",
+        "**Tip:** If the resulting subdivision isn't enough, you can always subdivide the plane first manually."
+    ]
+    usage_stacked_decals_images = [
+        "images/Ultibake/Docs/Extras/StackedUVS_withoutstencil.png",
+        "images/Ultibake/Docs/Extras/DecalToolsUI.png",
+        "images/Ultibake/Docs/Extras/StencilizeSubdivthresholdadjustments.png",
+        "images/Ultibake/Docs/Extras/StencilizeBakedResult.png"
+    ]
+    usage_stacked_decals_images_captions = [
+        "Stacked Decals Issue - Overlapping decals clipping incorrectly without stencils.",
+        "Decal Tools UI - Configure image alpha source and Stencilize.",
+        "Adjustments - Tweak Subdivision and Threshold for the perfect stencil shape.",
+        "Final Result - Correctly stacked decals with proper alpha clipping."
+    ]
+    usage_stacked_decals_images_alignment = ["center", "center", "center", "center"]
 
 [[documentation.pages]]
   id = "troubleshooting"
