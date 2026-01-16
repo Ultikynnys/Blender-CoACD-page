@@ -39,8 +39,8 @@
         "**5. Finalize & Export:** Use **Finalize** to prepare your asset and export effortlessly to GLTF or FBX.",
         "**6. Direct GLTF Export:** (Optional) Use the GLTF button (3rd button at top) for faster export. Note: Supports limited texture types."
     ]
-    usage_images = ["images/Ultibake/Docs/ValidConfigurationFast.png"]
-    usage_images_captions = ["Complete Valid Bake Configuration"]
+    usage_images = ["images/Ultibake/Docs/Quickstartimage.png"]
+    usage_images_captions = ["Quick Start Guide - Follow the numbered steps."]
     usage_images_layout = "wide"
     section_order = [
       "usage_basics",
