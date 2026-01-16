@@ -3,7 +3,7 @@
   title = "Ultibake"
   banner = "images/UltibakeBanner.png"
   # Background pattern (black/white mask with color mapping)
-  background_image = "images/Pattern.svg"
+  background_image = "images/pattern.svg"
   background_size = "auto"
   background_position = "center"
   background_repeat = "repeat"
