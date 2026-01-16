@@ -187,9 +187,7 @@
 
   [documentation.pages.introduction]
     title = "Advanced Baking"
-    paragraphs = [
-        "This section covers advanced features and deep dives into specific functionalities of UltiBake."
-    ]
+    paragraphs = []
     section_order = [
       "usage_multiobject",
       "usage_uvtools",
@@ -205,7 +203,7 @@
         "**Unified Texture Space:** All objects bake to the same texture. They MUST share at least one UV map with the same name (Target UV) and have no overlapping islands.",
         "**Ready to Bake:** Once UVs are validated (see below), the process is identical to the Basic Setup.",
         "**Performance & Fast Mode:** Baking multiple objects individually can be slow. Enable **Fast Mode** on the Bake Set to internally combine objects for faster baking (Note: May affect materials using Object Coordinates).",
-        "**Result:** After baking and finalizing, you get a clean, single-mesh result with unified textures."
+        "**Result:** After baking and finalizing, you get a clean, multi-object result with unified textures."
     ]
     usage_multiobject_images = [
         "images/Ultibake/Docs/Advanced/MultiObjectSetup.png",

@@ -3169,20 +3169,35 @@ function renderDocumentationPage(pageId) {
   }
 
   // Set page title
-  const titleEl = document.getElementById('doc-page-title');
-  if (titleEl && page.title) {
-    titleEl.textContent = page.title;
-  }
-
   // Render introduction section (reuse existing function)
   const introEl = document.getElementById('doc-page-intro');
-  if (introEl) {
-    if (page.introduction) {
-      introEl.style.display = '';
-      renderIntroductionSection(page.introduction, (cfgDoc || globalConfig), 'doc-page-intro');
+  const titleEl = document.getElementById('doc-page-title');
+  // Find the wrapper section (parent of title and intro)
+  const introSection = titleEl ? titleEl.closest('.section') : (introEl ? introEl.closest('.section') : null);
+
+  let hasIntroContent = false;
+  if (introEl && page.introduction) {
+    renderIntroductionSection(page.introduction, (cfgDoc || globalConfig), 'doc-page-intro');
+    // Check if any content was actually rendered
+    hasIntroContent = introEl.children.length > 0 || (introEl.textContent && introEl.textContent.trim().length > 0);
+  } else if (introEl) {
+    introEl.innerHTML = '';
+  }
+
+  // Set title and visibility based on content
+  if (introSection) {
+    if (hasIntroContent) {
+      introSection.style.display = '';
+      if (titleEl) {
+        titleEl.style.display = '';
+        if (page.title) titleEl.textContent = page.title;
+      }
+      if (introEl) introEl.style.display = '';
     } else {
-      introEl.innerHTML = '';
-      introEl.style.display = 'none';
+      // Keep section visible as it may contain dynamic subsections
+      introSection.style.display = '';
+      if (titleEl) titleEl.style.display = 'none';
+      if (introEl) introEl.style.display = 'none';
     }
   }
 
