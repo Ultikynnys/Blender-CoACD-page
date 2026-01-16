@@ -80,9 +80,6 @@ fonts_config = "content/fonts.toml"
   usage_images_layout = "vertical"  # "vertical" (9:16) or "wide" (16:9)
   usage_images = [
     "images/Ultibake/UltibakeSettingsnew/MainPanel.png",
-    "images/Ultibake/UltibakeSettingsnew/DecalToolsPanel.png",
-    "images/Ultibake/UltibakeSettingsnew/UVToolsPanel.png",
-    "images/Ultibake/UltibakeSettingsnew/SettingsPanel.png",
     "images/Ultibake/UltibakeSettingsnew/ProfilesPanel.png",
     "images/Ultibake/UltibakeSettingsnew/UpdatesPanel.png"
   ]
@@ -90,9 +87,6 @@ fonts_config = "content/fonts.toml"
   # Captions for the images (in order)
   usage_images_captions = [
     "Panel location: 3D Viewport > N > Ultibake",
-    "Decal Tools - Various tools to help you use Decal Baking",
-    "UV Tools - Manage UV maps with built-in tools",
-    "Settings - Configure your global parameters",
     "Profiles - Create and manage reusable baking profiles",
     "Updates - Stay up to date with the latest features and improvements"
   ]
@@ -100,9 +94,6 @@ fonts_config = "content/fonts.toml"
   # Alignment for the images (in order) - options: "top-left", "top-right", "center"
   usage_images_alignment = [
     "top-right",
-    "top-right", 
-    "top-right",
-    "top-left",
     "top-right",
     "top-right"
   ]
@@ -116,6 +107,9 @@ fonts_config = "content/fonts.toml"
     type = "content"
     title = "Feature Showcase"
     images = [
+      "images/Ultibake/UltibakeShowcase/AtlasBaking1.png",
+      "images/Ultibake/UltibakeShowcase/AtlasBaking2.png",
+      "images/Ultibake/UltibakeShowcase/AtlasBaking3.png",
       "images/Ultibake/UltibakeShowcase/ComplexMaterialSetup.jpg",
       "images/Ultibake/UltibakeShowcase/DecalsBefore.jpg",
       "images/Ultibake/UltibakeShowcase/DecalsAfter.jpg",
@@ -123,11 +117,11 @@ fonts_config = "content/fonts.toml"
       "images/Ultibake/UltibakeShowcase/UVVisualizer.jpg",
       "images/Ultibake/UltibakeShowcase/MaxraydistanceCageExtrusionVisualizer.jpg",
       "images/Ultibake/UltibakeShowcase/SeamlessGLTFExport.jpg",
-      "images/Ultibake/UltibakeShowcase/AtlasBaking1.png",
-      "images/Ultibake/UltibakeShowcase/AtlasBaking2.png",
-      "images/Ultibake/UltibakeShowcase/AtlasBaking3.png",
     ]
     images_captions = [
+      "Atlas Baking - Create Texture Atlases",
+      "Atlas Baking - Create Decal Atlases",
+      "Atlas Baking - Create Decal Atlases",
       "Complex Material Setup - Advanced material support with Principled BSDF",
       "Decal Baking - Before applying decals to the surface",
       "Decal Baking - After baking decals into the texture",
@@ -135,12 +129,20 @@ fonts_config = "content/fonts.toml"
       "UV Visualizer - Visualize UV maps and detect overlapping UVs",
       "Cage/Extrusion Visualizer - Visualize baking ray distances and cage settings",
       "Seamless GLTF Export - Export baked textures and materials directly to GLB format",
-      "Atlas Baking - Create Texture Atlases",
-      "Atlas Baking - Create Decal Atlases",
-      "Atlas Baking - Create Decal Atlases",
     ]
     images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
     images_layout = "wide"
+
+  [[introduction.sections]]
+    type = "comparisons"
+    title = "Workflow Simplification"
+    
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/Ultibake/BasicUsage/UltibakePre.webp"
+      after  = "images/Ultibake/BasicUsage/UltibakePost.webp"
+      caption = "Simplify complicated setups into a single material and a set of textures"
+      handle_shape = "pentagon"
 
 # Support / Community
 [support]
