@@ -1195,21 +1195,14 @@ function generateBackgroundShapes(cfg) {
       // If background repeats vertically, calculate size based on page height
       const bgRepeat = site.background_repeat || 'no-repeat';
       if (bgRepeat === 'repeat' || bgRepeat === 'repeat-y') {
-        // Get the actual page height
-        const pageHeight = Math.max(
-          document.body.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.clientHeight,
-          document.documentElement.scrollHeight,
-          document.documentElement.offsetHeight
-        );
-
-        // Change from fixed to absolute positioning to allow height control
+        // Change from fixed to absolute positioning and use 100% height
+        // This ensures the background grows with the content (body is position: relative)
         container.style.position = 'absolute';
         container.style.top = '0';
         container.style.left = '0';
         container.style.right = '0';
-        container.style.height = `${pageHeight}px`;
+        container.style.bottom = '0';
+        container.style.height = '100%';
         container.style.width = '100%';
       }
 
