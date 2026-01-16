@@ -135,13 +135,13 @@ fonts_config = "content/fonts.toml"
 
   [[introduction.sections]]
     type = "comparisons"
-    title = "Workflow Simplification"
+    title = "Robust bake capabilities"
     
     [[introduction.sections.items]]
       initial = 0.5
       before = "images/Ultibake/BasicUsage/UltibakePre.webp"
       after  = "images/Ultibake/BasicUsage/UltibakePost.webp"
-      caption = "Simplify complicated setups into a single material and a set of textures"
+      caption = "Here we can see a gate, that is composed of multiple different parts, frame, 2 door parts, various decals and various materials, all using complex Sanctus Library materials, all of them can be baked into a single set of textures on a material with minimal loss in quality. Ready to export to any engine"
       handle_shape = "pentagon"
 
 # Support / Community
