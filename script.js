@@ -1136,82 +1136,107 @@ function buildBackgroundLayers(site = {}, themeColors = {}) {
   };
 }
 
-function createBackgroundStyle(cfg) {
-  const site = cfg?.site || {};
-  if (!site.background_image || !site.background_rotation) return null;
 
-  const rotation = site.background_rotation;
-  const size = site.background_size || 'auto';
-  const position = site.background_position || 'center';
-  const repeat = site.background_repeat || 'repeat';
-  const layers = buildBackgroundLayers(site, cfg?.theme_colors) || { backgroundImage: `url('${site.background_image}')`, blendMode: '' };
-  const blendModeRule = layers.blendMode ? `background-blend-mode: ${layers.blendMode};` : '';
 
-  return `
-    .bg-shapes::before {
-      content: '';
-      position: absolute;
-      top: -75%; left: -75%;
-      width: 250%; height: 250%;
-      background-image: ${layers.backgroundImage};
-      background-size: ${size};
-      background-position: ${position};
-      background-repeat: ${repeat};
-      ${blendModeRule}
-      transform: rotate(${rotation}deg);
-      transform-origin: center;
-      z-index: -1;
-    }
-  `;
-}
-
+// Generate background shapes or apply background image
 // Generate background shapes or apply background image
 function generateBackgroundShapes(cfg) {
   const container = document.querySelector('.bg-shapes');
   if (!container) return;
 
-  // Clean up previous styles
+  // Cleanup: remove any previous style injection or observers
   const existingStyle = document.querySelector('style[data-bg-rotation]');
   if (existingStyle) existingStyle.remove();
 
+  // Clear container
+  container.innerHTML = '';
+  // Reset container styles that might have been set previously
+  container.style.backgroundImage = '';
+  container.style.backgroundBlendMode = '';
+  container.style.width = '';
+  container.style.height = '';
+  container.style.position = 'fixed'; // Reset to default fixed
+  container.style.inset = '0';
+
+  if (container._bgResizeObserver) {
+    container._bgResizeObserver.disconnect();
+    delete container._bgResizeObserver;
+  }
+
   // Handle background image
   if (cfg?.site?.background_image) {
-    container.innerHTML = '';
-    const rotationStyle = createBackgroundStyle(cfg);
+    const site = cfg.site || {};
+    const layers = buildBackgroundLayers(site, cfg?.theme_colors) || { backgroundImage: `url('${site.background_image}')`, blendMode: '' };
 
-    if (rotationStyle) {
-      // Use pseudo-element for rotation
-      const style = document.createElement('style');
-      style.setAttribute('data-bg-rotation', 'true');
-      style.textContent = rotationStyle;
-      document.head.appendChild(style);
+    // Create inner layer for background to allow independent sizing/rotation
+    const layer = document.createElement('div');
+    layer.className = 'bg-layer';
+    layer.style.position = 'absolute';
+    layer.style.backgroundImage = layers.backgroundImage;
+    layer.style.backgroundBlendMode = layers.blendMode || '';
+
+    const bgRepeat = site.background_repeat || 'no-repeat';
+    layer.style.backgroundRepeat = bgRepeat;
+    layer.style.backgroundSize = site.background_size || 'cover';
+    layer.style.backgroundPosition = site.background_position || 'center';
+
+    // Apply opacity to container
+    container.style.opacity = cfg?.site?.background_opacity || '0.3';
+
+    const rotation = parseFloat(site.background_rotation || '0');
+
+    if (rotation !== 0) {
+      // For rotated backgrounds, we need a layer large enough to cover the viewport at any angle
+      // We'll use a ResizeObserver to maximize the layer size based on viewport dimensions
+
+      // Center the layer
+      layer.style.top = '50%';
+      layer.style.left = '50%';
+      layer.style.transformOrigin = 'center center';
+      layer.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+
+      // Resize logic
+      const updateSize = () => {
+        // We need the diagonal to cover everything: sqrt(w^2 + h^2)
+        // But simply max(w, h) * 1.5 is usually a safe robust estimate for < 90deg loops
+        // Let's use the actual diagonal to be mathematically safe for any rotation
+        const w = window.innerWidth;
+        const h = Math.max(document.body.scrollHeight, window.innerHeight);
+
+        // Use a generous multiplier to avoid any corner cutting
+        const dim = Math.sqrt(w * w + h * h) * 1.2;
+
+        layer.style.width = `${dim}px`;
+        layer.style.height = `${dim}px`;
+      };
+
+      // Initial sizing
+      updateSize();
+
+      // Observe resizing
+      const ro = new ResizeObserver(() => {
+        requestAnimationFrame(updateSize);
+      });
+      ro.observe(document.body);
+      ro.observe(document.documentElement);
+      container._bgResizeObserver = ro;
+
     } else {
-      // Direct container styling
-      const site = cfg.site || {};
-      const layers = buildBackgroundLayers(site) || { backgroundImage: `url('${site.background_image}')`, blendMode: '' };
-      container.style.backgroundImage = layers.backgroundImage;
-      container.style.backgroundBlendMode = layers.blendMode || '';
-
-      // If background repeats vertically, calculate size based on page height
-      const bgRepeat = site.background_repeat || 'no-repeat';
+      // No rotation: simple fill
+      layer.style.top = '0';
+      layer.style.left = '0';
+      layer.style.width = '100%';
+      // For repeating backgrounds, we want to cover the full scroll height
       if (bgRepeat === 'repeat' || bgRepeat === 'repeat-y') {
-        // Change from fixed to absolute positioning and use 100% height
-        // This ensures the background grows with the content (body is position: relative)
-        container.style.position = 'absolute';
-        container.style.top = '0';
-        container.style.left = '0';
-        container.style.right = '0';
-        container.style.bottom = '0';
+        layer.style.height = '100%';
+        container.style.position = 'absolute'; // Container moves with scroll
         container.style.height = '100%';
-        container.style.width = '100%';
+      } else {
+        layer.style.height = '100%';
       }
-
-      container.style.backgroundSize = site.background_size || 'cover';
-      container.style.backgroundPosition = site.background_position || 'center';
-      container.style.backgroundRepeat = bgRepeat;
     }
 
-    container.style.opacity = cfg?.site?.background_opacity || '0.3';
+    container.appendChild(layer);
     return;
   }
 
