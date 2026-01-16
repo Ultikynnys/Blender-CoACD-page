@@ -2450,6 +2450,161 @@ let currentView = 'showcase';
 let currentDocPage = null;
 let globalConfig = null;       // main site config (theme, showcase, etc.)
 let docsConfig = null;         // external documentation config when provided
+let docsSearchIndex = null;    // cached search index for current docs
+
+// Build search index from documentation pages (reuses getDocumentationPagesArray)
+function buildDocsSearchIndex() {
+  const cfg = docsConfig || globalConfig;
+  const pagesArr = getDocumentationPagesArray(cfg);
+  const index = [];
+
+  pagesArr.forEach(page => {
+    if (!page?.id) return;
+
+    // Add page itself
+    index.push({
+      pageId: page.id,
+      sectionId: null,
+      title: page.title || page.id,
+      type: 'page',
+      context: null
+    });
+
+    // Extract sections from introduction (same pattern as renderDynamicSections)
+    const intro = page.introduction;
+    if (!intro) return;
+
+    // Get section order or auto-detect *_title keys
+    let sectionOrder = intro.section_order;
+    if (!Array.isArray(sectionOrder) || sectionOrder.length === 0) {
+      sectionOrder = [];
+      for (const key in intro) {
+        if (key.endsWith('_title') && key !== 'parameters_title') {
+          const sectionKey = key.replace('_title', '');
+          if (sectionKey !== 'quickstart') {
+            sectionOrder.push(sectionKey);
+          }
+        }
+      }
+    }
+
+    // Add each section
+    const sectionIdPrefix = intro.section_id_prefix || 'doc-page-';
+    sectionOrder.forEach(sectionKey => {
+      const titleKey = `${sectionKey}_title`;
+      const title = intro[titleKey];
+      if (title) {
+        index.push({
+          pageId: page.id,
+          sectionId: `${sectionIdPrefix}${sectionKey}`,
+          title: title,
+          type: 'section',
+          context: page.title || page.id
+        });
+      }
+    });
+  });
+
+  return index;
+}
+
+// Search docs index (returns up to 5 matches)
+function searchDocs(query) {
+  if (!docsSearchIndex || !query || query.trim().length < 2) return [];
+
+  const q = query.toLowerCase().trim();
+  const results = [];
+
+  for (const item of docsSearchIndex) {
+    if (item.title.toLowerCase().includes(q)) {
+      results.push(item);
+      if (results.length >= 5) break;
+    }
+  }
+
+  return results;
+}
+
+// Navigate to search result (reuses showDocumentationPage)
+function navigateToSearchResult(result) {
+  if (!result?.pageId) return;
+
+  showDocumentationPage(result.pageId);
+
+  // Scroll to section after page renders
+  if (result.sectionId) {
+    setTimeout(() => {
+      const section = document.getElementById(result.sectionId);
+      if (section) {
+        // Account for fixed header height
+        const headerHeight = window.innerWidth <= 768 ? 80 : 120;
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: sectionTop - headerHeight - 20, behavior: 'smooth' });
+      }
+    }, 100);
+  }
+
+  // Clear search
+  const input = document.getElementById('docs-search-input');
+  const results = document.getElementById('docs-search-results');
+  if (input) input.value = '';
+  if (results) results.style.display = 'none';
+}
+
+// Render search results dropdown
+function renderSearchResults(results) {
+  const container = document.getElementById('docs-search-results');
+  if (!container) return;
+
+  if (results.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.innerHTML = '';
+  results.forEach(result => {
+    const item = document.createElement('div');
+    item.className = 'docs-search-result-item';
+    item.onclick = () => navigateToSearchResult(result);
+
+    const title = document.createElement('span');
+    title.className = 'docs-search-result-title';
+    title.textContent = result.title;
+    item.appendChild(title);
+
+    if (result.context) {
+      const context = document.createElement('span');
+      context.className = 'docs-search-result-context';
+      context.textContent = `in ${result.context}`;
+      item.appendChild(context);
+    }
+
+    container.appendChild(item);
+  });
+
+  container.style.display = 'block';
+}
+
+// Initialize docs search (called from renderDocumentationTOC)
+function initDocsSearch() {
+  docsSearchIndex = buildDocsSearchIndex();
+
+  const input = document.getElementById('docs-search-input');
+  const container = document.getElementById('docs-search-results');
+  if (!input) return;
+
+  input.addEventListener('input', (e) => {
+    const results = searchDocs(e.target.value);
+    renderSearchResults(results);
+  });
+
+  // Hide results when clicking outside
+  document.addEventListener('click', (e) => {
+    if (container && !e.target.closest('.docs-search-container')) {
+      container.style.display = 'none';
+    }
+  });
+}
 
 function getDocumentationPagesArray(cfg) {
   const p = cfg?.documentation?.pages;
@@ -2809,6 +2964,8 @@ function toggleView() {
     toggleBtn.textContent = toggleText;
     if (supportToggleBtn) supportToggleBtn.textContent = toggleText;
 
+    // Toggle button visibility is handled by showDocumentationTOC() now
+
     // Show TOC, hide any open page
     showDocumentationTOC();
   } else {
@@ -2817,9 +2974,16 @@ function toggleView() {
     showcaseView.style.display = 'block';
     currentView = 'showcase';
 
+    // Hide Back to TOC button in showcase view
+    const backBtn = document.getElementById('back-to-toc-btn');
+    if (backBtn) backBtn.style.display = 'none';
+
     const toggleText = globalConfig?.documentation?.toggle_text_showcase || 'View Documentation';
     toggleBtn.textContent = toggleText;
     if (supportToggleBtn) supportToggleBtn.textContent = toggleText;
+
+    // Show the toggle button in showcase view
+    toggleBtn.style.display = 'inline-block';
   }
 }
 
@@ -2831,6 +2995,14 @@ function showDocumentationTOC() {
   if (tocContainer) tocContainer.style.display = 'block';
   if (pageContainer) pageContainer.style.display = 'none';
 
+  // Hide Back to TOC button in TOC view
+  const backBtn = document.getElementById('back-to-toc-btn');
+  if (backBtn) backBtn.style.display = 'none';
+
+  // Show View Showcase button in TOC view
+  const toggleBtn = document.getElementById('view-toggle-btn');
+  if (toggleBtn) toggleBtn.style.display = 'inline-block';
+
   currentDocPage = null;
 }
 
@@ -2841,6 +3013,14 @@ function showDocumentationPage(pageId) {
 
   if (tocContainer) tocContainer.style.display = 'none';
   if (pageContainer) pageContainer.style.display = 'block';
+
+  // Show Back to TOC button in page view
+  const backBtn = document.getElementById('back-to-toc-btn');
+  if (backBtn) backBtn.style.display = 'inline-flex';
+
+  // Hide View Showcase button in page view
+  const toggleBtn = document.getElementById('view-toggle-btn');
+  if (toggleBtn) toggleBtn.style.display = 'none';
 
   currentDocPage = pageId;
   dbg('showDocumentationPage:', pageId);
@@ -2945,6 +3125,9 @@ function renderDocumentationTOC(cfg) {
     gridEl.appendChild(note);
   }
   colorizeStrongIn(gridEl, cfg);
+
+  // Initialize docs search
+  initDocsSearch();
 }
 
 // Render specific documentation page
@@ -3389,7 +3572,7 @@ async function initDocumentation(cfg) {
       || 'View Documentation';
     toggleBtn.textContent = toggleText;
     toggleBtn.onclick = toggleView;
-    toggleBtn.style.display = 'inline-block';
+    toggleBtn.style.display = (activeDocCfg?.documentation?.default_view === 'documentation') ? 'none' : 'inline-block';
     dbg('initDocumentation: toggle button ready');
   }
 
