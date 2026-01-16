@@ -5,6 +5,9 @@
   research_link_text = "Documentation"
   research_link_url = "https://ultikynnys.com/ultibridge/"
   research_link_enabled = false
+  
+  header_extra_link_text = "Open in Tab"
+  header_extra_link_url = "https://ultikynnys.github.io/Blender-CoACD-page/?page=ultibridge"
 
 # Theme colors (Monochrome theme)
 [theme_colors]

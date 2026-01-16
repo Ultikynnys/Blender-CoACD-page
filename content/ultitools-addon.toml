@@ -6,6 +6,9 @@
   research_link_url = "https://discord.gg/Xh7eB5Rn5b"
   research_link_enabled = false
 
+  header_extra_link_text = "Open in Tab"
+  header_extra_link_url = "https://ultikynnys.github.io/Blender-CoACD-page/?page=ultitools"
+
 # Theme colors (Magenta theme)
 [theme_colors]
   brand_primary = "#FF00FF"     # Magenta

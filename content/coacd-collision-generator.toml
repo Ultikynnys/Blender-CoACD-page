@@ -5,6 +5,9 @@
   research_link_text = "Research Paper"
   research_link_url = "https://colin97.github.io/CoACD/"
 
+  header_extra_link_text = "Open in Tab"
+  header_extra_link_url = "https://ultikynnys.github.io/Blender-CoACD-page/?page=coacd"
+
 # Theme colors (Default CoACD theme)
 [theme_colors]
   brand_primary = "#49ad28ff"     # Green - shades auto-derived

@@ -6,6 +6,9 @@
   research_link_url = "https://ultikynnys.github.io/AnimPlus"
   research_link_enabled = false
 
+  header_extra_link_text = "Open in Tab"
+  header_extra_link_url = "https://ultikynnys.github.io/Blender-CoACD-page/?page=animplus"
+
 # Theme colors (Default theme)
 [theme_colors]
   brand_primary = "#ffffff"     # White - shades auto-derived

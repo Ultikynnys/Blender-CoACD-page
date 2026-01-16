@@ -3,6 +3,9 @@
   title = "UltiStamp"
   banner = "images/UltiStampBanner.png"
   research_link_enabled = false
+
+  header_extra_link_text = "Open in Tab"
+  header_extra_link_url = "https://ultikynnys.github.io/Blender-CoACD-page/?page=ultistamp"
   # Background pattern (black/white mask with color mapping)
   background_image = "images/Pattern.svg"
   background_size = "auto"

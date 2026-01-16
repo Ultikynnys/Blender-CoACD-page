@@ -2120,6 +2120,25 @@ async function renderContent(cfg) {
     }
   }
 
+  const headerExtraBtn = document.getElementById('header-extra-btn');
+  if (headerExtraBtn) {
+    const text = cfg?.site?.header_extra_link_text;
+    const url = cfg?.site?.header_extra_link_url;
+    const title = cfg?.site?.header_extra_link_title || text || 'External Link';
+    const target = cfg?.site?.header_extra_link_target || '_blank';
+
+    if (text && url) {
+      headerExtraBtn.textContent = text;
+      headerExtraBtn.href = url;
+      headerExtraBtn.style.display = 'inline-flex';
+      headerExtraBtn.setAttribute('title', title);
+      headerExtraBtn.setAttribute('target', target);
+      headerExtraBtn.setAttribute('rel', 'noopener noreferrer');
+    } else {
+      headerExtraBtn.style.display = 'none';
+    }
+  }
+
   // Meta tags (optional)
   if (cfg?.meta) setMetaTags(cfg.meta);
   if (cfg?.site?.title) document.title = cfg.site.title;

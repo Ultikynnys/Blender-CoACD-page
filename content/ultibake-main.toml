@@ -10,6 +10,9 @@
   background_opacity = "0.15"
   background_rotation = "45"            # Rotate pattern in degrees
   # Pattern colors auto-derived from theme_colors
+  
+  header_extra_link_text = "Open in Tab"
+  header_extra_link_url = "https://ultikynnys.github.io/Blender-CoACD-page/?page=ultibake"
 
 # Theme colors (Crimson theme)
 [theme_colors]
