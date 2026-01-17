@@ -518,7 +518,8 @@
     * Fixed Lightmap baking being broken
 
 
->## 2.0.68 - Improvement 17/1/2026
+>## 2.0.69 - Improvement 17/1/2026
     * Profile panel is now always enabled
     * UV refresh is automatic now
     * Object relationship refresh is automatic now
+    * nice
