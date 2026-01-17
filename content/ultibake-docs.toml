@@ -60,8 +60,7 @@
        "**2. Bake Set** - Create a Bake Set and assign your Low Poly collection. A collection is required (even for single objects) to enable baking multiple objects to the same texture.",
        "**3. Pre-Checks** - Use the Visualizers to check UVs and ensure materials use Principled BSDF.",
        "**4. Sanitize Materials** - (Optional) Enable in settings. Click the button to try and auto-convert materials to Principled BSDF. This does not happen automatically during baking.",
-       "**5. Color IDs** - (Optional) Configure Color IDs for object groupings in the Bake Set 'Object Relationships' sub-panel. Click the refresh button if the list is outdated.",
-       "**6. Refresh UVs** - **Important:** If you change UV maps on your objects, click the **refresh button** next to the **Bake Set UVs** dropdown to update the list."
+       "**5. Color IDs** - (Optional) Configure Color IDs for object groupings in the Bake Set 'Object Relationships' sub-panel."
     ]
     usage_basics_images = [
         "images/Ultibake/Docs/Step0_UpdateTheAddonFromtheUI.png",
@@ -255,7 +254,7 @@
         "**Setup:** Create TWO collections: one for **Low** objects and one for **High** objects.",
         "**Name Pairing:** Objects are paired by NAME. The Low object uses the base name (e.g., 'Suzanne'), and the High object must have a suffix: `_HP`, `_HighPoly`, or `_High` (e.g., 'Suzanne_HP').",
         "**Verification:** Check the 'Object Relationship' subpanel to verify successful pairing.",
-        "**Refresh:** If the list is empty or incorrect, click the **refresh button** on the Object Relationship panel.",
+
         "**Material Source:** The Low object's material is ignored. Baking uses the mesh normals and materials from the High object.",
         "**Exploded View:** Object transforms are ignored/reset during baking. You can keep High and Low objects separated ('exploded') in the viewport to avoid visual overlap.",
         "**Multiple Objects & UVs:** When baking multiple High-to-Low pairs to the same Bake Set, they share the same texture space. **Always use the UVVisualizer** to check for overlaps (shown below) before baking."
@@ -363,7 +362,7 @@
     usage_uv_sync_steps = [
         "**The Problem:** In Blender, managing multiple objects with multiple UV maps is difficult because the UV Editor only shows the active UV map per object. Ensuring you are editing the correct UV map across multiple objects can be a nightmare.",
         "**The Solution:** UltiBake automatically syncs the active UV map for all objects in a Bake Set to the **Bake Set UV Map**.",
-        "**UV Editor Sync Toggle:** Located next to the UV refresh button in the Bake Set list, this toggle opens a **synced UV Editor**. This allows you to unwrap and pack your objects with confidence, knowing that the correct UV map is active for every object in the set.",
+        "**UV Editor Sync Toggle:** This toggle opens a **synced UV Editor**. This allows you to unwrap and pack your objects with confidence, knowing that the correct UV map is active for every object in the set.",
         "**Desynced Status:** If it says **Desynced**, you likely changed the active UV map via the mesh properties (the old way). **Do not do this.** Instead, change the UV map from the **Bake Set list** to automatically sync it across all objects in the Low collection."
     ]
     usage_uv_sync_images = [
