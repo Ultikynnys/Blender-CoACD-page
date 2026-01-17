@@ -37,7 +37,7 @@
     installation_steps = [
       "**1. Blender Addon** - Install the UltiBridge addon in Blender (Preferences > Add-ons).",
       "**2. Target Project** - In the UltiBridge panel, select your target engine (Godot, Unity, Unreal) and set the export path.",
-      "**3. Inject Tools** - Click the **Inject Tools** button. This installs necessary scripts into your game engine project.",
+      "**3. Install Tools** - Click the **Install Tools** button. This installs necessary scripts into your game engine project.",
       "**4. Enable Plugin** - **Godot/Unreal only**: Open your game project settings and enable the installed UltiBridge plugin. (Unity does this automatically).",
       "**5. Export** - The 'Send to [Engine]' button is now available. Click to start export. Large scenes may take time.",
       "**6. Import** - Once Blender finishes, open/focus the target engine window to trigger the import process.",
