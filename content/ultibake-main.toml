@@ -54,8 +54,7 @@ fonts_config = "content/fonts.toml"
   title = ""
   paragraphs = [
     "**UltiBake** is a complete replacement for Blender's baking workflow, developed specifically for **game development**. Battle-tested with various asset packs and users, it handles even the most complicated scenes with ease.",
-    "Perfect for asset creators working with **Unreal Engine**, **Unity**, or **Godot**, UltiBake streamlines the entire baking process for industry-standard pipelines. It handles **multiple materials per model** and **automatic UV map selection** - no more manual setup. The addon handles all the unintuitive Blender stuff, allowing you to **focus on assets**.",
-    "UltiBake can handle **multiple assets at once** - something even Substance Painter or Marmoset can't handle efficiently. Batch process entire asset collections with a single click."
+    "Perfect for asset creators working with **Unreal Engine**, **Unity**, or **Godot**, UltiBake streamlines the entire baking process for industry-standard pipelines. It handles **multiple materials per model** and **automatic UV map selection** - no more manual setup. The addon handles all the unintuitive Blender stuff, allowing you to **focus on assets**."
   ]
 
   # Features section
