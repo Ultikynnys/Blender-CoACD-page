@@ -235,7 +235,6 @@
         "images/Ultibake/Docs/Advanced/HighlightedAddSyncRemove.png",
         "images/Ultibake/Docs/Advanced/FixIndices.png",
         "images/Ultibake/Docs/Advanced/UVUnwrappingTools.png",
-        "images/Ultibake/Docs/Advanced/UVVISLocation.png",
         "images/Ultibake/Docs/Advanced/FixedUVS.png"
     ]
     usage_uvtools_images_captions = [
@@ -243,10 +242,9 @@
         "Batch UV Tools - Add, Sync, or Remove UV maps across the entire collection.",
         "Fix Indices - Auto-correction for UV Index mismatches critical for game engines.",
         "UV Tools - Unwrap & Pack with UVVis open to verify results.",
-        "UV Visualizer Toggle - Located in the Main Panel.",
         "Valid UV Setup - No overlaps detected and all UVs valid (checkmarks)."
     ]
-    usage_uvtools_images_alignment = ["center", "center", "center", "center", "center", "center"]
+    usage_uvtools_images_alignment = ["center", "center", "center", "center", "center"]
 
     # Usage: High to Low Baking
     usage_highlow_title = "High to Low Baking"
