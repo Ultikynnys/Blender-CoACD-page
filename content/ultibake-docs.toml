@@ -76,7 +76,7 @@
         "Find the UI Panel - Located in the 3D Viewport side bar.",
         "Create Bake Set & Set Collection - Assign your Low Poly collection. A collection is required to bake multiple objects to the same texture.",
         "Check UVs with Visualizer - Use the visualizer to find overlaps.",
-        "Ensure Principled BSDF Usage - Ensure materials use Principled BSDF.",
+        "Ensure materials use Principled BSDF.",
         "Use Sanitize Materials - Attempt to auto-fix materials. Enable in Settings.",
         "Color ID Config - Set Color IDs in the Bake Set Object Relationships panel."
     ]
