@@ -525,5 +525,5 @@
     * nice
 
 
->## 2.0.70 - Hotfix 18/1/2026
+>## 2.0.71 - Hotfix 18/1/2026
     * Fixed possible polling issue
