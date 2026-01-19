@@ -84,6 +84,18 @@ fonts_config = "content/fonts.toml"
   # Generic sections
   [[introduction.sections]]
     type = "content"
+    title = "Main UI"
+    images = [
+      "images/AnimationPlus/MainUIPanel.png",
+    ]
+    images_captions = [
+      "The main Animation+ UI panel, available in the Dopesheet, Action Editor, Graph Editor, and NLA Editor.",
+    ]
+    images_alignment = ["center"]
+    images_layout = "wide"
+
+  [[introduction.sections]]
+    type = "content"
     title = "Feature Clips"
     images = [
       "images/AnimationPlus/AnimPlusFeatures/DeltaOffsetWithEaseControls.mp4",
