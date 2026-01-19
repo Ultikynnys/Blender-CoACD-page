@@ -138,6 +138,17 @@ fonts_config = "content/fonts.toml"
     images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
     images_layout = "wide"
 
+  [[introduction.sections]]
+    type = "comparisons"
+    title = "Reset Layout Tool"
+
+    [[introduction.sections.items]]
+      initial = 0.5
+      before = "images/Ultitools/FeatureImages/LayoutResetPre.png"
+      after  = "images/Ultitools/FeatureImages/LayoutResetPost.png"
+      caption = "Instantly reset your workspace layout to default."
+      handle_shape = "hex"
+
 # Showcase
 [showcase]
   placeholder = "UltiTools demonstration coming soon"

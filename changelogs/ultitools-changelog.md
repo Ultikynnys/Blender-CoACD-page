@@ -13,3 +13,7 @@
     * Atlas toolkit added
     * Countless bugfixes
     * Most tools are refactored
+
+
+>## 2.0.4 - New tool 19/01/2026
+    * Reset Layout tool added
