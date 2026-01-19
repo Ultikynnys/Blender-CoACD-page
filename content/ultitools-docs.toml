@@ -37,7 +37,10 @@
       "portfoliorenderer",
       "lutgenerator",
       "vertexmeasure",
-      "scenetools"
+      "sortbysize",
+      "realizeinstances",
+      "collectionscenelinker",
+      "resetlayout"
     ]
     initial_section = "intro"
     section_id_prefix = "doc-page-"
@@ -251,24 +254,58 @@
     vertexmeasure_images_alignment = ["center", "center"]
     
     # ==========================================
-    # SCENE TOOLS
+    # SORT BY SIZE TOOL
     # ==========================================
-    scenetools_title = "Scene Tools"
-    scenetools_steps = [
-      "**Sort by Size** - Automatically organize selected objects into collections based on their bounding box dimensions.\n\n**How to use:**\n- Select objects you want to sort\n- Open **UltiTools > Scene Tools** panel\n- Set the number of **Volume Categories** (2-10)\n- Enable **Align Objects** to arrange them in a grid after sorting\n- Set **Padding** between aligned objects\n- Enable **Combine Children** to treat parent-child hierarchies as single units\n- Click **Sort by Size**\n\nObjects are grouped into size categories (Small, Medium, Large, etc.) and moved into new collections.",
-      "**Realize Selected Instances** - Convert collection instances to actual linked object copies.\n\n**How to use:**\n- Select collection instance empties\n- Configure options:\n  - **Preserve Empties** - Keep the original empty objects after realization\n  - **Preserve Collection** - Maintain the collection link on realized objects\n- Click **Realize Selected Instances**\n\nUseful for converting instanced assets to editable copies while maintaining organization.",
-      "**Collection Scene Linker** - Move collections between scenes in your Blender file.\n\n**How to use:**\n- Click **Move Collection** to open the dialog\n- Select the **Collection** to move\n- Choose an existing **Target Scene** or create a new one\n- Enable **Keep in Current Scene** to link rather than move\n- Click OK to execute\n\nGreat for organizing complex projects across multiple scenes.",
-      "**Reset Layout** - Instantly reset your current workspace layout to the default Blender startup state.\n\n**How to use:**\n- **Save your Blend file** (Required)\n- Go to **UltiTools > Scene Tools > Workspace Tools** section\n- Click **Reset Layout**\n\nThis uses the **default blend scene layout** to restore your workspace. Useful when UI gets cluttered or missing panels need restoration.\n\n**Note:** This reopens the current blend file, so any **orphaned assets** (unused data blocks) will be cleared."
+    sortbysize_title = "Sort By Size Tool"
+    sortbysize_steps = [
+      "**Overview** - Automatically organize selected objects into collections based on their bounding box dimensions. Also known as the Hierarchy Tool.\n\n**How to use:**\n- Select objects you want to sort\n- Open **UltiTools > Scene Tools** panel\n- Set the number of **Volume Categories** (2-10)\n- Enable **Align Objects** to arrange them in a grid after sorting\n- Set **Padding** between aligned objects\n- Enable **Combine Children** to treat parent-child hierarchies as single units\n- Click **Sort by Size**\n\nObjects are grouped into size categories (Small, Medium, Large, etc.) and moved into new collections."
     ]
-    scenetools_video_url = "images/Ultitools/FeatureImages/HierarcyToolPreview.mp4"
-    scenetools_video_caption = "Sort by Size tool organizing objects into collections"
-    scenetools_images = [
+    sortbysize_video_url = "images/Ultitools/FeatureImages/HierarcyToolPreview.mp4"
+    sortbysize_video_caption = "Sort by Size tool organizing objects into collections"
+    sortbysize_images = []
+    sortbysize_images_captions = []
+    sortbysize_images_alignment = []
+    
+    # ==========================================
+    # REALIZE INSTANCES
+    # ==========================================
+    realizeinstances_title = "Realize Instances"
+    realizeinstances_steps = [
+      "**Overview** - Convert collection instances to actual linked object copies.\n\n**How to use:**\n- Select collection instance empties\n- Open **UltiTools > Scene Tools** panel\n- Configure options:\n  - **Preserve Empties** - Keep the original empty objects after realization\n  - **Preserve Collection** - Maintain the collection link on realized objects\n- Click **Realize Selected Instances**\n\nUseful for converting instanced assets to editable copies while maintaining organization."
+    ]
+    realizeinstances_images = [
       "images/Ultitools/DocsImages/VariousTools/SceneToolsUI.png"
     ]
-    scenetools_images_captions = [
-      "Scene Tools panel with Object Organization, Data Management, and Collection Scene Linker sections"
+    realizeinstances_images_captions = [
+      "Scene Tools panel showing Realize Instances options"
     ]
-    scenetools_images_alignment = ["center"]
+    realizeinstances_images_alignment = ["center"]
+    
+    # ==========================================
+    # COLLECTION SCENE LINKER
+    # ==========================================
+    collectionscenelinker_title = "Collection Scene Linker"
+    collectionscenelinker_steps = [
+      "**Overview** - Move collections between scenes in your Blender file.\n\n**How to use:**\n- Open **UltiTools > Scene Tools** panel\n- Click **Move Collection** to open the dialog\n- Select the **Collection** to move\n- Choose an existing **Target Scene** or create a new one\n- Enable **Keep in Current Scene** to link rather than move\n- Click OK to execute\n\nGreat for organizing complex projects across multiple scenes."
+    ]
+    collectionscenelinker_images = []
+    collectionscenelinker_images_captions = []
+    collectionscenelinker_images_alignment = []
+    
+    # ==========================================
+    # RESET LAYOUT
+    # ==========================================
+    resetlayout_title = "Reset Layout"
+    resetlayout_steps = [
+      "**Overview** - Instantly reset your current workspace layout to the default Blender startup state.\n\n**How to use:**\n- **Save your Blend file** (Required)\n- Go to **UltiTools > Scene Tools > Workspace Tools** section\n- Click **Reset Layout**\n\nThis uses the **default blend scene layout** to restore your workspace. Useful when UI gets cluttered or missing panels need restoration.\n\n**Note:** This reopens the current blend file, so any **orphaned assets** (unused data blocks) will be cleared."
+    ]
+    resetlayout_images = [
+      "images/Ultitools/FeatureImages/LayoutResetLocation.png"
+    ]
+    resetlayout_images_captions = [
+      "Reset Layout tool location in Workspace Tools (requires saved file)"
+    ]
+    resetlayout_images_alignment = ["center"]
     
     quickstart_title = ""
     quickstart_images = []
