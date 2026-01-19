@@ -12,8 +12,9 @@
 # Theme colors (Default theme)
 [theme_colors]
   brand_primary = "#ffffff"     # White - shades auto-derived
-  bg_dark = "#000000"
+  bg_dark = "#0F0F0F"
   text_white = "#ffffff"
+  text_glow = true
 
 # Font configuration (references shared font config)
 fonts_config = "content/fonts.toml"
