@@ -18,6 +18,6 @@
     * Refactored various tools to work with modern Blender API
     * More tools added
 
->## 2.0.9 - Hotfix 1/12/2025
+>## 2.0.11 - Hotfix 19/01/2026
     * Fixed crashing on Blender 5
 
