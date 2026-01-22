@@ -54,7 +54,7 @@ fonts_config = "content/fonts.toml"
 [introduction]
   title = ""
   paragraphs = [
-    "A Blender add-on for generating convex collision hulls using a custom optimized variant of the CoACD (Collision-Aware Convex Decomposition) algorithm. This version is **up to 10x faster** than the original CoACD implementation.",
+    "A Blender add-on for generating convex collision hulls using a custom optimized variant of the CoACD (Collision-Aware Convex Decomposition) algorithm. This version is [up to 10x faster](https://github.com/Ultikynnys/CoACD) than the original CoACD implementation.",
     "Perfect for creating high-quality custom collisions for **Unity** and **Unreal Engine**.",
   ]
 
