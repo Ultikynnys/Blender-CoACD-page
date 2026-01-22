@@ -143,6 +143,19 @@ fonts_config = "content/fonts.toml"
 
   [[introduction.sections]]
     type = "content"
+    title = "Integrated Updater"
+    steps = [
+      "The addon has an integrated updater, which allows you to get the latest version of the addon inside Blender.",
+      "Simply click **Check for Updates**, use the **Stable Channel** and click **Install**.",
+      "Then all you have to do is restart Blender for it to take effect.",
+    ]
+    images = ["images/COACDExamples/IntegratedUpdater.png"]
+    images_captions = ["Integrated Updater location in the connection panel"]
+    images_alignment = ["center"]
+    images_layout = "wide"
+
+  [[introduction.sections]]
+    type = "content"
     title = "Recommended Workflow"
     steps = [
       "**Mesh Quality** - Clean meshes result in clean collision. Use manifold meshes when possible for optimal results.",
