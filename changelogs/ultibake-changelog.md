@@ -528,3 +528,9 @@
 >## 2.0.72 - Hotfix 19/1/2026
     * Fixed possible polling issue
     * Fixed UV related console spam when reloading a blend file
+
+>## 2.0.75 - Improvement 23/1/2026
+    * Bent Normal fixed
+    * External Profile files can be appended to the profile list
+    * Emission Bake Type added. Which is Emission Color * Strength
+    * Various Small Fixes
