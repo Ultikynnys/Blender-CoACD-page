@@ -17,3 +17,9 @@
     * Better material support
     * exr normal support
     * Implicit Normal y flip for Unreal engine
+
+>## 1.0.23 - Improvement  26/1/2026
+    * Added placeholder materials for unsupported materials
+    * Collections now correctly convert into folders and game objects
+    * Better material support
+    * Various bug fixes
