@@ -24,3 +24,7 @@
 
 >## 1.0.29 - Fixes 07/12/2025
     * Linux compatibility fixed
+
+>## 1.0.39 - Fixes 27/01/2026
+    * Various small bug fixes
+    * Visualizer elements more readable
