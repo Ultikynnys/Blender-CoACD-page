@@ -534,3 +534,7 @@
     * External Profile files can be appended to the profile list
     * Emission Bake Type added. Which is Emission Color * Strength
     * Various Small Fixes
+
+
+>## 2.0.83 - General bugfixes 01/2/2026
+    * Fixed various small bugs
