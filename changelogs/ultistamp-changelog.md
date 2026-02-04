@@ -30,7 +30,8 @@
     * Fixed Blender 5 errors
 
 
->## 1.0.52 - Hotfix 4/02/2026
+>## 1.0.53 - Hotfix 4/02/2026
     * Material panel fixed
     * Empty Stamp visualization fixed
     * Invalid stamps can no longer be created
+    * Normal maps calculation is fixed
