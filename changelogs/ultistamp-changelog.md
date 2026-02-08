@@ -36,5 +36,5 @@
     * Invalid stamps can no longer be created
     * Normal maps calculation is fixed
 
->## 1.0.55 - Hotfix 4/02/2026
+>## 1.0.56 - Hotfix 4/02/2026
     * More robust saving/loading
