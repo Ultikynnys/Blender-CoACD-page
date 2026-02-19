@@ -539,6 +539,6 @@
 >## 2.0.83 - General bugfixes 01/2/2026
     * Fixed various small bugs
 
->## 2.0.84 - General bugfixes 19/2/2026
+>## 2.0.85 - General bugfixes 19/2/2026
     * Unwrapper bug fixes
     * Atlas bake mode label was doubled
