@@ -220,13 +220,15 @@
 
     # Usage: UV Tools
     usage_uvtools_title = "UV Tools"
+    usage_uvtools_video_url = "https://www.youtube.com/embed/vJWwrEOnSbk"
     usage_uvtools_steps = [
+        "**Recommended Unwrap:** The video above showcases how to use the built-in Blender UV Tools, which is the **recommended way** to unwrap and pack objects for UltiBake.",
         "**Avoid Overlaps:** Overlapping UVs are a major issue in multi-object baking. Use the **UV Tools** (enable in Settings) to solve this.",
         "**Batch UV Creation (Add):** Selecting a UV and clicking **Add** creates a duplicate UV on ALL objects in the collection. Useful for creating batch UVs.",
         "**Batch UV Removal (Remove):** Removes the selected UV from ALL objects in the Bake Set.",
         "**Sync UVs (Double Arrow):** If a UV is missing from some objects, clicking **Sync** recreates it by name on those objects only. **Tip:** Sync from the bottom of the list up, as UV hierarchy can be fragile.",
         "**Fix Indices:** Game engines rely on UV Index order (0-7). If UltiBake detects index mismatches, use the **Fix Indices** button to automatically reorder them.",
-        "**Unwrap & Pack:** Use **Unwrap & Pack Uvs** to fix the **Active BakeSet UV**. Note: The tool uses the Bake Set's active UV, ignoring the tool's own selection.",
+        "**Unwrap & Pack:** Use **Unwrap & Pack Uvs** to fix the **Active BakeSet UV.** Note: The tool uses the Bake Set's active UV, ignoring the tool's own selection.",
         "**Visualizer:** Enable the **UVVisualizer** toggle (Main Panel) to see exactly which UVs are being modified and to verify the packed result.",
         "**Validation:** A correct setup (as shown below) has no detected overlaps in the visualizer and displays checkmarks for all UVs, indicating no index or count mismatches."
     ]
