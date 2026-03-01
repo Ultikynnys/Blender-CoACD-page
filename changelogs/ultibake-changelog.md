@@ -542,3 +542,10 @@
 >## 2.0.85 - General bugfixes 19/2/2026
     * Unwrapper bug fixes
     * Atlas bake mode label was doubled
+
+
+
+>## 2.0.89 - General bugfixes 01/3/2026
+    * Unwrapper bug fixes
+    * UVVis refresh fixed
+    * MOF unwrapper fixed
