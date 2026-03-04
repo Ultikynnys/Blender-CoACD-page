@@ -255,11 +255,12 @@
     usage_overlapping_uvs_steps = [
         "**Deliberate Overlaps:** While avoiding overlaps is standard, overlapping UVs can be used **deliberately** in workflows like modular level design or trim sheets.",
         "**Efficiency:** By mirroring or stacking identical mesh parts, you can save significant texture space while maintaining high texel density.",
-        "**Baking Logic:** When UltiBake detects overlaps, it typically bakes all islands sharing that space. This is perfectly safe as long as the geometry and materials for those islands are identical.",
-        "**Visualizer Control:** Use the **UVVisualizer** to identify these overlaps. If they are intentional, you can proceed with baking knowing that the result will be consistent across all shared islands."
+        "**Visualizer Alert:** The **UVVisualizer** (shown below) will flag these overlaps in **Red**. In standard workflows, this indicates an error, but in modular design, it confirms your islands are correctly stacked.",
+        "**Baking Logic:** When UltiBake bakes intentional overlaps, the result remains consistent across all shared islands as long as their source geometry and materials are identical.",
+        "**Verification:** Use the visualizer to ensure ONLY the islands you want to overlap are stacked, and everything else remains unique."
     ]
     usage_overlapping_uvs_images = ["images/Ultibake/Docs/Advanced/OverlappingUVS.png"]
-    usage_overlapping_uvs_images_captions = ["Intentional Overlaps - Useful for modular assets and trim sheets."]
+    usage_overlapping_uvs_images_captions = ["Visualizer Feedback - Intentional overlaps are flagged in Red; confirm they are deliberate before baking."]
     usage_overlapping_uvs_images_alignment = ["center"]
 
     # Usage: High to Low Baking
