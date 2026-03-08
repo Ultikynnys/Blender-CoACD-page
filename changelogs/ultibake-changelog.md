@@ -550,5 +550,6 @@
     * UVVis refresh fixed
     * MOF unwrapper fixed
 
->## 2.0.92 - Improvement 01/7/2026
+>## 2.0.93 - Improvement 01/7/2026
     * Ability to bake multiple linked mesh instances at once
+    * Mof version bump
