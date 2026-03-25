@@ -29,6 +29,6 @@
     * Various small bug fixes
     * Visualizer elements more readable
 	
->## 1.0.42 - Fixes 25/03/2026
+>## 1.0.43 - Fixes 25/03/2026
     * Mesh segmentation added
     * Fixed issue with target vertex count
