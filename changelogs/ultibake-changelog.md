@@ -553,3 +553,6 @@
 >## 2.0.93 - Improvement 01/7/2026
     * Ability to bake multiple linked mesh instances at once
     * Mof version bump
+	
+>## 2.0.95 - Improvement 03/25/2026
+	* Added Texel Density Visualizer
