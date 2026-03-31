@@ -558,5 +558,5 @@
 	* Added Texel Density Visualizer
 
 
->## 2.0.65 - Improvement 1/4/2026
-	* Added Texel Density Visualizer
+>## 2.0.96 - Improvement 1/4/2026
+	* Fixed MOF unwrap modifier datablock problems
