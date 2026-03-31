@@ -536,7 +536,7 @@
     * Various Small Fixes
 
 
->## 2.0.83 - General bugfixes 01/2/2026
+>## 2.0.83 - General bugfixes 1/2/2026
     * Fixed various small bugs
 
 >## 2.0.85 - General bugfixes 19/2/2026
@@ -545,14 +545,18 @@
 
 
 
->## 2.0.91 - General bugfixes 01/3/2026
+>## 2.0.91 - General bugfixes 1/3/2026
     * Unwrapper bug fixes
     * UVVis refresh fixed
     * MOF unwrapper fixed
 
->## 2.0.93 - Improvement 01/7/2026
+>## 2.0.93 - Improvement 1/7/2026
     * Ability to bake multiple linked mesh instances at once
     * Mof version bump
 	
->## 2.0.95 - Improvement 03/25/2026
+>## 2.0.95 - Improvement 25/3/2026
+	* Added Texel Density Visualizer
+
+
+>## 2.0.65 - Improvement 1/4/2026
 	* Added Texel Density Visualizer
