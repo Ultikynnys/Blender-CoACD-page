@@ -70,7 +70,7 @@ fonts_config = "content/fonts.toml"
     "**Multi High to Low Baking** - Transfer surface details from high-poly to low-poly meshes. You can bake as many high-to-low combinations as you wish with one click!",
     "**Profiles** - Create your own bake setup profile. You can also save/load to external files for other projects.",
     "**Bake Post Processing** - Apply antialiasing, denoising, sharpening and more.",
-    "**Visualizers** - UV and Cage/Extrusion visualizers allow you to see information you would normally have to guess, like overlapping UVs and baking ray distances.",
+    "**Visualizers** - UV, Cage/Extrusion, and **Texel Density** visualizers allow you to see information you would normally have to guess, like overlapping UVs, baking ray distances, and texel distribution.",
     "**Multi Texture Channel Packed Baking** - Bake multiple textures with a single click while having Full Control over texture channels with 35 unique bake types.",
     "**ATLAS Baking** - Create ATLAS textures with a single click. You can make your own PBR decals or Texture Atlases for your platform of choice."
   ]
@@ -115,6 +115,7 @@ fonts_config = "content/fonts.toml"
       "images/Ultibake/UltibakeShowcase/OverlappingDecals.jpg",
       "images/Ultibake/UltibakeShowcase/UVVisualizer.jpg",
       "images/Ultibake/UltibakeShowcase/MaxraydistanceCageExtrusionVisualizer.jpg",
+      "images/TexelDensityVisualizer.png",
       "images/Ultibake/UltibakeShowcase/SeamlessGLTFExport.jpg",
     ]
     images_captions = [
@@ -127,9 +128,10 @@ fonts_config = "content/fonts.toml"
       "Overlapping Decals - Handle multiple overlapping decals with ease",
       "UV Visualizer - Visualize UV maps and detect overlapping UVs",
       "Cage/Extrusion Visualizer - Visualize baking ray distances and cage settings",
+      "Texel Density Visualizer - Visualize texel density across your models",
       "Seamless GLTF Export - Export baked textures and materials directly to GLB format",
     ]
-    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
+    images_alignment = ["center", "center", "center", "center", "center", "center", "center", "center", "center", "center", "center"]
     images_layout = "wide"
 
   [[introduction.sections]]

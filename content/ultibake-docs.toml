@@ -190,6 +190,7 @@
     section_order = [
       "usage_multiobject",
       "usage_uvtools",
+      "usage_texel_density",
       "usage_overlapping_uvs",
       "usage_highlow",
       "usage_decal",
@@ -248,6 +249,18 @@
         "Valid UV Setup - No overlaps detected and all UVs valid (checkmarks)."
     ]
     usage_uvtools_images_alignment = ["center", "center", "center", "center", "center"]
+
+    # Usage: Texel Density Visualizer
+    usage_texel_density_title = "Texel Density Visualizer"
+    usage_texel_density_video_url = "https://www.youtube.com/embed/LOZLDLG4Q-M"
+    usage_texel_density_steps = [
+        "**Location:** Found in the **UV Tools** subpanel (enable in the Settings panel).",
+        "**Functionality:** This tool allows you to visualize the texel density of your selected Bake Set based on its **resolution** and **active UV Map**.",
+        "**Consistency:** It is crucial for maintaining consistent texture resolution across all props in your project, which is often difficult to accomplish manually.",
+        "**Workflow - Initial Check:** Perform an initial bake at a default resolution, then observe the prop from the **minimum target distance** (the closest the camera will ever be).",
+        "**Workflow - Calibration:** Increase or decrease the texel density target until you reach a 'saturation point' where the quality is sufficient. This is an eyeballs-on process, as the ideal density depends on the specific prop and its camera distance.",
+        "**Tip:** Use the visualizer to ensure your props are neither undersampled (blurry) nor oversampled (wasting texture space)."
+    ]
 
     # Usage: Overlapping UVs
     usage_overlapping_uvs_title = "Overlapping UVs (Level Design)"
