@@ -564,4 +564,8 @@
 
 
 >## 2.0.97 - Improvement 19/4/2026
-	* Added back Normalized Position as a bake type
+	* Added back Normalized Position as a bake type.
+	* Added support for RGB normalization based on object bounding boxes.
+	* Support for Fast Mode in Normalized Position bakes:
+		* Fast Mode Enabled: Combines bounding boxes of all objects for shared normalization.
+		* Fast Mode Disabled: Each object uses its own individual bounding box.

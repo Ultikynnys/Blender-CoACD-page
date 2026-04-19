@@ -360,7 +360,8 @@
       "usage_uv_sync",
       "usage_environment",
       "usage_profile_management",
-      "usage_stacked_decals"
+      "usage_stacked_decals",
+      "usage_normalized_position"
     ]
 
     # Usage: Object Scale Normalize
@@ -457,6 +458,24 @@
         "Final Result - Correctly stacked decals with proper alpha clipping."
     ]
     usage_stacked_decals_images_alignment = ["center", "center", "center", "center"]
+
+    # Usage: Normalized Position
+    usage_normalized_position_title = "Normalized Position"
+    usage_normalized_position_steps = [
+        "**Normalized Position:** This bake type creates an RGB bake of the object's XYZ coordinates, normalized by its bounding box. It functions similarly to the normalized position map in Substance Painter.",
+        "**Mode - Fast Mode Enabled:** When **Fast Mode** is enabled on the Bake Set, the baker combines the bounding boxes of all objects and uses this shared bounding box as the basis for normalization for all objects in the set.",
+        "**Mode - Fast Mode Disabled:** If **Fast Mode** is disabled, each object utilizes its own individual bounding box, which directly affects the gradients and localization of the resulting RGB values.",
+        "**Usage:** It can be added to any profile channel just like any other bake type."
+    ]
+    usage_normalized_position_images = [
+        "images/Ultibake/Docs/Extras/NormalizedPos_FastModeEnabled.webp",
+        "images/Ultibake/Docs/Extras/NormalizedPos_FastmodeDisabled.webp"
+    ]
+    usage_normalized_position_images_captions = [
+        "Fast Mode Enabled - Combined bounding box utilized for all objects.",
+        "Fast Mode Disabled - Individual bounding box utilized for each object."
+    ]
+    usage_normalized_position_images_alignment = ["center", "center"]
 
 [[documentation.pages]]
   id = "troubleshooting"

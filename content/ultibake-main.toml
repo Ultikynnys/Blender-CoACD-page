@@ -37,6 +37,7 @@
   "Bake Sets" = "strong"
   "Finalize" = "strong"
   "Profile" = "strong"
+  "Normalized Position" = "strong"
 
 # Font configuration (references shared font config)
 fonts_config = "content/fonts.toml"
