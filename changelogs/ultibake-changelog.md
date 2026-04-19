@@ -560,3 +560,8 @@
 
 >## 2.0.96 - Improvement 1/4/2026
 	* Fixed MOF unwrap modifier datablock problems
+
+
+
+>## 2.0.97 - Improvement 19/4/2026
+	* Added back Normalized Position as a bake type
