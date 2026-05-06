@@ -222,9 +222,9 @@
 
     # Usage: UV Tools
     usage_uvtools_title = "UV Tools"
-    usage_uvtools_video_url = "https://www.youtube.com/embed/vJWwrEOnSbk"
+    usage_uvtools_video_url = "https://www.youtube.com/embed/667sqj9Zc2Q"
     usage_uvtools_steps = [
-        "**Recommended Unwrap:** The video above showcases how to use the built-in Blender UV Tools, which is the **recommended way** to unwrap and pack objects for UltiBake.",
+        "**Recommended Workflow:** The video above shows how to bake multiple objects with multiple materials into a single material, using the UVTools for unwrapping and using the Texel Density visualizer for quality control.",
         "**Avoid Overlaps:** Overlapping UVs are a major issue in multi-object baking. Use the **UV Tools** (enable in Settings) to solve this.",
         "**Batch UV Creation (Add):** Selecting a UV and clicking **Add** creates a duplicate UV on ALL objects in the collection. Useful for creating batch UVs.",
         "**Batch UV Removal (Remove):** Removes the selected UV from ALL objects in the Bake Set.",
