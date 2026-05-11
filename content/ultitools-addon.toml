@@ -62,7 +62,7 @@ fonts_config = "content/fonts.toml"
     "**Text Animation** - Dynamic text with keyframeable entries and math expressions ({frame}, {vertices}, etc).",
     "**Portfolio Renderer** - Automated wireframe/AO renders with customizable text overlays, shadows, and backgrounds.",
     "**3D LUT Generator** - Create identity 3D LUTs in strip or cube format with real-time color visualization.",
-    "**Vertex Measure Tool** - Measure distances and angles directly on mesh vertices.",
+    "**Measure Master** - Ability to measure distances of circles and lines, while comparing their distances with virtual measurements. Made for designing dimensionally accurate parts.",
     "**Game Ready FBX Exporter** - Reliable export with Unity/Unreal fixes, animation scale correction, and batch processing. Pairs well with [AnimationPlus](https://superhivemarket.com/products/animation) for shape key animations.",
     "**Atlas Toolkit** - Create and manage texture atlases with tile editing and UV adjustment tools."
   ]

@@ -36,7 +36,7 @@
       "textanimation",
       "portfoliorenderer",
       "lutgenerator",
-      "vertexmeasure",
+      "measuremaster",
       "sortbysize",
       "realizeinstances",
       "collectionscenelinker",
@@ -234,24 +234,24 @@
     lutgenerator_images_alignment = []
     
     # ==========================================
-    # VERTEX MEASURE TOOL
+    # MEASURE MASTER
     # ==========================================
-    vertexmeasure_title = "Vertex Measure Tool"
-    vertexmeasure_steps = [
-      "Measure distances and angles directly on mesh vertices in the 3D viewport.\n\n**How to use:**\n- Select a mesh object and enter **Edit Mode**\n- The Vertex Measure overlay activates automatically when vertices are selected\n- Select **2 vertices** to measure distance\n- Select **3 vertices** to measure the angle between them\n\nMeasurements appear directly in the viewport.",
-      "**Distance Measurement** - Select exactly two vertices. The distance is displayed in scene units along the line connecting them. Works in local and global space.",
-      "**Angle Measurement** - Select exactly three vertices. The angle is calculated at the middle vertex (the vertex selected second). Displayed in degrees.",
-      "**Real-time Updates** - Measurements update live as you move vertices, apply transforms, or change selection. Works with subdivision surface modifiers in preview mode."
+    measuremaster_title = "Measure Master"
+    measuremaster_steps = [
+      "Measure distances of circles and lines, while comparing their distances with virtual measurements. Made for designing dimensionally accurate parts.\n\n**How to use:**\n- Select a mesh object and enter **Edit Mode**\n- The overlay activates automatically when edges or circles are selected\n- Select **circle edges** to measure diameter and circumference\n- Select **line segments** to measure linear distance\n- Virtual measurements appear alongside real ones for comparison",
+      "**Circle Measurement** - Select circular edge loops to measure diameter, radius, and circumference. Displays in scene units alongside virtual target measurements.",
+      "**Line Distance** - Select edge loops or vertex pairs to measure linear distance. Supports snapping to virtual measurement comparisons.",
+      "**Virtual Measurement Comparison** - Compare your measurements against virtual reference dimensions to ensure parts meet design specifications. Ideal for precision modeling."
     ]
-    vertexmeasure_images = [
+    measuremaster_images = [
       "images/Ultitools/DocsImages/VariousTools/VertexMeasure_Clean.png",
       "images/Ultitools/DocsImages/VariousTools/VertexMeasure_WithSubdiv.png"
     ]
-    vertexmeasure_images_captions = [
-      "Vertex Measure Tool showing distance and angle readouts",
-      "Vertex Measure with subdivision surface preview"
+    measuremaster_images_captions = [
+      "Measure Master showing circle diameter and virtual measurement comparison",
+      "Measure Master with subdivision surface preview"
     ]
-    vertexmeasure_images_alignment = ["center", "center"]
+    measuremaster_images_alignment = ["center", "center"]
     
     # ==========================================
     # SORT BY SIZE TOOL
