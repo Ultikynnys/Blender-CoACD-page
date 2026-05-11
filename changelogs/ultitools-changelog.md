@@ -19,4 +19,5 @@
     * Reset Layout tool added
 
 
->## 2.0.16 - Refactored measurement tools 11/05/2026
+>## 2.0.16 - Update 11/05/2026
+	* Refactored measurement tools
