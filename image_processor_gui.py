@@ -40,6 +40,10 @@ from media_utils import (
     normalize_rect,
     is_valid_crop_rect,
     interpolate_crop_keyframes,
+    is_animated_webp,
+    extract_webp_frames,
+    get_frame_durations,
+    save_animated_webp,
 )
 
 
@@ -844,6 +848,7 @@ class MediaProcessorGUI:
         
         # Resolution presets
         self.resolution_presets = {
+            "720p": {"16:9": (1280, 720), "9:16": (720, 1280)},
             "1080p": {"16:9": (1920, 1080), "9:16": (1080, 1920)},
             "4K": {"16:9": (3840, 2160), "9:16": (2160, 3840)}
         }
@@ -859,10 +864,18 @@ class MediaProcessorGUI:
         
         self.current_crop_rect = None  # Crop rect for current video
         
+        # Animated WebP support
+        self._anim_frames: list[Image.Image] = []
+        self._anim_durations: list[int] = []
+        self.webp_quality = tk.IntVar(value=95)
+        self.webp_lossless = tk.BooleanVar(value=False)
+        self.webp_method = tk.IntVar(value=6)
+        
         # Persistence settings
         self.file_settings = {}  # {'path_str': {'crop': [...], 'time': [...]}}
         
         self.cancel_event = threading.Event()
+        self._processing = False
         
         self._build_ui()
         self._check_ffmpeg()
@@ -942,8 +955,8 @@ class MediaProcessorGUI:
         res_frame = ttk.Frame(left_panel)
         res_frame.pack(fill=tk.X, pady=5)
         ttk.Label(res_frame, text="Resolution:").pack(side=tk.LEFT)
-        res_combo = ttk.Combobox(res_frame, textvariable=self.resolution_var, 
-                                  values=["1080p", "4K"], state="readonly", width=10)
+        res_combo = ttk.Combobox(res_frame, textvariable=self.resolution_var,
+                                  values=["720p", "1080p", "4K"], state="readonly", width=10)
         res_combo.pack(side=tk.RIGHT)
         res_combo.bind("<<ComboboxSelected>>", self._update_resolution_display)
         
@@ -959,7 +972,21 @@ class MediaProcessorGUI:
         # Resolution display label
         self.resolution_display = ttk.Label(left_panel, text="Output: 1920 × 1080", style="Status.TLabel")
         self.resolution_display.pack(anchor=tk.E, pady=(2, 0))
-        
+
+        # WebP compression settings (hidden by default, shown for animated WebP)
+        self.webp_frame = ttk.LabelFrame(left_panel, text="WebP Compression", padding=5)
+        webp_quality_frame = ttk.Frame(self.webp_frame)
+        webp_quality_frame.pack(fill=tk.X, pady=2)
+        ttk.Label(webp_quality_frame, text="Quality:").pack(side=tk.LEFT)
+        ttk.Spinbox(webp_quality_frame, from_=1, to=100, textvariable=self.webp_quality, width=8).pack(side=tk.RIGHT)
+        webp_lossless_frame = ttk.Frame(self.webp_frame)
+        webp_lossless_frame.pack(fill=tk.X, pady=2)
+        ttk.Checkbutton(webp_lossless_frame, text="Lossless", variable=self.webp_lossless).pack(side=tk.LEFT)
+        webp_method_frame = ttk.Frame(self.webp_frame)
+        webp_method_frame.pack(fill=tk.X, pady=2)
+        ttk.Label(webp_method_frame, text="Method (0-6):").pack(side=tk.LEFT)
+        ttk.Spinbox(webp_method_frame, from_=0, to=6, textvariable=self.webp_method, width=8).pack(side=tk.RIGHT)
+
         # Include audio checkbox
         self.audio_checkbox = ttk.Checkbutton(left_panel, text="Include Audio", variable=self.include_audio)
         self.audio_checkbox.pack(anchor=tk.W, pady=(10, 0))
@@ -1246,11 +1273,32 @@ For videos:
         self.current_mode = "image"
         self._show_image_canvas()
         self._set_image_controls_state(True)
-        
+
+        # Reset animated WebP state
+        self._anim_frames = []
+        self._anim_durations = []
+
         try:
-            pil_image = Image.open(image_path)
+            # Check for animated WebP
+            if is_animated_webp(image_path):
+                self._anim_frames = extract_webp_frames(image_path)
+                self._anim_durations = get_frame_durations(image_path)
+                pil_image = self._anim_frames[0]
+                # Show animated badge in media info
+                self.media_info.configure(
+                    text=f"{image_path.name} — Animated WebP ({len(self._anim_frames)} frames)"
+                )
+                self._show_webp_settings()
+            else:
+                pil_image = Image.open(image_path)
+                self._hide_webp_settings()
+
             if pil_image.mode in ('RGBA', 'LA', 'P'):
                 pil_image = pil_image.convert('RGB')
+
+            if not self._anim_frames:
+                self.media_info.configure(text=f"{image_path.name}")
+
             self.image_canvas.set_image(pil_image)
             self.current_media_path = image_path
             
@@ -1269,6 +1317,7 @@ For videos:
             
     def _load_video(self, video_path):
         """Load a video file for seeking."""
+        self._hide_webp_settings()
         self.current_mode = "video_seek"
         self._show_video_canvas()
         self.current_media_path = video_path
@@ -1401,13 +1450,22 @@ For videos:
             
     def _process_current_image(self):
         """Process the current image."""
+        if self._processing:
+            return
+        self._processing = True
         # Save settings for this file
         self.file_settings[str(self.current_media_path)] = {
             'crop': self.image_canvas.crop_rect
         }
 
+        # Handle animated WebP
+        if self._anim_frames:
+            self._process_animated_webp()
+            return
+
         cropped = self.image_canvas.get_cropped_image()
         if cropped is None:
+            self._processing = False
             return
         
         result = self._apply_processing(cropped)
@@ -1426,15 +1484,180 @@ For videos:
                 result.save(output_path, quality=95)
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save image:\n{e}")
+            self._processing = False
             return
-        
+
         self.processed_count += 1
         self.progress_bar["value"] = self.current_index + 1
-        
+
         # Next file
         self.current_index += 1
+        self._processing = False
         self._load_current_media()
-        
+
+    def _process_animated_webp(self):
+        self._set_image_controls_state(False)
+        self.cancel_event.clear()
+        self.cancel_btn.configure(state=tk.NORMAL, text="Cancel Processing")
+        self.root.update()
+
+        first_frame = self._anim_frames[0]
+        crop_rect = self.image_canvas.crop_rect
+        total_frames = len(self._anim_frames)
+        target_width, target_height = self._get_target_dimensions()
+        blur_radius = self.blur_radius.get()
+        output_folder = Path(self.output_folder.get()) if not self.replace_original.get() else None
+
+        def update_progress(current, total, stage="frames", **kwargs):
+            def do_update():
+                if stage == "frames":
+                    percent = int((current / total) * 100) if total > 0 else 0
+                    status_parts = [f"Processing: {percent}% ({current}/{total} frames)"]
+                    if 'eta_seconds' in kwargs:
+                        eta = kwargs['eta_seconds']
+                        eta_str = f"{int(eta // 60)}m {int(eta % 60)}s" if eta >= 60 else f"{int(eta)}s"
+                        status_parts.append(f"ETA: {eta_str}")
+                    self.media_info.configure(text=" | ".join(status_parts))
+                    self.progress_bar["maximum"] = total
+                    self.progress_bar["value"] = current
+                elif stage == "save":
+                    self.media_info.configure(text=f"Saving animated WebP... ({current}/{total})")
+                    self.progress_bar["maximum"] = total
+                    self.progress_bar["value"] = current
+            self.root.after(0, do_update)
+
+        def process():
+            try:
+                self._process_animated_webp_thread(
+                    crop_rect, first_frame, target_width, target_height, blur_radius,
+                    output_folder, progress_callback=update_progress
+                )
+                self.root.after(0, self._on_webp_processed)
+            except Exception as e:
+                import traceback
+                traceback.print_exc()
+                error_msg = str(e)
+                self.root.after(0, lambda: self._on_webp_error(error_msg))
+
+        thread = threading.Thread(target=process, daemon=True)
+        thread.start()
+
+    def _process_animated_webp_thread(
+        self, crop_rect, first_frame, target_width, target_height, blur_radius,
+        output_folder, progress_callback=None
+    ):
+        import time
+
+        total_frames = len(self._anim_frames)
+        print(f"Processing animated WebP: {total_frames} frames (target: {target_width}x{target_height})")
+
+        start_time = time.time()
+        processed_frames: list[Image.Image] = [None] * total_frames
+
+        crop_params = None
+        if crop_rect is not None:
+            x1, y1, x2, y2 = crop_rect
+            crop_params = (x1, y1, x2, y2)
+
+        def process_one(args):
+            i, frame = args
+            thread_name = threading.current_thread().name
+            print(f"[Thread-{thread_name}] Frame {i+1}: starting...")
+            if self.cancel_event.is_set():
+                raise RuntimeError("cancelled")
+            if crop_params is not None:
+                x1, y1, x2, y2 = crop_params
+                frame = frame.crop((x1, y1, x2, y2))
+            t0 = time.time()
+            result = process_image_pil(
+                frame,
+                target_width=target_width,
+                target_height=target_height,
+                blur_radius=blur_radius,
+                background_image=first_frame,
+            )
+            elapsed = time.time() - t0
+            print(f"[Thread-{thread_name}] Frame {i+1}: done in {elapsed:.2f}s")
+            return (i, result)
+
+        max_workers = min(os.cpu_count() or 4, total_frames)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [executor.submit(process_one, (i, f)) for i, f in enumerate(self._anim_frames)]
+
+            for idx, future in enumerate(concurrent.futures.as_completed(futures)):
+                i, result = future.result()
+                processed_frames[i] = result
+                if progress_callback:
+                    elapsed = time.time() - start_time
+                    done = idx + 1
+                    eta = (elapsed / done) * (total_frames - done) if done > 0 else 0
+                    progress_callback(done, total_frames, stage="frames", eta_seconds=eta)
+                pending = total_frames - (idx + 1)
+                active = min(max_workers, pending)
+                print(f"  [{idx+1}/{total_frames}] done, {pending} pending, ~{active} active workers")
+
+        if any(f is None for f in processed_frames):
+            raise RuntimeError("Some frames failed to process")
+
+        print(f"All {total_frames} frames processed in {time.time() - start_time:.1f}s")
+
+        progress_callback(0, total_frames, stage="save")
+        print("Saving animated WebP...")
+
+        if self.replace_original.get():
+            output_path = self.current_media_path
+            temp_path = output_path.with_name(f"{output_path.stem}_temp{output_path.suffix}")
+            save_animated_webp(
+                processed_frames, self._anim_durations, Path(temp_path),
+                quality=self.webp_quality.get(), lossless=self.webp_lossless.get(), method=self.webp_method.get(),
+                progress_callback=lambda c, t: progress_callback(c, t, stage="save"),
+            )
+            os.replace(temp_path, output_path)
+        else:
+            output_path = output_folder / f"{self.current_media_path.stem}_processed{self.current_media_path.suffix}"
+            save_animated_webp(
+                processed_frames, self._anim_durations, output_path,
+                quality=self.webp_quality.get(), lossless=self.webp_lossless.get(), method=self.webp_method.get(),
+                progress_callback=lambda c, t: progress_callback(c, t, stage="save"),
+            )
+
+        progress_callback(total_frames, total_frames, stage="save")
+        print("Animated WebP saved successfully")
+
+    def _on_webp_processed(self):
+        self._processing = False
+        self.processed_count += 1
+        self.progress_bar["value"] = self.current_index + 1
+
+        self._anim_frames = []
+        self._anim_durations = []
+
+        self._set_image_controls_state(True)
+        self.cancel_btn.configure(state=tk.DISABLED)
+
+        self.media_info.configure(text="Loading next file...")
+        print("Loading next file...")
+
+        self.current_index += 1
+        self._load_current_media()
+
+    def _on_webp_error(self, error):
+        self._processing = False
+        is_cancelled = "cancelled" in str(error).lower()
+        if is_cancelled:
+            self.media_info.configure(text="Processing cancelled.")
+        else:
+            messagebox.showerror("Error", f"Animated WebP processing failed:\n{error}")
+
+        self._anim_frames = []
+        self._anim_durations = []
+
+        self._set_image_controls_state(True)
+        self.cancel_btn.configure(state=tk.DISABLED)
+
+        self._hide_webp_settings()
+        self._load_current_media()
+
     def _process_current_video(self, crop_rect):
         """Process the current video."""
         self.media_info.configure(text=f"Processing {self.current_media_path.name}...")
@@ -1952,9 +2175,16 @@ For videos:
         for child in self.video_seek_controls.winfo_children():
             if isinstance(child, ttk.Button):
                 child.configure(state=state)
-        
+
+    def _show_webp_settings(self):
+        self.webp_frame.pack(fill=tk.X, pady=5, before=self.audio_checkbox)
+
+    def _hide_webp_settings(self):
+        self.webp_frame.pack_forget()
+
     def _finish_processing(self):
         """Called when all files have been processed."""
+        self._hide_webp_settings()
         # Cleanup last item
         self.image_canvas.delete("all")
         self.image_canvas.original_image = None
@@ -1962,6 +2192,7 @@ For videos:
         
         # Reset batch state
         self.current_index = 0
+        completed_count = self.processed_count
         self.processed_count = 0
         self.progress_bar["value"] = 0
         
@@ -1983,7 +2214,7 @@ For videos:
         messagebox.showinfo(
             "Complete",
             f"Processing complete!\n\n"
-            f"Processed: {self.processed_count} files\n"
+            f"Processed: {completed_count} files\n"
             f"Output folder: {self.output_folder.get()}"
         )
 

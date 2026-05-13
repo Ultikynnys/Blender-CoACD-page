@@ -5,12 +5,15 @@ Shared constants and utilities for image/video processing.
 Used by both image_processor.py (CLI) and image_processor_gui.py (GUI).
 """
 
+import concurrent.futures
+import io
 import os
 import subprocess
 import shutil
 import tempfile
+import time
 from pathlib import Path
-from typing import Optional, Tuple, List, Set
+from typing import Callable, Optional, Tuple, List, Set
 
 import cv2
 import numpy as np
@@ -457,6 +460,150 @@ def parse_time_to_seconds(time_str: Optional[str]) -> Optional[float]:
         return int(hours) * 3600 + int(minutes) * 60 + float(seconds)
     else:
         raise ValueError(f"Invalid time format: {time_str}")
+
+
+# =============================================================================
+# Animated WebP Utilities
+# =============================================================================
+
+_WEBP_DIR = Path(__file__).parent / "WEBP"
+
+
+def get_webp_tool_path(tool_name: str) -> Optional[Path]:
+    """
+    Locate a WebP tool (e.g. 'img2webp.exe', 'webpinfo.exe') inside the WEBP/ folder.
+
+    Returns:
+        Path to the tool executable, or None if not found.
+    """
+    tool_path = _WEBP_DIR / tool_name
+    return tool_path if tool_path.is_file() else None
+
+
+def is_animated_webp(path: Path) -> bool:
+    """Check if a WebP file has multiple frames (is animated)."""
+    suffix = Path(path).suffix.lower()
+    if suffix != '.webp':
+        return False
+    try:
+        with Image.open(path) as img:
+            return getattr(img, 'n_frames', 1) > 1
+    except Exception:
+        return False
+
+
+def extract_webp_frames(path: Path) -> list[Image.Image]:
+    """
+    Extract all frames from an animated WebP file.
+
+    Returns:
+        List of PIL Image objects (one per frame), each converted to RGB.
+    """
+    frames: list[Image.Image] = []
+    with Image.open(path) as img:
+        try:
+            while True:
+                frame = img.copy()
+                if frame.mode in ('RGBA', 'LA', 'P'):
+                    frame = frame.convert('RGB')
+                frames.append(frame)
+                img.seek(img.tell() + 1)
+        except EOFError:
+            pass
+    return frames
+
+
+def get_frame_durations(path: Path, default_duration: int = 100) -> list[int]:
+    """
+    Extract per-frame durations (in milliseconds) from an animated WebP.
+
+    Args:
+        path: Path to the animated WebP file.
+        default_duration: Fallback duration if none is stored in the file.
+
+    Returns:
+        List of int durations, one per frame.
+    """
+    durations: list[int] = []
+    with Image.open(path) as img:
+        try:
+            while True:
+                dur = img.info.get('duration', default_duration)
+                if isinstance(dur, list):
+                    durations.extend(dur)
+                else:
+                    durations.append(int(dur))
+                img.seek(img.tell() + 1)
+        except EOFError:
+            pass
+    return durations
+
+
+def save_animated_webp(
+    frames: list[Image.Image],
+    durations: list[int],
+    output_path: Path,
+    quality: int = 90,
+    lossless: bool = False,
+    method: int = 6,
+    progress_callback: Optional[Callable[[int, int], None]] = None,
+) -> None:
+    _save_animated_webp_pipe(frames, durations, output_path, quality, lossless, method, progress_callback)
+
+
+def _save_animated_webp_pipe(
+    frames: list[Image.Image],
+    durations: list[int],
+    output_path: Path,
+    quality: int = 90,
+    lossless: bool = False,
+    method: int = 6,
+    progress_callback: Optional[Callable[[int, int], None]] = None,
+) -> None:
+    cwebp = get_webp_tool_path("cwebp.exe")
+    webpmux = get_webp_tool_path("webpmux.exe")
+    if cwebp is None or webpmux is None:
+        raise RuntimeError("cwebp.exe or webpmux.exe not found in WEBP/ folder")
+
+    temp_dir = Path(tempfile.mkdtemp())
+    try:
+        webp_files: list[Path] = [None] * len(frames)
+        t0 = time.time()
+
+        def encode_one(i_frame):
+            i, frame = i_frame
+            buf = io.BytesIO()
+            frame.save(buf, "PNG")
+            png_data = buf.getvalue()
+            webp_path = temp_dir / f"frame_{i:04d}.webp"
+            cmd = [str(cwebp), "-q", str(quality), "-m", str(method), "-o", str(webp_path), "--", "-"]
+            if lossless:
+                cmd.insert(1, "-lossless")
+            subprocess.run(cmd, input=png_data, check=True, capture_output=True, timeout=120,
+                           creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+            return (i, webp_path)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(os.cpu_count() or 4, len(frames))) as executor:
+            futures = [executor.submit(encode_one, (i, f)) for i, f in enumerate(frames)]
+            for idx, future in enumerate(concurrent.futures.as_completed(futures)):
+                i, webp_path = future.result()
+                webp_files[i] = webp_path
+                if progress_callback:
+                    progress_callback(idx + 1, len(frames))
+
+        print(f"Encoded {len(frames)} WebP frames in {time.time() - t0:.1f}s")
+
+        mux_cmd = [str(webpmux)]
+        for wf, dur in zip(webp_files, durations):
+            mux_cmd.extend(["-frame", str(wf), f"+{dur}"])
+        mux_cmd.extend(["-loop", "0", "-o", str(output_path)])
+        subprocess.run(mux_cmd, check=True, capture_output=True, text=True, timeout=60,
+                       creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"WebP pipe encoding failed: {e.stderr}") from e
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 # =============================================================================

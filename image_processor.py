@@ -38,8 +38,13 @@ from media_utils import (
     parse_time_to_seconds,
     format_time_precise,
     process_image_cv,
+    process_image_pil,
     normalize_rect,
     is_valid_crop_rect,
+    is_animated_webp,
+    extract_webp_frames,
+    get_frame_durations,
+    save_animated_webp,
 )
 
 
@@ -586,8 +591,67 @@ Time formats supported: seconds (30), MM:SS (1:30), HH:MM:SS (1:30:00)
     for image_path in image_files:
         file_index += 1
         print(f"\n[{file_index}/{total_files}] Processing image: {image_path.name}")
-        
-        # Load image
+
+        # Check for animated WebP
+        if is_animated_webp(image_path):
+            print("  Detected animated WebP")
+            frames = extract_webp_frames(image_path)
+            durations = get_frame_durations(image_path)
+            print(f"  {len(frames)} frames, {len(durations)} durations")
+
+            # Show first frame for cropping (convert to cv2 for the cropper)
+            first_frame_cv = cv2.cvtColor(np.array(frames[0]), cv2.COLOR_RGB2BGR)
+            print(f"  Original size: {first_frame_cv.shape[1]}x{first_frame_cv.shape[0]}")
+
+            crop_rect = None
+            if not args.no_crop:
+                cropper = ImageCropper(first_frame_cv, f"Crop: {image_path.name}")
+                cropped_frame, should_quit = cropper.run()
+
+                if should_quit:
+                    print("\n\nProcessing cancelled by user.")
+                    return
+
+                if cropper.rect is not None:
+                    crop_rect = cropper.rect
+                    print(f"  Crop region: ({crop_rect[0]}, {crop_rect[1]}) to ({crop_rect[2]}, {crop_rect[3]})")
+
+            # Process each frame
+            processed_frames: list[Image.Image] = []
+            for i, frame in enumerate(frames):
+                # Crop if needed
+                if crop_rect is not None:
+                    x1, y1, x2, y2 = crop_rect
+                    frame = frame.crop((x1, y1, x2, y2))
+
+                result = process_image_pil(
+                    frame,
+                    target_width=args.width,
+                    target_height=args.height,
+                    blur_radius=args.blur,
+                )
+                processed_frames.append(result)
+
+                if (i + 1) % 10 == 0 or (i + 1) == len(frames):
+                    progress = ((i + 1) / len(frames)) * 100
+                    print(f"\r  Processing frames: {progress:.1f}% ({i + 1}/{len(frames)})", end='')
+            print()
+
+            # Save result
+            if args.replace:
+                output_path = image_path
+                temp_path = image_path.with_name(f"{image_path.stem}_temp{image_path.suffix}")
+                save_animated_webp(processed_frames, durations, Path(temp_path), quality=95)
+                os.replace(temp_path, output_path)
+                print(f"  ✓ Replaced original: {output_path.name}")
+            else:
+                output_path = output_folder / f"{image_path.stem}_processed{image_path.suffix}"
+                save_animated_webp(processed_frames, durations, output_path, quality=95)
+                print(f"  ✓ Saved: {output_path.name}")
+            processed_count += 1
+            continue
+
+        # Load image (static image path)
         image = cv2.imread(str(image_path))
         if image is None:
             print(f"Error: Failed to load image: {image_path}")

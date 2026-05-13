@@ -4,3 +4,4 @@ venv/
 *.png~
 *.pyc
 Kra/.Engines.kra-autosave.kra
+.kilo/
