@@ -565,3 +565,7 @@
 
 >## 2.0.97 - Improvement 19/4/2026
 	* Added back Normalized Position as a bake type.
+
+>## 2.0.98 - Improvement 13/5/2026
+    * visualizer automatically updates now for texel density
+
