@@ -75,9 +75,10 @@ fonts_config = "content/fonts.toml"
 
   usage_title = "Usage"
   usage_steps = [
-    "**Select** one or more mesh objects.",
-    "**Pick a Quality Preset** (Single Convex/Minimal/Low/Medium/High) or adjust parameters.",
-    "**Click Generate Collision**.",
+    "**Select your meshes** - Choose one or more mesh objects you want to generate collision for.",
+    "**Select your preset** - Pick the quality preset you want to use.",
+    "**Open the pie menu** - Press **Shift+Q** to bring up the CoACD pie menu.",
+    "**Assign Preset** - Click **Assign Preset** to apply the selected preset to the chosen meshes.",
     "**Post-Processing Tools** - Access via pie menu (Shift+Q) or the panel:",
     "  • Split with Plane",
     "  • Hullify Children (convert child objects to colliders)",
