@@ -8,6 +8,9 @@
   header_extra_link_text = "Open in Tab"
   header_extra_link_url = "https://ultikynnys.github.io/Blender-CoACD-page/?page=coacd"
 
+  header_store_link_text = "Store link"
+  header_store_link_url = "https://superhivemarket.com/products/coacd--advanced-convex-collision-generator"
+
 # Theme colors (Default CoACD theme)
 [theme_colors]
   brand_primary = "#49ad28ff"     # Green - shades auto-derived

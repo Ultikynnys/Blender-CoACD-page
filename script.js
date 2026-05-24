@@ -2165,6 +2165,27 @@ async function renderContent(cfg) {
     }
   }
 
+  const headerStoreBtn = document.getElementById('header-store-btn');
+  if (headerStoreBtn) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hideStoreBtn = urlParams.has('nostore');
+    const text = cfg?.site?.header_store_link_text;
+    const url = cfg?.site?.header_store_link_url;
+    const title = cfg?.site?.header_store_link_title || text || 'Store Link';
+    const target = cfg?.site?.header_store_link_target || '_blank';
+
+    if (!hideStoreBtn && text && url) {
+      headerStoreBtn.textContent = text;
+      headerStoreBtn.href = url;
+      headerStoreBtn.style.display = 'inline-flex';
+      headerStoreBtn.setAttribute('title', title);
+      headerStoreBtn.setAttribute('target', target);
+      headerStoreBtn.setAttribute('rel', 'noopener noreferrer');
+    } else {
+      headerStoreBtn.style.display = 'none';
+    }
+  }
+
   // Meta tags (optional)
   if (cfg?.meta) setMetaTags(cfg.meta);
   if (cfg?.site?.title) document.title = cfg.site.title;

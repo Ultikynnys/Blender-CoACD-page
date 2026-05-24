@@ -253,11 +253,11 @@ a.themed-link:focus-visible {
   display: block;
 }
 
-.research-paper-btn {
+.research-paper-btn,
+.header-store-btn {
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
   white-space: nowrap;
-  margin-right: 1rem;
 }
 
 /* ===== BACKGROUND ELEMENTS ===== */
@@ -1238,10 +1238,6 @@ strong {
   .header-buttons {
     flex-direction: column;
     gap: 0.5rem;
-  }
-
-  .research-paper-btn {
-    margin-right: 0;
   }
 
   .documentation-toc-grid {
