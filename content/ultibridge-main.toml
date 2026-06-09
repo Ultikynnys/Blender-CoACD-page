@@ -14,7 +14,7 @@
   brand_primary = "#FFFFFF"
   bg_dark = "#0F0F0F"
   text_white = "#FFFFFF"
-  text_glow = true
+  text_glow = false
 
 # Font configuration (references shared font config)
 fonts_config = "content/fonts.toml"

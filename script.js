@@ -338,7 +338,6 @@ function initImageZoom() {
       user-select: none;
       z-index: 10001;
       transition: color 0.2s, background-color 0.2s;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
       line-height: 1;
     `;
     leftArrow.addEventListener('mouseenter', () => {
@@ -374,7 +373,6 @@ function initImageZoom() {
       user-select: none;
       z-index: 10001;
       transition: color 0.2s, background-color 0.2s;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
       line-height: 1;
     `;
     rightArrow.addEventListener('mouseenter', () => {
@@ -1129,10 +1127,9 @@ function buildBackgroundLayers(site = {}, themeColors = {}) {
     return { backgroundImage: baseImage, blendMode: '' };
   }
 
-  const gradientOverlay = `linear-gradient(0deg, ${blackColor || '#000000'}, ${whiteColor || '#ffffff'})`;
   return {
-    backgroundImage: `${gradientOverlay}, ${baseImage}`,
-    blendMode: 'multiply'
+    backgroundImage: baseImage,
+    blendMode: ''
   };
 }
 
@@ -2034,12 +2031,7 @@ function applyThemeColors(cfg) {
       root.style.setProperty(cssVar, value, 'important');
     });
 
-    // Apply text glow if enabled in config
-    if (colors.text_glow) {
-      document.body.classList.add('text-glow');
-    } else {
-      document.body.classList.remove('text-glow');
-    }
+    // Text glow removed
   } else {
     // No theme colors block
   }
@@ -3718,7 +3710,6 @@ function initScrollUpIndicator() {
     color: var(--brand-color, #8A66D9);
     font-size: 1.5rem;
     line-height: 0.5;
-    text-shadow: 0 0 8px var(--brand-color, #8A66D9);
   `;
 
   triangle1.style.cssText = triangleStyle;

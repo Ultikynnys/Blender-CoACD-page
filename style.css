@@ -74,7 +74,6 @@ body {
   color: var(--text-white) !important;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
@@ -116,7 +115,6 @@ h2 {
   line-height: var(--line-height-heading);
   letter-spacing: var(--letter-spacing-heading, var(--letter-spacing-normal));
   margin: 3rem 0 2rem 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
 /* Paragraphs and text */
@@ -127,7 +125,6 @@ p {
   line-height: var(--line-height-base);
   letter-spacing: var(--letter-spacing-normal);
   margin-bottom: 1rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Links */
@@ -179,33 +176,24 @@ a.themed-link:focus-visible {
   font-weight: var(--font-weight-medium);
   letter-spacing: var(--letter-spacing-wide);
   background: var(--surface-08);
-  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: var(--radius-md);
   color: var(--text-white) !important;
   box-shadow: 0 0 32px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease, border-color 150ms ease;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 
 .btn.themed-btn {
   --btn-color: var(--brand-color, #8A66D9);
-  background: linear-gradient(135deg,
-      color-mix(in srgb, var(--btn-color) 26%, transparent),
-      color-mix(in srgb, var(--btn-color) 6%, transparent));
-  border-color: color-mix(in srgb, var(--btn-color) 45%, transparent);
-  box-shadow: 0 0 44px color-mix(in srgb, var(--btn-color) 32%, transparent);
+  background: color-mix(in srgb, var(--btn-color) 16%, transparent);
 }
 
 
 
 .btn.themed-btn:hover,
 .btn.themed-btn:focus-visible {
-  background: linear-gradient(135deg,
-      color-mix(in srgb, var(--btn-color) 38%, transparent),
-      color-mix(in srgb, var(--btn-color) 12%, transparent));
-  border-color: color-mix(in srgb, var(--btn-color) 60%, transparent);
-  box-shadow: 0 0 54px color-mix(in srgb, var(--btn-color) 45%, transparent);
+  background: color-mix(in srgb, var(--btn-color) 25%, transparent);
   text-decoration: none;
 }
 
@@ -218,7 +206,6 @@ a.themed-link:focus-visible {
 /* Card styling */
 .card {
   background: var(--surface-04);
-  border: 1px solid var(--border-12);
   border-radius: var(--radius-md);
   padding: 1.5rem;
   backdrop-filter: blur(10px);
@@ -237,7 +224,6 @@ a.themed-link:focus-visible {
   width: 100% !important;
   z-index: 1000 !important;
   background: var(--bg-dark) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
 .site-header-content {
@@ -276,12 +262,9 @@ a.themed-link:focus-visible {
   display: block;
   opacity: 0.05;
   filter: blur(0.15px);
-  box-shadow: 0 6px 40px rgba(0, 0, 0, 0.18);
   border-radius: 6px;
   --shape-color: #ffffff;
-  background: linear-gradient(145deg,
-      color-mix(in srgb, var(--shape-color) 65%, white 35%),
-      color-mix(in srgb, var(--shape-color) 80%, black 20%));
+  background: color-mix(in srgb, var(--shape-color) 15%, transparent);
 }
 
 /* Color classes removed: shapes are always white by default */
@@ -429,22 +412,15 @@ a.themed-link:focus-visible {
   font-size: 0.93em;
 }
 
-/* Workflow section - separate container for visual separation */
-.intro__workflow-section {
-  margin-top: 1.5rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-}
-
-/* Generic section container - for additional sections like post-processing */
+/* Workflow section + generic content section container */
+.intro__workflow-section,
 .intro__section-container {
   margin-top: 1.5rem;
   padding: 2rem;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Preset keywords - prevent line breaks within multi-word keywords and preserve inline colors */
@@ -465,15 +441,7 @@ strong {
   font-variant-ligatures: none;
 }
 
-/* Configurable text glow for bold text */
-.text-glow strong,
-.text-glow b,
-.text-glow a,
-.text-glow .btn,
-.text-glow .intro__usage-caption strong {
-  color: #ffffff !important;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(255, 255, 255, 0.3);
-}
+/* Configurable text glow — removed */
 
 .intro__usage-media {
   display: grid;
@@ -614,13 +582,7 @@ strong {
   left: var(--pos);
   width: 3px;
   transform: translateX(-50%);
-  background: linear-gradient(to bottom,
-      rgba(255, 255, 255, 0.9) 0%,
-      rgba(255, 255, 255, 1) 50%,
-      rgba(255, 255, 255, 0.9) 100%);
-  box-shadow:
-    0 0 4px rgba(255, 255, 255, 0.5),
-    0 0 8px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.9);
   z-index: 2;
   /* below handle, above panes */
   pointer-events: none;
@@ -852,14 +814,12 @@ strong {
   max-height: 500px;
   overflow-y: auto;
   padding-right: 0.5rem;
-  border: 1px solid var(--border-10);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.2);
 }
 
 .changelog-version {
   margin-bottom: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .changelog-version:last-child {
@@ -942,7 +902,6 @@ strong {
 
 /* Version type styling - Base styles (colors are set dynamically via inline styles) */
 .changelog-version-header {
-  border-left: 4px solid var(--brand-color);
   /* fallback */
 }
 
@@ -1143,7 +1102,6 @@ strong {
   padding: 1.5rem;
   background: var(--surface-04);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-10);
   cursor: pointer;
   text-decoration: none;
   color: inherit;
@@ -1151,7 +1109,6 @@ strong {
 
 .documentation-toc-item:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   color: inherit;
@@ -1167,7 +1124,6 @@ strong {
   transform: none;
   box-shadow: none;
   background: var(--surface-04);
-  border-color: var(--border-10);
 }
 
 .documentation-toc-content {
@@ -1193,7 +1149,6 @@ strong {
   height: 150px;
   object-fit: cover;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-10);
 }
 
 .documentation-subtitle {
@@ -1302,7 +1257,6 @@ strong {
 :is(#doc-page-rich-content, .documentation-page) pre[class*="language-"] {
   background: var(--code-bg) !important;
   color: var(--code-fg) !important;
-  border: 1px solid var(--code-border) !important;
   border-radius: var(--radius-md) !important;
   padding: 1rem 1.25rem !important;
   overflow: auto !important;
@@ -1321,7 +1275,6 @@ strong {
 :is(#doc-page-rich-content, .documentation-page) code:not([class*="language-"]) {
   background: var(--surface-08) !important;
   color: var(--text-white) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 6px !important;
   padding: 0.1rem 0.35rem !important;
   font-family: var(--font-family-mono) !important;
@@ -1341,7 +1294,6 @@ strong {
 :is(#doc-page-rich-content, .documentation-page) table {
   margin: 0.75rem 0 1rem;
   width: 100%;
-  border: 1px solid var(--code-border);
   border-radius: var(--radius-md);
   background: var(--surface-04);
   scrollbar-gutter: stable;
@@ -1375,7 +1327,6 @@ strong {
 :is(#doc-page-rich-content, .documentation-page) thead th {
   background: rgba(255, 255, 255, 0.06);
   font-weight: 700;
-  border-bottom: 1px solid var(--code-border);
   white-space: normal;
   word-break: normal;
   overflow-wrap: break-word;
@@ -1383,7 +1334,6 @@ strong {
 
 /* Body cell-specific styles */
 :is(#doc-page-rich-content, .documentation-page) tbody td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 
@@ -1401,13 +1351,10 @@ strong {
 /* Column separators */
 :is(#doc-page-rich-content, .documentation-page) thead th,
 :is(#doc-page-rich-content, .documentation-page) tbody td {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 :is(#doc-page-rich-content, .documentation-page) thead th:last-child,
 :is(#doc-page-rich-content, .documentation-page) tbody td:last-child {
-  /* Avoid an extra right-side border which can cause a 1px overflow and look like the edge is cut off */
-  border-right: none;
 }
 
 /* Last column alignment for compact values (e.g., Default Value) */
@@ -1467,7 +1414,6 @@ strong {
 :is(#doc-page-rich-content, .documentation-page) td code,
 :is(#doc-page-rich-content, .documentation-page) th code {
   background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 6px !important;
   padding: 0.05rem 0.35rem !important;
   word-break: keep-all;
@@ -1615,10 +1561,10 @@ strong {
   font-size: 1rem;
   color: var(--text-white);
   background: var(--surface-06);
-  border: 1px solid var(--border-12);
+  border: none;
   border-radius: var(--radius-sm);
   outline: none;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
 }
 
 .docs-search-input::placeholder {
@@ -1626,8 +1572,6 @@ strong {
 }
 
 .docs-search-input:focus {
-  border-color: var(--brand-color, rgba(255, 255, 255, 0.3));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-color, #fff) 20%, transparent);
 }
 
 .docs-search-results {
@@ -1638,7 +1582,6 @@ strong {
   right: 0;
   margin-top: 0.5rem;
   background: #0f0f11 !important;
-  border: 1px solid var(--border-12);
   border-radius: var(--radius-sm);
   overflow: hidden;
   z-index: 100;
@@ -1652,7 +1595,6 @@ strong {
   padding: 0.75rem 1rem;
   cursor: pointer;
   transition: background 150ms ease;
-  border-bottom: 1px solid var(--border-10);
 }
 
 .docs-search-result-item:last-child {
