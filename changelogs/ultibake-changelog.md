@@ -573,3 +573,6 @@
     * Added Combined baketype
     * Fixed Lightmap contribution ignoring self emission
 
+>## 2.0.100 - Hotfix 3/7/2026
+    * Combined and Lightmap baking is more stable now
+
