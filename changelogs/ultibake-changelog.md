@@ -569,3 +569,7 @@
 >## 2.0.98 - Improvement 13/5/2026
     * visualizer automatically updates now for texel density
 
+>## 2.0.99 - Addition 3/7/2026
+    * Added Combined baketype
+    * Fixed Lightmap contribution ignoring self emission
+
