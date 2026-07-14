@@ -576,3 +576,6 @@
 >## 2.0.100 - Hotfix 3/7/2026
     * Combined and Lightmap baking is more stable now
 
+>## 2.0.101 - Hotfix 14/7/2026
+    * AO bake no longer forces OSL enabled in GPU mode, which caused GPU bakes to be slower for AO.
+
