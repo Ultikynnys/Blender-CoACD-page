@@ -579,3 +579,6 @@
 >## 2.0.101 - Hotfix 14/7/2026
     * AO bake no longer forces OSL enabled in GPU mode, which caused GPU bakes to be slower for AO.
 
+>## 2.0.102 - Addition 15/7/2026
+    * AO and Thickness power sliders added to give more control over these baketypes
+
