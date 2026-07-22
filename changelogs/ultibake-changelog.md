@@ -585,3 +585,8 @@
 >## 2.0.103 - Hotfix 22/7/2026
     * Combined baketype added to profiles
 
+>## 2.0.105 - Addition 22/7/2026
+    * Added experimental Infinite dilation mode(found in profile Margin type)
+    * Added Png/Jpeg Fileformat selection in (global settings)
+    * Readded PNG compression slider(global settings)
+
