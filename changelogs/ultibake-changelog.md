@@ -582,3 +582,6 @@
 >## 2.0.102 - Addition 15/7/2026
     * AO and Thickness power sliders added to give more control over these baketypes
 
+>## 2.0.103 - Hotfix 22/7/2026
+    * Combined baketype added to profiles
+
