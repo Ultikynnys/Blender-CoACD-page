@@ -590,3 +590,6 @@
     * Added Png/Jpeg Fileformat selection in (global settings)
     * Readded PNG compression slider(global settings)
 
+>## 2.0.106 - Hotfix 22/7/2026
+    * Adjusted default AO power from 5 to 2
+
