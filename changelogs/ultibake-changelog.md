@@ -593,3 +593,8 @@
 >## 2.0.106 - Hotfix 22/7/2026
     * Adjusted default AO power from 5 to 2
 
+>## 2.0.107 - Addition 23/7/2026
+    * Added mipmap margin mode(based on Secarri's MipFlooding Github Repo)
+    * Color space for combined is now sRGB
+    * UI fixes
+
