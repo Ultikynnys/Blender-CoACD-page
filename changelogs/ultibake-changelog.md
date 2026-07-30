@@ -598,3 +598,6 @@
     * Color space for combined is now sRGB
     * UI fixes
 
+>## 2.0.108 - * bugfixes 30/7/2026
+    * Various bug fixes
+
