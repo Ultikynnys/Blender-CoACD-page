@@ -601,3 +601,7 @@
 >## 2.0.108 - * bugfixes 30/7/2026
     * Various bug fixes
 
+>## 2.0.109 - * bugfixes 4/8/2026
+    * Bent normal algorithm is now more robust
+    * Sanitize Material operator now cleans up your material outputs and translucency nodes.
+
