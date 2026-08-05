@@ -605,3 +605,7 @@
     * Bent normal algorithm is now more robust
     * Sanitize Material operator now cleans up your material outputs and translucency nodes.
 
+>## 2.0.110 - * bugfixes 5/8/2026
+    * Post processing now actually happens in post.
+    * Fixed UV seam artifacting with infinite dilation margin type
+
