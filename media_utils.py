@@ -8,6 +8,7 @@ Used by both image_processor.py (CLI) and image_processor_gui.py (GUI).
 import concurrent.futures
 import io
 import os
+import struct
 import subprocess
 import shutil
 import tempfile
@@ -253,6 +254,73 @@ def require_ffmpeg() -> None:
         )
 
 
+# H.264 encoder selection. ffmpeg builds vary wildly in which encoders they
+# ship (e.g. the bundled 8.0.1 build has libopenh264 but NOT libx264), so the
+# codec must be detected at runtime rather than hardcoded.
+VIDEO_ENCODER_PREFERENCE: Tuple[str, ...] = (
+    'libx264',        # highest quality, most common
+    'libopenh264',    # software fallback shipped by some builds
+    'h264_mf',        # Windows MediaFoundation (hardware)
+    'h264_qsv',       # Intel Quick Sync (hardware)
+    'h264_nvenc',     # NVIDIA (hardware)
+    'h264_amf',       # AMD (hardware)
+)
+_detected_video_encoder: Optional[str] = None  # detection cache; '' = none found
+
+
+def get_available_video_encoders() -> Set[str]:
+    """Return the set of encoder names this ffmpeg build provides."""
+    try:
+        result = subprocess.run(
+            ['ffmpeg', '-hide_banner', '-encoders'],
+            capture_output=True,
+            text=True,
+            timeout=15,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return set()
+    if result.returncode != 0:
+        return set()
+    encoders: Set[str] = set()
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        # Encoder rows look like: " V....D libopenh264  OpenH264 H.264 ..."
+        if len(parts) >= 2 and parts[0] and parts[0][0] in 'VAS' and parts[1] != '=':
+            encoders.add(parts[1])
+    return encoders
+
+
+def detect_h264_encoder() -> str:
+    """
+    Pick the best H.264 encoder available in this ffmpeg build (cached).
+
+    Returns:
+        Encoder name (e.g. 'libx264' or 'libopenh264'), or '' if none found.
+    """
+    global _detected_video_encoder
+    if _detected_video_encoder is None:
+        available = get_available_video_encoders()
+        _detected_video_encoder = next(
+            (name for name in VIDEO_ENCODER_PREFERENCE if name in available),
+            '',
+        )
+    return _detected_video_encoder
+
+
+def _h264_encoder_args(codec: str) -> List[str]:
+    """Per-encoder quality options. `-preset`/`-crf` are x264-only; the other
+    encoders use their own rate-control flags (or none at all)."""
+    if codec == 'libx264':
+        return ['-preset', FFMPEG_ENCODING_OPTS['preset'], '-crf', FFMPEG_ENCODING_OPTS['crf']]
+    if codec == 'libopenh264':
+        # Quality mode is the closest analog to CRF; no preset/crf support.
+        return ['-profile:v', 'high', '-rc_mode', 'quality']
+    if codec == 'h264_qsv':
+        return ['-global_quality', FFMPEG_ENCODING_OPTS['crf']]
+    return []  # h264_mf / h264_nvenc / h264_amf: default rate control
+
+
 def run_ffmpeg_encode(
     input_path: str,
     output_path: str,
@@ -275,13 +343,21 @@ def run_ffmpeg_encode(
         speed: Playback speed multiplier (0.5 to 100.0)
     
     Raises:
-        RuntimeError: If ffmpeg is not available
-        subprocess.CalledProcessError: If ffmpeg fails
+        RuntimeError: If ffmpeg is not available, no H.264 encoder is found,
+            or the ffmpeg command fails (message includes ffmpeg's stderr)
     """
     require_ffmpeg()
-    
+
     opts = FFMPEG_ENCODING_OPTS
-    
+    codec = detect_h264_encoder()
+    if not codec:
+        raise RuntimeError(
+            "No H.264 video encoder found in this ffmpeg build. "
+            "Install an ffmpeg build that includes libx264 or libopenh264 "
+            "(e.g. a gyan.dev or BtbN build)."
+        )
+    encode_args = ['-c:v', codec] + _h264_encoder_args(codec)
+
     if include_audio and audio_source:
         # Build command with audio from source
         cmd = ['ffmpeg', '-y', '-i', input_path]
@@ -312,9 +388,7 @@ def run_ffmpeg_encode(
             cmd.extend(['-af', ','.join(af_filters)])
         
         cmd.extend([
-            '-c:v', opts['video_codec'],
-            '-preset', opts['preset'],
-            '-crf', opts['crf'],
+            *encode_args,
             '-c:a', opts['audio_codec'],
             '-b:a', opts['audio_bitrate'],
             '-shortest',
@@ -325,9 +399,7 @@ def run_ffmpeg_encode(
         # No audio
         cmd = [
             'ffmpeg', '-y', '-i', input_path,
-            '-c:v', opts['video_codec'],
-            '-preset', opts['preset'],
-            '-crf', opts['crf'],
+            *encode_args,
             '-an',
             '-movflags', '+faststart',
             output_path
@@ -341,8 +413,12 @@ def run_ffmpeg_encode(
     )
     
     if result.returncode != 0:
-        raise subprocess.CalledProcessError(
-            result.returncode, cmd, result.stdout, result.stderr
+        detail = (result.stderr or result.stdout or '').strip()
+        if len(detail) > 1000:
+            detail = '...' + detail[-1000:]
+        raise RuntimeError(
+            f"ffmpeg failed with exit code {result.returncode}."
+            + (f"\n{detail}" if detail else "")
         )
 
 
@@ -539,6 +615,111 @@ def get_frame_durations(path: Path, default_duration: int = 100) -> list[int]:
     return durations
 
 
+def _parse_webp_chunks(data: bytes) -> List[Tuple[bytes, bytes]]:
+    """Parse the chunks of a single-frame RIFF WebP file into (FourCC, payload) pairs."""
+    if data[:4] != b'RIFF' or data[8:12] != b'WEBP':
+        raise ValueError("Not a valid WebP file")
+    pos = 12
+    end = 12 + struct.unpack('<I', data[4:8])[0]
+    chunks: List[Tuple[bytes, bytes]] = []
+    while pos + 8 <= end:
+        fourcc = data[pos:pos + 4]
+        size = struct.unpack('<I', data[pos + 4:pos + 8])[0]
+        chunks.append((fourcc, data[pos + 8:pos + 8 + size]))
+        pos += 8 + size + (size & 1)  # RIFF pads odd-sized chunks with one byte
+    return chunks
+
+
+def _webp_bitstream_dims(chunks: List[Tuple[bytes, bytes]]) -> Tuple[int, int]:
+    """Extract (width, height) from the VP8/VP8L bitstream of a frame."""
+    for fourcc, payload in chunks:
+        if fourcc == b'VP8 ':
+            # VP8 frame tag: 3 bytes, start code: 3 bytes, then 14-bit width/height.
+            width = (payload[6] | (payload[7] << 8)) & 0x3FFF
+            height = (payload[8] | (payload[9] << 8)) & 0x3FFF
+            return width, height
+        if fourcc == b'VP8L':
+            bits = int.from_bytes(payload[1:5], 'little')
+            return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    raise ValueError("Frame contains neither a VP8 nor VP8L bitstream")
+
+
+def _assemble_animated_webp(
+    frame_files: List[Path],
+    durations: List[int],
+    output_path: Path,
+    loop: int = 0,
+) -> None:
+    """
+    Assemble an animated WebP from single-frame WebP files, entirely in-process.
+
+    This replaces a single ``webpmux -frame ... -frame ... -o out.webp``
+    invocation. That command line grows roughly 160 chars per frame, so on
+    Windows it exceeds the 32k-character limit and fails with
+    ``FileNotFoundError: [WinError 206] The filename or extension is too long``
+    at roughly 200+ frames (the GUI processes 600+).
+
+    The container is written by hand per the WebP RIFF spec: a VP8X chunk
+    (animation flag, plus alpha flag if any frame carries an ALPH chunk), an
+    ANIM chunk (loop count), then one ANMF chunk per frame with the frame's
+    encoded VP8/VP8L bitstream.
+    """
+    anmf_chunks: List[bytes] = []
+    canvas_w = canvas_h = None
+    has_alpha = False
+
+    for frame_file, duration in zip(frame_files, durations):
+        chunks = _parse_webp_chunks(frame_file.read_bytes())
+        # The single-frame file's own VP8X is redundant inside an ANMF chunk;
+        # keep only the bitstream (and any ALPH) chunks.
+        chunks = [(fourcc, payload) for fourcc, payload in chunks if fourcc != b'VP8X']
+        if any(fourcc == b'ALPH' for fourcc, _ in chunks):
+            has_alpha = True
+
+        width, height = _webp_bitstream_dims(chunks)
+        if canvas_w is None:
+            canvas_w, canvas_h = width, height
+        elif (width, height) != (canvas_w, canvas_h):
+            raise ValueError(
+                f"Frame {frame_file.name} is {width}x{height}, "
+                f"but the animation canvas is {canvas_w}x{canvas_h}"
+            )
+
+        frame_payload = b''
+        for fourcc, payload in chunks:
+            frame_payload += fourcc + struct.pack('<I', len(payload)) + payload
+            if len(payload) & 1:
+                frame_payload += b'\x00'
+
+        # 16-byte ANMF header: uint24 x/y/width-1/height-1, uint24 duration,
+        # then a flags byte (reserved 6 bits + blending 1 bit + disposal 1 bit).
+        header = b''.join(
+            value.to_bytes(3, 'little')
+            for value in (0, 0, canvas_w - 1, canvas_h - 1, duration)
+        )
+        header += b'\x00'
+        body = header + frame_payload
+        anmf = b'ANMF' + struct.pack('<I', len(body)) + body
+        if len(body) & 1:
+            anmf += b'\x00'
+        anmf_chunks.append(anmf)
+
+    # VP8X flags: bit 1 = animation, bit 4 = alpha (libwebp constants).
+    vp8x_flags = 0x02 | (0x10 if has_alpha else 0)
+    vp8x = bytes([vp8x_flags]) + b'\x00\x00\x00'
+    vp8x += (canvas_w - 1).to_bytes(3, 'little') + (canvas_h - 1).to_bytes(3, 'little')
+    anim = b'\x00\x00\x00\x00' + struct.pack('<H', loop)  # black bgcolor + loop count
+
+    chunks = [
+        b'VP8X' + struct.pack('<I', len(vp8x)) + vp8x,
+        b'ANIM' + struct.pack('<I', len(anim)) + anim,
+    ] + anmf_chunks
+    body = b''.join(chunks)
+
+    with open(output_path, 'wb') as f:
+        f.write(b'RIFF' + struct.pack('<I', 4 + len(body)) + b'WEBP' + body)
+
+
 def save_animated_webp(
     frames: list[Image.Image],
     durations: list[int],
@@ -561,9 +742,8 @@ def _save_animated_webp_pipe(
     progress_callback: Optional[Callable[[int, int], None]] = None,
 ) -> None:
     cwebp = get_webp_tool_path("cwebp.exe")
-    webpmux = get_webp_tool_path("webpmux.exe")
-    if cwebp is None or webpmux is None:
-        raise RuntimeError("cwebp.exe or webpmux.exe not found in WEBP/ folder")
+    if cwebp is None:
+        raise RuntimeError("cwebp.exe not found in WEBP/ folder")
 
     temp_dir = Path(tempfile.mkdtemp())
     try:
@@ -593,12 +773,9 @@ def _save_animated_webp_pipe(
 
         print(f"Encoded {len(frames)} WebP frames in {time.time() - t0:.1f}s")
 
-        mux_cmd = [str(webpmux)]
-        for wf, dur in zip(webp_files, durations):
-            mux_cmd.extend(["-frame", str(wf), f"+{dur}"])
-        mux_cmd.extend(["-loop", "0", "-o", str(output_path)])
-        subprocess.run(mux_cmd, check=True, capture_output=True, text=True, timeout=60,
-                       creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+        # Mux in-process: webpmux's command line can't hold 200+ frames
+        # (WinError 206: filename or extension too long).
+        _assemble_animated_webp(webp_files, durations, output_path)
 
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"WebP pipe encoding failed: {e.stderr}") from e

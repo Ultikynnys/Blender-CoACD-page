@@ -34,7 +34,9 @@ from media_utils import (
     MIN_CROP_SIZE,
     check_ffmpeg,
     run_ffmpeg_encode,
+    require_ffmpeg,
     format_time,
+    detect_h264_encoder,
     clamp,
     process_image_pil,
     normalize_rect,
@@ -870,6 +872,7 @@ class MediaProcessorGUI:
         self.webp_quality = tk.IntVar(value=95)
         self.webp_lossless = tk.BooleanVar(value=False)
         self.webp_method = tk.IntVar(value=6)
+        self.webp_skip_every_other = tk.BooleanVar(value=False)
         
         # Persistence settings
         self.file_settings = {}  # {'path_str': {'crop': [...], 'time': [...]}}
@@ -881,8 +884,9 @@ class MediaProcessorGUI:
         self._check_ffmpeg()
         
     def _check_ffmpeg(self):
-        """Check if ffmpeg is available."""
+        """Check if ffmpeg is available and pick an H.264 encoder."""
         self.ffmpeg_available = check_ffmpeg()
+        self.h264_encoder = detect_h264_encoder() if self.ffmpeg_available else ''
             
     def _build_ui(self):
         """Build the user interface."""
@@ -986,6 +990,9 @@ class MediaProcessorGUI:
         webp_method_frame.pack(fill=tk.X, pady=2)
         ttk.Label(webp_method_frame, text="Method (0-6):").pack(side=tk.LEFT)
         ttk.Spinbox(webp_method_frame, from_=0, to=6, textvariable=self.webp_method, width=8).pack(side=tk.RIGHT)
+        webp_skip_frame = ttk.Frame(self.webp_frame)
+        webp_skip_frame.pack(fill=tk.X, pady=2)
+        ttk.Checkbutton(webp_skip_frame, text="Skip every other frame", variable=self.webp_skip_every_other).pack(side=tk.LEFT)
 
         # Include audio checkbox
         self.audio_checkbox = ttk.Checkbutton(left_panel, text="Include Audio", variable=self.include_audio)
@@ -1225,10 +1232,12 @@ For videos:
         self.progress_bar["value"] = 0
         
         # Update ffmpeg status
-        if self.ffmpeg_available:
-            self.ffmpeg_label.configure(text="✓ ffmpeg found", foreground="green")
-        else:
+        if not self.ffmpeg_available:
             self.ffmpeg_label.configure(text="⚠ ffmpeg not found (no audio)", foreground="orange")
+        elif getattr(self, 'h264_encoder', ''):
+            self.ffmpeg_label.configure(text=f"✓ ffmpeg found ({self.h264_encoder})", foreground="green")
+        else:
+            self.ffmpeg_label.configure(text="⚠ ffmpeg found but no H.264 encoder", foreground="orange")
         
         # Load first file
         self._load_current_media()
@@ -1548,7 +1557,19 @@ For videos:
     ):
         import time
 
-        total_frames = len(self._anim_frames)
+        frames = list(self._anim_frames)
+        durations = list(self._anim_durations)
+
+        # Optional decimation: keep every other frame and fold the skipped
+        # frame's duration into the kept one, preserving total playback time.
+        if self.webp_skip_every_other.get():
+            frames = frames[0::2]
+            durations = [
+                durations[i] + (durations[i + 1] if i + 1 < len(durations) else 0)
+                for i in range(0, len(durations), 2)
+            ]
+
+        total_frames = len(frames)
         print(f"Processing animated WebP: {total_frames} frames (target: {target_width}x{target_height})")
 
         start_time = time.time()
@@ -1582,7 +1603,7 @@ For videos:
 
         max_workers = min(os.cpu_count() or 4, total_frames)
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = [executor.submit(process_one, (i, f)) for i, f in enumerate(self._anim_frames)]
+            futures = [executor.submit(process_one, (i, f)) for i, f in enumerate(frames)]
 
             for idx, future in enumerate(concurrent.futures.as_completed(futures)):
                 i, result = future.result()
@@ -1608,7 +1629,7 @@ For videos:
             output_path = self.current_media_path
             temp_path = output_path.with_name(f"{output_path.stem}_temp{output_path.suffix}")
             save_animated_webp(
-                processed_frames, self._anim_durations, Path(temp_path),
+                processed_frames, durations, Path(temp_path),
                 quality=self.webp_quality.get(), lossless=self.webp_lossless.get(), method=self.webp_method.get(),
                 progress_callback=lambda c, t: progress_callback(c, t, stage="save"),
             )
@@ -1616,7 +1637,7 @@ For videos:
         else:
             output_path = output_folder / f"{self.current_media_path.stem}_processed{self.current_media_path.suffix}"
             save_animated_webp(
-                processed_frames, self._anim_durations, output_path,
+                processed_frames, durations, output_path,
                 quality=self.webp_quality.get(), lossless=self.webp_lossless.get(), method=self.webp_method.get(),
                 progress_callback=lambda c, t: progress_callback(c, t, stage="save"),
             )
@@ -1740,7 +1761,18 @@ For videos:
         print(f"Video: {video_path}")
         print(f"Crop keyframes: {crop_rect}")
         print(f"Time range: {time_range}")
-        
+
+        # Fail fast: without ffmpeg or an H.264 encoder the final re-encode
+        # always fails AFTER all frames are processed (wasted minutes,
+        # cryptic exit code).
+        require_ffmpeg()
+        if not detect_h264_encoder():
+            raise RuntimeError(
+                "No H.264 video encoder found in this ffmpeg build. "
+                "Install an ffmpeg build that includes libx264 or libopenh264 "
+                "(e.g. a gyan.dev or BtbN build)."
+            )
+
         target_width, target_height = self._get_target_dimensions()
         blur_radius = self.blur_radius.get()
         print(f"Target: {target_width}x{target_height}, blur: {blur_radius}")
