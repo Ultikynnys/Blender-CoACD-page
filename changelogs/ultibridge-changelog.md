@@ -23,3 +23,10 @@
     * Collections now correctly convert into folders and game objects
     * Better material support
     * Various bug fixes
+
+>## 1.0.27 - Updater hardening: domain-only server endpoint 18/8/2026
+    * Update server moved to https://blender.r60d.xyz with public CA trust
+    * Removed bundled certificate pinning (cert.crt no longer required)
+    * Fixed addon registration during Blender readonly startup state
+    * Restored full updater logging
+
