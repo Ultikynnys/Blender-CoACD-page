@@ -38,3 +38,10 @@
 
 >## 1.0.56 - Hotfix 4/02/2026
     * More robust saving/loading
+
+>## 1.0.59 - Updater hardening: domain-only server endpoint 18/8/2026
+    * Update server moved to https://blender.r60d.xyz with public CA trust
+    * Removed bundled certificate pinning (cert.crt no longer required)
+    * Fixed addon registration during Blender readonly startup state
+    * Restored full updater logging
+
