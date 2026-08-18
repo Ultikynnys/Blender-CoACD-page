@@ -32,3 +32,10 @@
 >## 1.0.44 - Fixes 25/03/2026
     * Mesh segmentation added
     * Fixed issue with target vertex count
+
+>## 1.0.47 - Updater hardening: domain-only server endpoint 18/8/2026
+    * Update server moved to https://blender.r60d.xyz with public CA trust
+    * Removed bundled certificate pinning (cert.crt no longer required)
+    * Fixed addon registration during Blender readonly startup state
+    * Restored full updater logging
+
