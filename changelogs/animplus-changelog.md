@@ -21,3 +21,9 @@
 >## 2.0.11 - Hotfix 19/01/2026
     * Fixed crashing on Blender 5
 
+>## 2.0.14 - Updater hardening: domain-only server endpoint 18/8/2026
+    * Update server moved to https://blender.r60d.xyz with public CA trust
+    * Removed bundled certificate pinning (cert.crt no longer required)
+    * Fixed addon registration during Blender readonly startup state
+    * Restored full updater logging
+
