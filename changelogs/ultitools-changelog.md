@@ -21,3 +21,10 @@
 
 >## 2.0.16 - Update 11/05/2026
 	* Refactored measurement tools
+
+>## 2.0.19 - Updater hardening: domain-only server endpoint 18/8/2026
+    * Update server moved to https://blender.r60d.xyz with public CA trust
+    * Removed bundled certificate pinning (cert.crt no longer required)
+    * Fixed addon registration during Blender readonly startup state
+    * Restored full updater logging
+
