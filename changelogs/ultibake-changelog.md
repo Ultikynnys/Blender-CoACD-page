@@ -615,3 +615,6 @@
     * Fixed addon registration during Blender readonly startup state
     * Restored full updater logging
 
+>## 2.0.113 - Improvement 24/8/2026
+    * _LOD suffixed files and Unreal style UCX_ prefixed collider are now blacklisted from baking, no longer do you have to separate thesse into their own collection
+
