@@ -618,3 +618,6 @@
 >## 2.0.113 - Improvement 24/8/2026
     * _LOD suffixed files and Unreal style UCX_ prefixed collider are now blacklisted from baking, no longer do you have to separate thesse into their own collection
 
+>## 2.0.114 - Improvement 19/9/2026
+    * CPU fallback added for GPU bake failures
+
