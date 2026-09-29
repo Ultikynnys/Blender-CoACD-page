@@ -621,3 +621,6 @@
 >## 2.0.114 - Improvement 19/9/2026
     * CPU fallback added for GPU bake failures
 
+>## 2.0.115 - Hotfix 29/9/2026
+    * Hardened Cage baking
+
