@@ -624,3 +624,6 @@
 >## 2.0.115 - Hotfix 29/9/2026
     * Hardened Cage baking
 
+>## 2.0.116 - Hotfix 29/9/2026
+    * Object Relationship tab now correctly updates on collection mutations
+
